@@ -1,0 +1,10 @@
+{
+	"description" : "Indicator Extension",
+	"name" : "Indicator Extension",
+	"shell-version" : [
+		"40"
+	],
+	"url" : "",
+	"uuid" : "indicator-extension@sample",
+	"version" : 1
+}

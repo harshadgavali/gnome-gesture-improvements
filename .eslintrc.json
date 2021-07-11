@@ -1,0 +1,78 @@
+{
+    "env": {
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            "tab"
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "no-unused-expressions":"error",
+        "no-unused-labels":"error",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "all",
+                "varsIgnorePattern": "^_",
+                "argsIgnorePattern": "^_"
+            }
+        ],
+        "no-console":"error",
+        "no-empty":"error",
+        "no-empty-function":"error",
+        "no-mixed-spaces-and-tabs":"error"
+    },
+    "overrides": [
+        {
+            "files": ["build/**/*.js"],
+            "globals": {
+                "log":"readonly",
+                "global":"readonly",
+                "imports":"readonly",
+                "console":"readonly",
+                "process":"readonly"
+            },
+            "rules": {
+                "no-console":"off",
+                "@typescript-eslint/no-unused-vars": "off",
+                "@typescript-eslint/explicit-module-boundary-types": "off",
+                "no-unused-expressions":"off"
+            }
+        },
+        {
+            "env": {
+                "node": true
+            },
+            "files": ["scripts/**/*.ts"],
+            "rules":{
+                "no-console":"off"
+            }
+        }
+    ]
+}

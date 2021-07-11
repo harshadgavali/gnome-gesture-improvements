@@ -1,0 +1,33 @@
+{
+  "name": "gnome-extension-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:src": "eslint src scripts",
+    "lint:package": "eslint build --fix",
+    "build": "npm run clean && npm run lint:src && tsc && node build/scripts/transpile.js && npm run lint:package",
+    "clean": "rm -rf build && mkdir build",
+    "pack": "npm run build && make pack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@gi-types/clutter": "^7.0.6",
+    "@gi-types/gobject": "^2.66.9",
+    "@gi-types/meta": "^3.38.5",
+    "@gi-types/shell": "^0.1.6",
+    "@gi-types/st": "^1.0.6",
+    "@types/glob": "^7.1.3",
+    "@types/node": "^16.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.30.0",
+    "fs": "0.0.1-security",
+    "glob": "^7.1.7",
+    "path": "^0.12.7",
+    "typescript": "^4.3.5"
+  }
+}
