@@ -2,7 +2,8 @@
 ## Things to note.
 1. Top level directory of extension (containing extension.ts) should be src/ .
 2. javascript files will be generated into build/src/ folder.
-
+3. All folder names should be valid identifier
+4. Don't declare 'Me' or 'registerClass' variable.
 ## How to use.
 * Run `npm install` to download dependencies.
 * Write your extension's javascript code into src/ folder.

@@ -1,10 +1,11 @@
-// import * as acorn from 'acorn';
 import * as fs from 'fs';
 import glob from 'glob';
 import path from 'path';
-// import { BlockList } from 'net';
 import ts from 'typescript';
 
+const EXTENSIONDIR = 'build/src';
+
+// list of gi modules and their name in imports.gi
 const GIReplacements: Record<string, string> = {
 	'@gi-types/gtk': 'Gtk',
 	'@gi-types/st': 'St',
@@ -16,7 +17,15 @@ const GIReplacements: Record<string, string> = {
 	'@gi-types/meta': 'Meta'
 };
 
-function createAccessExpressionFor(context: ts.TransformationContext, access: string) {
+/**
+ * Create Property access expression for code string
+ * @param context
+ * @param access javascript code for which to create expression
+ * @returns 
+ * 
+ * e.g., createAccessExpressionFor(context, 'obj.property')
+ */
+function createAccessExpressionFor(context: ts.TransformationContext, access: string): ts.Expression {
 	const ids = access.split('.').filter(a => a.length > 0);
 	if (ids.length === 0) {
 		throw new Error(`can't create access expression for ${access}`);
@@ -33,7 +42,18 @@ function createAccessExpressionFor(context: ts.TransformationContext, access: st
 	return expression;
 }
 
-function createVariableDeclaration(context: ts.TransformationContext, name: string | ts.Identifier | ts.BindingName, initializer: ts.Expression | undefined): ts.VariableDeclaration {
+/**
+ * Create variable declaration expression
+ * @param context 
+ * @param name name of variable
+ * @param initializer variable initizlizer expression
+ * @returns 
+ */
+function createVariableDeclaration(
+	context: ts.TransformationContext,
+	name: string | ts.Identifier | ts.BindingName,
+	initializer: ts.Expression | undefined
+): ts.VariableDeclaration {
 	return context.factory.createVariableDeclaration(
 		name,
 		undefined,
@@ -42,6 +62,14 @@ function createVariableDeclaration(context: ts.TransformationContext, name: stri
 	);
 }
 
+/**
+ * Create variable declaration statement
+ * @param context 
+ * @param name name of variable
+ * @param initializer variable initizlizer expression
+ * @param flags flags, e.g. ts.NodeFlags.Const
+ * @returns 
+ */
 function createVariableStatement(
 	context: ts.TransformationContext,
 	name: string | ts.Identifier | ts.BindingName,
@@ -57,15 +85,38 @@ function createVariableStatement(
 	);
 }
 
+/**
+ * Move all comments to node
+ * @param node target node to move comments to 
+ * @param originalNode original node
+ * @returns target node
+ */
 function moveComments<T extends ts.Node>(node: T, originalNode: ts.Node): T {
+	if (node === undefined || originalNode === undefined) {
+		return node;
+	}
 	node = ts.setSyntheticLeadingComments(node, ts.getSyntheticLeadingComments(originalNode));
 	node = ts.setSyntheticTrailingComments(node, ts.getSyntheticTrailingComments(originalNode));
 	return ts.setCommentRange(node, ts.getCommentRange(originalNode));
 }
 
+// printer to print code
 const printer: ts.Printer = ts.createPrinter({ removeComments: false });
 
+/**
+ * typescript transformer to transform exports
+ * @param context 
+ * @returns transformation function
+ * 
+ * transformation function
+ * 1. Removes 'export' modifier from function
+ * 2. Convert exported ClassDeclaration into variable statement.
+ * 	e.g., 'export class A {}' => 'var A = class A{};'
+ * 3. Convert exported variables into 'var'
+ * 	e.g., 'export const ABC = 8;' => 'var ABC = 8;'
+ */
 const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
+	/* Remove 'export' modifier from function declaration */
 	const tranformFunction = (node: ts.FunctionDeclaration, variables: string[]): ts.FunctionDeclaration => {
 		if (!node.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
 			return node;
@@ -87,6 +138,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		);
 	};
 
+	/* convert exported class declaration to variable statement */
 	const transformClass = (node: ts.ClassDeclaration, variables: string[]): ts.ClassDeclaration | ts.VariableStatement => {
 		if (!node.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
 			return node;
@@ -109,6 +161,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		);
 	};
 
+	/* make all exported variables 'var' type */
 	const tranformVariable = (node: ts.VariableStatement, variables: string[]): ts.VariableStatement => {
 		if (!node.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
 			return node;
@@ -124,6 +177,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		);
 	};
 
+	/* transformation function */
 	return sourceFile => {
 		const variables: string[] = [];
 		const visitor = (node: ts.Node): ts.Node => {
@@ -139,8 +193,8 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 			}
 		};
 		const modifiedSourceFile = ts.visitEachChild(sourceFile, visitor, context);
+		// Add /* exported var1,var2 */ comment to before first statement
 		if (variables.length && modifiedSourceFile.statements.length) {
-
 			ts.addSyntheticLeadingComment(
 				modifiedSourceFile.statements[0],
 				ts.SyntaxKind.MultiLineCommentTrivia,
@@ -153,9 +207,32 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 	};
 };
 
-// local, gi and shell imports
+/**
+ * typescript transformer to transform exports
+ * @param context 
+ * @returns transformation function
+ * 
+ * transformation function
+ * 1. replaces @gi-types/* modules into imports.gi
+ * 	e.g., "import St from '@gi-types/st';" => "const St = imports.gi.St;"
+ * 2. Removes "import ... from 'gnome-shell'" statement.
+ * 3. replaces local imports with statement compatible with extensions
+ * 	e.g., in extension.js (top level) 
+ * 		"import { Indicator } from './indicator';" => "const { Indicator } = Me.imports.indicator;"
+ * 		and it ensures "const Me = imports.misc.extensionUtils.getCurrentExtension();" is added before above statement.
+ *  		
+ */
 const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
+	/**
+	 * Actual transformation function
+	 * @param node ImportDeclaration node
+	 * @param getModuleReplacement function which returns object with module expression and "const Me ...." statement is necessary
+	 * 			e.g., getModuleReplacement('@gi-types/clutter') => {statement: undefined, module: Expression('imports.gi.Clutter')}
+	 * 			e.g., getModuleReplacement('@gi-types/gobject') => {statement: Expression('const Me = ...'), module: Expression('imports.gi.GObject')}
+	 * @returns returns either	throws when import declaration doesn't fit into above categories
+	 * 							or returns list of variable statements or empty statement
+	 */
 	const transformImport = (
 		node: ts.ImportDeclaration,
 		getModuleReplacement: (module: string) => {
@@ -165,21 +242,25 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 	): ts.ImportDeclaration | ts.VariableStatement[] | ts.EmptyStatement => {
 
 		const module = node.moduleSpecifier as ts.StringLiteral;
+		/* remove import from 'gnome-shell' statement */
 		if (module.text === 'gnome-shell') {
 			return moveComments(context.factory.createEmptyStatement(), node);
 		}
-		const replacement = getModuleReplacement(module.text);
 
+		const replacement = getModuleReplacement(module.text);
+		/* unknown import statement */
 		if (!replacement) {
-			return node;
+			throw new Error(`Unknown import statement '${node}'`);
 		}
 
 		const statements: ts.VariableStatement[] = [];
 		if (replacement.statement) {
+			/* 'const Me = ...' statement */
 			statements.push(replacement.statement);
 		}
 
 		if (node.importClause?.name) {
+			/* import whole module 'St' in 'import St from ...' or 'Gtk' in 'import Gtk, {} from ...'  */
 			statements.push(createVariableStatement(context,
 				node.importClause.name.text,
 				replacement.module,
@@ -187,20 +268,23 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 			));
 		}
 
+		/* namespace imports e.g., 'import * as Clutter from ...' */
 		node.importClause?.namedBindings?.forEachChild(binding => {
 			if (binding.kind !== ts.SyntaxKind.Identifier) {
+				if (binding.kind !== ts.SyntaxKind.ImportSpecifier)
+					throw new Error(`Can't understand namespace import ${node}`);
 				return;
 			}
-			const node = binding as ts.Identifier;
+			const bindingId = binding as ts.Identifier;
 			statements.push(createVariableStatement(context,
-				node.text,
+				bindingId.text,
 				replacement.module,
 				ts.NodeFlags.Const
 			));
 		});
 
+		/* named imports e.g., 'import { a, b } from ...' */
 		const namedBindings: string[] = [];
-
 		node.importClause?.namedBindings?.forEachChild(binding => {
 			if (binding.kind === ts.SyntaxKind.ImportSpecifier) {
 				const node = binding as ts.ImportSpecifier;
@@ -219,6 +303,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 					);
 				})
 			);
+			/* replacing named imports with 'const { a, b } = ...' */
 			statements.push(createVariableStatement(context,
 				bindingName,
 				replacement.module,
@@ -230,17 +315,23 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 			moveComments(statements[0], node);
 			return statements;
 		}
-
-		return node;
+		else {
+			throw new Error(`Can't understand import statement '${node}'`);
+		}
 	};
 
+	/* transformation function */
 	return sourceFile => {
 		let addedMeStatement = false;
+
+		/* function which returns object with module expression and "const Me ...." statement is necessary */
 		const getModuleReplacement = (module: string): { statement?: ts.VariableStatement, module: ts.Expression } | null => {
 			if (GIReplacements[module]) {
+				/* GI import */
 				return { module: createAccessExpressionFor(context, `imports.gi.${GIReplacements[module]}`) };
 			}
 			if (module.startsWith('.')) {
+				/* local import */
 				let statement: ts.VariableStatement | undefined = undefined;
 				if (!addedMeStatement) {
 					addedMeStatement = true;
@@ -255,12 +346,13 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 					);
 				}
 
+				/* path of imported module relative to root directory if extension */
 				module = path.join(path.dirname(sourceFile.fileName), module);
-				module = path.relative('build/src', module);
+				module = path.relative(EXTENSIONDIR, module);
 
 				const moduleStrings = module.split('/').filter(m => m.length > 0);
 				if (!moduleStrings.length) {
-					throw new Error(`unable to resolve ${module}`);
+					throw new Error(`unable to resolve '${module}'`);
 				}
 
 				return {
@@ -269,6 +361,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 				};
 			}
 
+			/* unknown import */
 			return null;
 		};
 		const visitor = (node: ts.Node): ts.Node | ts.Node[] => {
@@ -283,7 +376,21 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 	};
 };
 
+/**
+ * typescript transformer to transform exports
+ * @param context 
+ * @returns transformation function
+ * 
+ * transformation function
+ * 1. Replace constructor with '_init' function.
+ * 2. Replace 'super()' call with 'super._init' call. 
+ */
 const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context => {
+	/**
+	 * replace 'super()' call
+	 * @param node child node of function body
+	 * @returns 
+	 */
 	const replaceSuperCall = (node: ts.Node): ts.Node => {
 		if (node.kind === ts.SyntaxKind.CallExpression) {
 			const callNode = node as ts.CallExpression;
@@ -304,6 +411,11 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 		return moveComments(ts.visitEachChild(node, replaceSuperCall, context), node);
 	};
 
+	/**
+	 * Replace constructor and super call
+	 * @param node child of class expression
+	 * @returns 
+	 */
 	const transformConstructor = (node: ts.Node): ts.Node => {
 		if (node.kind === ts.SyntaxKind.Constructor) {
 			const constructorNode = node as ts.ConstructorDeclaration;
@@ -326,27 +438,36 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 		return node;
 	};
 
+	/* transformation function */
 	return sourceFile => {
 		const visitor = (node: ts.Node): ts.Node => {
 			if (node.kind === ts.SyntaxKind.CallExpression) {
 				const callNode = node as ts.CallExpression;
 
 				if (callNode.expression.kind === ts.SyntaxKind.Identifier) {
-					// registerClass()
-					if ((callNode.expression as ts.Identifier).text !== 'registerClass')
-						return node;
+					/* '... = registerClass(...)' call, e.g, registerClass was named import */
+					if ((callNode.expression as ts.Identifier).text !== 'registerClass') {
+						return moveComments(ts.visitEachChild(node, visitor, context), node);
+					}
 				}
 				else if (callNode.expression.kind === ts.SyntaxKind.PropertyAccessExpression) {
-					// GObject.registerClass()
+					/* '... = <module>.registerClass(...)' call, e.g, GObject.registerClass(...) after importing GObject class */
 					const id = callNode.expression as ts.PropertyAccessExpression;
-					if (id.expression.kind !== ts.SyntaxKind.Identifier || id.name.kind !== ts.SyntaxKind.Identifier) return node;
-					if ((id.name as ts.Identifier).text !== 'registerClass')
-						return node;
-				}
-				else return node;
 
-				// second argument is class expression
+					if (
+						id.expression.kind !== ts.SyntaxKind.Identifier ||
+						id.name.kind !== ts.SyntaxKind.Identifier ||
+						(id.name as ts.Identifier).text !== 'registerClass'
+					) {
+						return moveComments(ts.visitEachChild(node, visitor, context), node);
+					}
+				}
+				else {
+					return moveComments(ts.visitEachChild(node, visitor, context), node);
+				}
+
 				if (callNode.arguments.length === 2 && callNode.arguments[1].kind === ts.SyntaxKind.ClassExpression) {
+					// second argument is class expression, registerClass({}, class {}) call
 					return moveComments(
 						context.factory.createCallExpression(
 							callNode.expression,
@@ -360,6 +481,7 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 					);
 				}
 				if (callNode.arguments.length === 1 && callNode.arguments[0].kind === ts.SyntaxKind.ClassExpression) {
+					// first argument is class expression, registerClass(class {}) call
 					return moveComments(
 						context.factory.createCallExpression(
 							callNode.expression,
@@ -371,18 +493,23 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 						node
 					);
 				}
-				return node;
+
+				throw new Error(
+					`registerClass(${printer.printNode(ts.EmitHint.Unspecified, node, sourceFile)})` +
+					'can\'t have more than 2 argument and last argument should be class expression'
+				);
 			}
+
 			return moveComments(ts.visitEachChild(node, visitor, context), node);
 		};
-
+		
 		return moveComments(ts.visitEachChild(sourceFile, visitor, context), sourceFile);
 	};
 };
 
-const matches = new glob.GlobSync('build/src/**/*.js');
+const matches = new glob.GlobSync(`${EXTENSIONDIR}/**/*.js`);
 matches.found.forEach(file => {
-	console.log(file);
+	console.log(`transpiling file: ${file}`);
 
 	const text = fs.readFileSync(file).toString();
 	let sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2018, true, ts.ScriptKind.JS);
