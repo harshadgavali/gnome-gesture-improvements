@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:transpile": "tsc scripts/transpile.ts --outDir build --allowSyntheticDefaultImports --sourceMap --target esnext --module esnext --moduleResolution node",
     "lint:src": "eslint src scripts",
     "lint:package": "eslint build --fix",
     "build": "npm run clean && npm run lint:src && tsc && node build/scripts/transpile.js && npm run lint:package",
