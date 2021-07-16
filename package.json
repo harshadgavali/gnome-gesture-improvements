@@ -16,7 +16,9 @@
   "license": "ISC",
   "devDependencies": {
     "@gi-types/clutter": "^7.0.6",
+    "@gi-types/gio": "^2.66.9",
     "@gi-types/gobject": "^2.66.9",
+    "@gi-types/gtk": "^3.24.9",
     "@gi-types/meta": "^3.38.5",
     "@gi-types/shell": "^0.1.6",
     "@gi-types/st": "^1.0.6",
