@@ -2,8 +2,7 @@
 	"description": "Touchpad Gesture improvements",
 	"name": "Gesture improvements",
 	"shell-version": [
-		"40",
-		"41"
+		"40"
 	],
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
 	"url": "https://gitlab.gnome.org/harshadgavali/gnome-gestures",
