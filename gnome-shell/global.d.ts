@@ -11,4 +11,6 @@ declare interface ISubExtension {
 	destroy(): void;
 }
 
-// declare const imports: any;
+declare interface Math {
+	clamp(num: number, min: number, max: number): number;
+}

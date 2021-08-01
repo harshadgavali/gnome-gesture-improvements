@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
+    <!-- See also: https://developer.gnome.org/glib/stable/gvariant-format-strings.html -->
+    <key name="touchpad-speed-scale" type="d">
+      <default>1.0</default>
+    </key>
+    <key name="alttab-delay" type="i">
+      <default>150</default>
+    </key>
+    <key name='default-session-workspace' type='b'>
+      <default>false</default>
+      <description>If true, use 3 finger to switch workspace, 4 for windows</description>
+    </key>
+    <key name='default-overview' type='b'>
+      <default>true</default>
+      <description>If true, use 3 finger for overview gesture, 4 for snapping/tiling</description>
+    </key>
+  </schema>
+</schemalist>

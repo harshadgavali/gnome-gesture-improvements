@@ -1,10 +1,12 @@
 {
-	"description" : "Indicator Extension",
-	"name" : "Indicator Extension",
-	"shell-version" : [
-		"40"
+	"description": "Touchpad Gesture improvements",
+	"name": "Gesture improvements",
+	"shell-version": [
+		"40",
+		"41"
 	],
-	"url" : "",
-	"uuid" : "indicator-extension@sample",
-	"version" : 1
+	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
+	"url": "https://gitlab.gnome.org/harshadgavali/gnome-gestures",
+	"uuid": "gestureImprovements@gestures",
+	"version": 11.1
 }

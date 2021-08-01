@@ -1,15 +1,49 @@
-# Generate GNOME extension from typescript.
-## Things to note.
-1. Top level directory of extension (containing extension.ts) should be src/ .
-2. javascript files will be generated into build/src/ folder.
-3. All folder names should be valid identifier
-4. Don't declare 'Me' or 'registerClass' variable.
-## How to use.
-* Run `npm install` to download dependencies.
-* Write your extension's javascript code into src/ folder.
-    * Write global types you use into gnome-shell/global.d.ts
-    * Modify gnome-shell/index.d.ts to suite your extension (each extension might use different method available from gnome-shell codebase).
-* Run `npm run pack` to generate extension zip file under build/
-    * You might want to modify Makefile to fit your needs.
-    * If you don't use Makefiles    
-        * You might want to run `npm run build` and then your custom install script. 
+This extension adds or modifies existing touchpad gestures on GNOME.
+### Supported Versions
+* GNOME Shell 40
+
+## Installation
+### From GNOME extensions website 
+[extension#4245](https://extensions.gnome.org/extension/4245/gesture-improvements/).
+### From git repo.
+* Install extension.
+```
+git clone https://gitlab.gnome.org/harshadgavali/gnome-gestures.git/
+cd gnome-gestures 
+# git checkout origin/dev
+npm run update
+```
+* Log out and log back in OR just restart.
+* Enable extension via extensions app or via command line
+```
+gnome-extensions enable gestureImprovements@gestures
+```
+
+## Gestures available (including built-in ones)
+| Gesture                                     | Modes    | Fingers | Direction       |
+| :------------------------------------------ | :------- | :------ | :-------------- |
+| Desktop-Overview-AppGrid-Desktop navigation | *        | 3       | Vertical        |
+| Switch app pages                            | AppGrid  | 3       | Horizontal      |
+| Switch windows                              | Desktop  | 3       | Horizontal      |
+| Switch Workspace                            | Overview | 3       | Horizontal      |
+| Switch Workspace                            | *        | 4       | Horizontal      |
+| Maximize/Unmaximize                         | Desktop  | 4       | Vertical        |
+| Half-Tile window                            | Desktop  | 4       | Explained below |
+
+
+#### For activating tiling gesture
+1. Do 4-finger vertical gesture on a unmaximized window
+2. Wait for few milliseconds
+3. Do 4-finger horizontal gesture to tile a window
+
+
+## Customization
+* For switching to windows from all workspaces using 3-fingers swipe, run 
+```
+gsettings set org.gnome.shell.window-switcher current-workspace-only false
+```
+
+* Add delay to alt-tab gesture, to ensure second windows get's selected, when fast swipe is done.
+* Add sensitivity of swipe (touchpad swipe speed)
+* Option to 3 fingers to switch workspace on desktop, (4 fingers to switch windows)
+* Option to 4 fingers for overview navigation, (3 fingers to maximize/unmaximize/tile)

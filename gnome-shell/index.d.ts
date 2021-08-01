@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export const z = 9;
-
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Clutter from '@gi-types/clutter';
 import St from '@gi-types/st';
 import Gio from '@gi-types/gio';
+import Shell from '@gi-types/shell';
+import Meta from '@gi-types/meta';
+import GObject from '@gi-types/gobject';
+
+declare const global: import('@gi-types/shell').Global;
 
 declare interface ExtensionMeta {
 	uuid: string,
@@ -23,6 +23,15 @@ declare interface ExtensionUtilsMeta {
 	initTranslations(domain?: string): void;
 }
 
+namespace __shell_private_types {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	declare class TouchpadGesture extends GObject.Object {
+		_stageCaptureEvent: number;
+		destroy(): void;
+		_handleEvent(actor: Clutter.Actor, event: Clutter.Event): boolean;
+	}
+}
+
 declare namespace imports {
 	namespace gettext {
 		function domain(name: string): { gettext(message: string): string; };
@@ -33,7 +42,9 @@ declare namespace imports {
 	}
 	namespace ui {
 		namespace main {
+			const actionMode: Shell.ActionMode;
 			function notify(message: string): void;
+			function activateWindow(window: Meta.Window, time?: number, workspaceNum?: number): void;
 
 			const panel: {
 				addToStatusArea(role: string, indicator: Clutter.Actor, position?: number, box?: string): void,
@@ -54,6 +65,27 @@ declare namespace imports {
 				_overview: {
 					_controls: overviewControls.OverviewControlsManager
 				} & St.Widget
+				_gestureBegin(tracker: {
+					confirmSwipe: typeof swipeTracker.SwipeTracker.prototype.confirmSwipe;
+				}): void;
+				_gestureUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
+				_gestureEnd(tracker: swipeTracker.SwipeTracker, duration: number, endProgress: number);
+
+				_swipeTracker: swipeTracker.SwipeTracker;
+			};
+
+			const layoutManager: {
+				uiGroup: Clutter.Actor
+			};
+
+			const wm: {
+				_workspaceAnimation: {
+					_swipeTracker: swipeTracker.SwipeTracker
+				};
+			};
+
+			const osdWindowManager: {
+				hideAll(): void;
 			};
 		}
 
@@ -79,9 +111,44 @@ declare namespace imports {
 					_searchEntry: St.Bin
 				}
 				_toggleAppsPage(): void
+
+				_workspacesDisplay: {
+					_swipeTracker: swipeTracker.SwipeTracker
+				}
+
+				_appDisplay: {
+					_swipeTracker: swipeTracker.SwipeTracker
+				}
+
+				_searchController: {
+					searchActive: boolean
+				}
 			}
 		}
 
+		namespace swipeTracker {
+			declare class SwipeTracker extends GObject.Object {
+				orientation: Clutter.Orientation;
+				enabled: boolean;
+				allowLongSwipes: boolean;
+				confirmSwipe(distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number): void;
+				destroy(): void;
+
+				_touchpadGesture?: __private_types.TouchpadGesture;
+				// custom
+				__oldTouchpadGesture?: __private_types.TouchpadGesture;
+				//
+				_allowedModes: Shell.ActionMode;
+
+				_progress: number;
+				_beginGesture(): void;
+				_updateGesture(): void;
+				_endTouchpadGesture(): void;
+				_history: {
+					reset(): void;
+				}
+			}
+		}
 
 		namespace panelMenu {
 			declare class Button extends St.Widget {
@@ -100,7 +167,45 @@ declare namespace imports {
 	}
 }
 
-// needs to declare this global every file wherever it's used, since it clashes with default global
-declare const global: import('@gi-types/shell').Global;
-// declare function log(message: any): void;
-// declare function _(str: string): string;
+declare namespace imports {
+	namespace misc {
+		namespace util {
+			function spawn(argv: string[]): void;
+			function lerp(start: number, end: number, progress: number): number;
+		}
+	}
+
+	namespace ui {
+		namespace altTab {
+			declare class WindowSwitcherPopup extends St.Widget {
+				_items: St.Widget & {
+					window: Meta.Window
+				}[];
+				_select(n: number): void;
+				_switcherList: {
+					_scrollView: {
+						hscroll: {
+							adjustment: St.Adjustment
+						}
+					}
+				}
+				_noModsTimeoutId: number;
+				_initialDelayTimeoutId: number;
+				_selectedIndex: number;
+
+				show(backward: boolean, binding: string, mask: number);
+			}
+		}
+	}
+}
+
+/// custom types
+
+declare interface CustomEventType {
+	type(): Clutter.EventType,
+	get_gesture_phase(): Clutter.TouchpadGesturePhase,
+	get_touchpad_gesture_finger_count(): number,
+	get_time(): number,
+	get_coords(): [number, number],
+	get_gesture_motion_delta_unaccelerated(): [number, number],
+}

@@ -3,7 +3,8 @@ import glob from 'glob';
 import path from 'path';
 import ts from 'typescript';
 
-const EXTENSIONDIR = 'build/src';
+const BASEDIR = 'build/extension';
+const ISEXTENSION = true; // is your code for extension?
 
 // list of gi modules and their name in imports.gi
 const GIReplacements: Record<string, string> = {
@@ -167,13 +168,16 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 			return node;
 		}
 
-		return context.factory.createVariableStatement([],
-			node.declarationList.declarations.map(d => {
-				if (d.name.kind == ts.SyntaxKind.Identifier) {
-					variables.push((d.name as ts.Identifier).text);
-				}
-				return moveComments(createVariableDeclaration(context, d.name, d.initializer), d);
-			})
+		return moveComments(
+			context.factory.createVariableStatement([],
+				node.declarationList.declarations.map(d => {
+					if (d.name.kind == ts.SyntaxKind.Identifier) {
+						variables.push((d.name as ts.Identifier).text);
+					}
+					return moveComments(createVariableDeclaration(context, d.name, d.initializer), d);
+				})
+			),
+			node
 		);
 	};
 
@@ -333,7 +337,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 			if (module.startsWith('.')) {
 				/* local import */
 				let statement: ts.VariableStatement | undefined = undefined;
-				if (!addedMeStatement) {
+				if (!addedMeStatement && ISEXTENSION) {
 					addedMeStatement = true;
 					//const Me = imports.misc.extensionUtils.getCurrentExtension();
 					statement = createVariableStatement(context,
@@ -348,7 +352,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 				/* path of imported module relative to root directory if extension */
 				module = path.join(path.dirname(sourceFile.fileName), module);
-				module = path.relative(EXTENSIONDIR, module);
+				module = path.relative(BASEDIR, module);
 
 				const moduleStrings = module.split('/').filter(m => m.length > 0);
 				if (!moduleStrings.length) {
@@ -357,7 +361,10 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 				return {
 					statement,
-					module: createAccessExpressionFor(context, `Me.imports.${moduleStrings.join('.')}`)
+					module: createAccessExpressionFor(
+						context,
+						(ISEXTENSION ? 'Me.' : '') + `imports.${moduleStrings.join('.')}`
+					)
 				};
 			}
 
@@ -502,12 +509,12 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 
 			return moveComments(ts.visitEachChild(node, visitor, context), node);
 		};
-		
+
 		return moveComments(ts.visitEachChild(sourceFile, visitor, context), sourceFile);
 	};
 };
 
-const matches = new glob.GlobSync(`${EXTENSIONDIR}/**/*.js`);
+const matches = new glob.GlobSync(`${BASEDIR}/**/*.js`);
 matches.found.forEach(file => {
 	console.log(`transpiling file: ${file}`);
 

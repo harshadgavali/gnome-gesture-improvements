@@ -1,17 +1,22 @@
 {
-  "name": "gnome-extension-template",
+  "name": "gnome-gestures",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Touchpad Gesture improvements",
+  "main": "extension.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:transpile": "tsc scripts/transpile.ts --outDir build --allowSyntheticDefaultImports --sourceMap --target esnext --module esnext --moduleResolution node",
-    "lint:src": "eslint src scripts",
+    "lint:extension": "eslint extension scripts",
     "lint:package": "eslint build --fix",
-    "build": "npm run clean && npm run lint:src && tsc && node build/scripts/transpile.js && npm run lint:package",
+    "build": "npm run clean && npm run lint:extension && tsc && node build/scripts/transpile.js && npm run lint:package",
     "clean": "rm -rf build && mkdir build",
-    "pack": "npm run build && make pack"
+    "pack": "npm run build && make pack",
+    "update": "npm run pack && make update"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.gnome.org/harshadgavali/gnome-gestures.git"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +24,7 @@
     "@gi-types/clutter": "^7.0.6",
     "@gi-types/gio": "^2.66.9",
     "@gi-types/gobject": "^2.66.9",
-    "@gi-types/gtk": "^3.24.9",
+    "@gi-types/gtk": "^4.0.9",
     "@gi-types/meta": "^3.38.5",
     "@gi-types/shell": "^0.1.6",
     "@gi-types/st": "^1.0.6",
