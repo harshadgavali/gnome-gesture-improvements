@@ -148,13 +148,7 @@ const TilePreview = GObject.registerClass(
 					}
 					// snap-left,normal,snap-right
 					else {
-						if (state === GestureTileState.NORMAL) {
-							this._window.unmaximize(Meta.MaximizeFlags.BOTH);
-						}
-						else {
-							// const box = (progress === 1 ? this._leftSnapBox : this._rightSnapBox) as Meta.Rectangle;
-							// this._window.move_resize_frame(false, box.x, box.y, box.width, box.height);
-
+						if (state !== GestureTileState.NORMAL) {
 							const currentTime = Clutter.get_current_event_time();
 							const keys = [Clutter.KEY_Super_L, (state === GestureTileState.LEFT_TILE ? Clutter.KEY_Left : Clutter.KEY_Right)];
 							this._window.raise();
@@ -225,7 +219,11 @@ const TilePreview = GObject.registerClass(
 		switchToSnapping(): void {
 			this._adjustment.remove_transition('value');
 			this._adjustment.value = 0;
-			easeActor(this._adjustment, -0.05, {
+			let toValue = -0.05;
+			if (this._maximizeBox && this._normalBox) {
+				toValue = -12 / Math.max(12, this._maximizeBox.width - this._normalBox.width);
+			}
+			easeActor(this._adjustment, toValue, {
 				duration: 100,
 				repeatCount: 1,
 				autoReverse: true,
@@ -239,7 +237,7 @@ const TilePreview = GObject.registerClass(
 		easeOpacity(value: number, callback?: () => void) {
 			easeActor(this, undefined, {
 				opacity: value,
-				duration: 100,
+				duration: 150,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: () => {
 					if (callback)

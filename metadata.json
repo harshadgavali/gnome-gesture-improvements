@@ -5,7 +5,7 @@
 		"40"
 	],
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
-	"url": "https://gitlab.gnome.org/harshadgavali/gnome-gestures",
+	"url": "https://github.com/harshadgavali/gnome-gesture-improvements",
 	"uuid": "gestureImprovements@gestures",
-	"version": 11.1
+	"version": 13.1
 }

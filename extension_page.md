@@ -17,4 +17,4 @@ This also adds option to configure speed of gestures. (1.0 is default)
 
 
 # Bugs
-Report bugs on gitlab.
+Report bugs on github.
