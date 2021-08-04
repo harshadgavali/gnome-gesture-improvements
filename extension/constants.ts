@@ -7,7 +7,7 @@ export const TouchpadConstants = {
 	SWIPE_MULTIPLIER: 1,
 	DRAG_THRESHOLD_DISTANCE: 16,
 	TOUCHPAD_BASE_HEIGHT: 300,
-	TOUCHPAD_BASE_WIDTH: 400
+	TOUCHPAD_BASE_WIDTH: 400,
 };
 
 export const AltTabConstants = {
@@ -15,7 +15,7 @@ export const AltTabConstants = {
 	DELAY_DURATION: 100,
 	POPUP_SCROLL_TIME: 100,
 	DUMMY_WIN_COUNT: 1, // so swiping to the end of touchpad is not needed for last window
-	MIN_WIN_COUNT: 8
+	MIN_WIN_COUNT: 8,
 };
 
 export const OverviewControlsState = {
@@ -23,12 +23,12 @@ export const OverviewControlsState = {
 	HIDDEN: 0,
 	WINDOW_PICKER: 1,
 	APP_GRID: 2,
-	HIDDEN_N: 3
+	HIDDEN_N: 3,
 };
 
 export const ExtSettings = {
 	DEFAULT_SESSION_WORKSPACE_GESTURE: false,
-	DEFAULT_OVERVIEW_GESTURE: true
+	DEFAULT_OVERVIEW_GESTURE: true,
 };
 
 export const RELOAD_DELAY = 1000; // reload extension delay in ms

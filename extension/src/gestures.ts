@@ -52,7 +52,7 @@ abstract class SwipeTrackerEndPointsModifer {
 
 				tracker.orientation = _tracker.orientation;
 				tracker.confirmSwipe(distance, snapPoints, currentProgress, cancelProgress);
-			}
+			},
 		};
 		callback(_tracker);
 	}
@@ -74,7 +74,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [3] : [4]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
-			1 / 1.5
+			1 / 1.5,
 		);
 	}
 
@@ -135,7 +135,7 @@ export class GestureExtension implements ISubExtension {
 					} else {
 						return this._stateAdjustment.value === OverviewControlsState.WINDOW_PICKER;
 					}
-				}
+				},
 			},
 			{
 				swipeTracker: Main.overview._overview._controls._appDisplay._swipeTracker,
@@ -148,8 +148,8 @@ export class GestureExtension implements ISubExtension {
 						return false;
 					}
 					return this._stateAdjustment.value === OverviewControlsState.APP_GRID;
-				}
-			}
+				},
+			},
 		];
 
 		this._workspaceAnimationModifier = new WorkspaceAnimationModifier(Main.wm);
@@ -165,7 +165,7 @@ export class GestureExtension implements ISubExtension {
 				disableOldGesture,
 				followNaturalScroll,
 				modes,
-				checkAllowedGesture
+				checkAllowedGesture,
 			} = entry;
 			const gestureSpeed = entry.gestureSpeed ?? 1;
 			const touchpadGesture = new TouchpadSwipeGesture(
@@ -190,7 +190,7 @@ export class GestureExtension implements ISubExtension {
 				swipeTracker._touchpadGesture._stageCaptureEvent =
 					global.stage.connect(
 						'captured-event::touchpad',
-						swipeTracker._touchpadGesture._handleEvent.bind(swipeTracker._touchpadGesture)
+						swipeTracker._touchpadGesture._handleEvent.bind(swipeTracker._touchpadGesture),
 					);
 			}
 		});

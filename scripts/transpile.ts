@@ -15,7 +15,7 @@ const GIReplacements: Record<string, string> = {
 	'@gi-types/glib': 'GLib',
 	'@gi-types/gio': 'Gio',
 	'@gi-types/shell': 'Shell',
-	'@gi-types/meta': 'Meta'
+	'@gi-types/meta': 'Meta',
 };
 
 /**
@@ -36,7 +36,7 @@ function createAccessExpressionFor(context: ts.TransformationContext, access: st
 	ids.slice(1).forEach(id => {
 		expression = context.factory.createPropertyAccessExpression(
 			expression,
-			context.factory.createIdentifier(id)
+			context.factory.createIdentifier(id),
 		);
 	});
 
@@ -53,13 +53,13 @@ function createAccessExpressionFor(context: ts.TransformationContext, access: st
 function createVariableDeclaration(
 	context: ts.TransformationContext,
 	name: string | ts.Identifier | ts.BindingName,
-	initializer: ts.Expression | undefined
+	initializer: ts.Expression | undefined,
 ): ts.VariableDeclaration {
 	return context.factory.createVariableDeclaration(
 		name,
 		undefined,
 		undefined,
-		initializer
+		initializer,
 	);
 }
 
@@ -75,14 +75,14 @@ function createVariableStatement(
 	context: ts.TransformationContext,
 	name: string | ts.Identifier | ts.BindingName,
 	initializer?: ts.Expression,
-	flags?: ts.NodeFlags
+	flags?: ts.NodeFlags,
 ): ts.VariableStatement {
 	return context.factory.createVariableStatement(
 		[],
 		context.factory.createVariableDeclarationList(
 			[createVariableDeclaration(context, name, initializer)],
-			flags
-		)
+			flags,
+		),
 	);
 }
 
@@ -133,9 +133,9 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 				node.typeParameters,
 				node.parameters,
 				node.type,
-				node.body || context.factory.createBlock([])
+				node.body || context.factory.createBlock([]),
 			),
-			node
+			node,
 		);
 	};
 
@@ -155,10 +155,10 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 					node.name,
 					node.typeParameters,
 					node.heritageClauses,
-					node.members
-				)
+					node.members,
+				),
 			),
-			node
+			node,
 		);
 	};
 
@@ -175,9 +175,9 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 						variables.push((d.name as ts.Identifier).text);
 					}
 					return moveComments(createVariableDeclaration(context, d.name, d.initializer), d);
-				})
+				}),
 			),
-			node
+			node,
 		);
 	};
 
@@ -203,7 +203,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 				modifiedSourceFile.statements[0],
 				ts.SyntaxKind.MultiLineCommentTrivia,
 				` exported ${variables.join(', ')} `,
-				true
+				true,
 			);
 		}
 
@@ -242,7 +242,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 		getModuleReplacement: (module: string) => {
 			statement?: ts.VariableStatement,
 			module: ts.Expression
-		} | null
+		} | null,
 	): ts.ImportDeclaration | ts.VariableStatement[] | ts.EmptyStatement => {
 
 		const module = node.moduleSpecifier as ts.StringLiteral;
@@ -268,7 +268,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 			statements.push(createVariableStatement(context,
 				node.importClause.name.text,
 				replacement.module,
-				ts.NodeFlags.Const
+				ts.NodeFlags.Const,
 			));
 		}
 
@@ -283,7 +283,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 			statements.push(createVariableStatement(context,
 				bindingId.text,
 				replacement.module,
-				ts.NodeFlags.Const
+				ts.NodeFlags.Const,
 			));
 		});
 
@@ -303,15 +303,15 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 						undefined,
 						undefined,
 						name,
-						undefined
+						undefined,
 					);
-				})
+				}),
 			);
 			/* replacing named imports with 'const { a, b } = ...' */
 			statements.push(createVariableStatement(context,
 				bindingName,
 				replacement.module,
-				ts.NodeFlags.Const
+				ts.NodeFlags.Const,
 			));
 		}
 
@@ -344,9 +344,9 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 						'Me',
 						context.factory.createCallExpression(
 							createAccessExpressionFor(context, 'imports.misc.extensionUtils.getCurrentExtension'),
-							[], []
+							[], [],
 						),
-						ts.NodeFlags.Const
+						ts.NodeFlags.Const,
 					);
 				}
 
@@ -363,8 +363,8 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 					statement,
 					module: createAccessExpressionFor(
 						context,
-						(ISEXTENSION ? 'Me.' : '') + `imports.${moduleStrings.join('.')}`
-					)
+						(ISEXTENSION ? 'Me.' : '') + `imports.${moduleStrings.join('.')}`,
+					),
 				};
 			}
 
@@ -406,12 +406,12 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 					context.factory.createCallExpression(
 						context.factory.createPropertyAccessExpression(
 							context.factory.createIdentifier('super'),
-							context.factory.createIdentifier('_init')
+							context.factory.createIdentifier('_init'),
 						),
 						callNode.typeArguments,
-						callNode.arguments
+						callNode.arguments,
 					),
-					node
+					node,
 				);
 			}
 		}
@@ -437,9 +437,9 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 					constructorNode.typeParameters,
 					constructorNode.parameters,
 					constructorNode.type,
-					ts.visitEachChild(constructorNode.body, replaceSuperCall, context)
+					ts.visitEachChild(constructorNode.body, replaceSuperCall, context),
 				),
-				node
+				node,
 			);
 		}
 		return node;
@@ -481,10 +481,10 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 							callNode.typeArguments,
 							[
 								callNode.arguments[0],
-								moveComments(ts.visitEachChild(callNode.arguments[1], transformConstructor, context), callNode.arguments[1])
-							]
+								moveComments(ts.visitEachChild(callNode.arguments[1], transformConstructor, context), callNode.arguments[1]),
+							],
 						),
-						node
+						node,
 					);
 				}
 				if (callNode.arguments.length === 1 && callNode.arguments[0].kind === ts.SyntaxKind.ClassExpression) {
@@ -494,16 +494,16 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 							callNode.expression,
 							callNode.typeArguments,
 							[
-								moveComments(ts.visitEachChild(callNode.arguments[0], transformConstructor, context), callNode.arguments[0])
-							]
+								moveComments(ts.visitEachChild(callNode.arguments[0], transformConstructor, context), callNode.arguments[0]),
+							],
 						),
-						node
+						node,
 					);
 				}
 
 				throw new Error(
 					`registerClass(${printer.printNode(ts.EmitHint.Unspecified, node, sourceFile)})` +
-					'can\'t have more than 2 argument and last argument should be class expression'
+					'can\'t have more than 2 argument and last argument should be class expression',
 				);
 			}
 

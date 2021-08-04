@@ -45,7 +45,11 @@
         ],
         "no-console": "error",
         "no-empty": "error",
-        "no-mixed-spaces-and-tabs": "error"
+        "no-mixed-spaces-and-tabs": "error",
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ]
     },
     "overrides": [
         {
@@ -65,7 +69,8 @@
                 "@typescript-eslint/no-unused-vars": "off",
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "no-unused-expressions": "off",
-                "no-mixed-spaces-and-tabs": "off"
+                "no-mixed-spaces-and-tabs": "off",
+                "comma-dangle": "off"
             }
         },
         {

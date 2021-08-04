@@ -55,7 +55,7 @@ class Extension {
 				this._enable();
 				this._reloadWaitId = 0;
 				return GLib.SOURCE_REMOVE;
-			}
+			},
 		);
 	}
 
@@ -65,7 +65,7 @@ class Extension {
 			new AltTabGestureExtension(),
 			new OverviewRoundTripGestureExtension(),
 			new GestureExtension(),
-			new SnapWindowExtension()
+			new SnapWindowExtension(),
 		];
 		this._extensions.forEach(extension => extension.apply());
 	}

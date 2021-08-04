@@ -56,7 +56,8 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		orientation: Clutter.Orientation,
 		followNaturalScroll = true,
 		checkAllowedGesture = undefined,
-		gestureSpeed = 1.0) {
+		gestureSpeed = 1.0,
+	) {
 		super();
 		this._nfingers = nfingers;
 		this._allowedModes = allowedModes;
@@ -196,7 +197,7 @@ export function createSwipeTracker(
 	nfingers: number[],
 	allowedModes: Shell.ActionMode,
 	orientation: Clutter.Orientation,
-	gestureSpeed = 1
+	gestureSpeed = 1,
 ): typeof SwipeTracker.prototype {
 	// create swipeTracker
 	const swipeTracker = new SwipeTracker(
@@ -204,7 +205,7 @@ export function createSwipeTracker(
 		orientation,
 		allowedModes,
 		{ allowDrag: false, allowScroll: false },
-		
+
 	);
 
 	// remove old touchpad gesture from swipeTracker

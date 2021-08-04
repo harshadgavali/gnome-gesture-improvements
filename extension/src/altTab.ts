@@ -29,7 +29,7 @@ const AltTabExtState = {
 	DISABLED: 0,
 	DEFAULT: 1,
 	ALTTABDELAY: 2,
-	ALTTAB: 3
+	ALTTAB: 3,
 };
 
 export class AltTabGestureExtension implements ISubExtension {
@@ -144,7 +144,7 @@ export class AltTabGestureExtension implements ISubExtension {
 						this._extState = AltTabExtState.ALTTAB;
 						this._altTabTimeoutId = 0;
 						return GLib.SOURCE_REMOVE;
-					}
+					},
 				);
 			} else {
 				this._switcher.destroy();

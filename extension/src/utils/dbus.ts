@@ -27,8 +27,8 @@ const DBusWrapperGIExtension = GObject.registerClass({
 			flags: GObject.SignalFlags.RUN_LAST,
 			accumulator: GObject.AccumulatorType.TRUE_HANDLED,
 			return_type: GObject.TYPE_BOOLEAN,
-		}
-	}
+		},
+	},
 }, class DBusWrapperGIExtension extends GObject.Object {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _proxy?: any;
@@ -41,7 +41,7 @@ const DBusWrapperGIExtension = GObject.registerClass({
 			this._proxy = new ProxyClass(
 				Gio.DBus.session,
 				'org.gestureImprovements.gestures',
-				'/org/gestureImprovements/gestures'
+				'/org/gestureImprovements/gestures',
 			);
 
 			this._proxyConnectSignalId = this._proxy.connectSignal('TouchpadSwipe', this._handleDbusSignal.bind(this));
@@ -96,7 +96,7 @@ export function subscribe(callback: (actor: never | undefined, event: CustomEven
 				get_time: () => time,
 			};
 			return callback(undefined, event);
-		})
+		}),
 	);
 }
 

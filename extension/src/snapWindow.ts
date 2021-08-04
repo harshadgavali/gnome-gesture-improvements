@@ -61,7 +61,7 @@ const TilePreview = GObject.registerClass(
 				reactive: false,
 				style_class: 'tile-preview',
 				style: 'border-radius: 8px',
-				visible: false
+				visible: false,
 			});
 			this.connect('destroy', this._onDestroy.bind(this));
 
@@ -97,28 +97,28 @@ const TilePreview = GObject.registerClass(
 				x: frame_rect.x + width,
 				y: frame_rect.y + height,
 				width: frame_rect.width - width * 2,
-				height: frame_rect.height - height * 2
+				height: frame_rect.height - height * 2,
 			});
 
 			this._maximizeBox = new Meta.Rectangle({
 				x: monitorGeometry.x,
 				y: monitorGeometry.y + (window.is_on_primary_monitor() ? Main.panel.height : 0),
 				width: monitorGeometry.width,
-				height: monitorGeometry.height - (window.is_on_primary_monitor() ? Main.panel.height : 0)
+				height: monitorGeometry.height - (window.is_on_primary_monitor() ? Main.panel.height : 0),
 			});
 
 			this._leftSnapBox = new Meta.Rectangle({
 				x: monitorGeometry.x,
 				y: monitorGeometry.y + (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
 				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0)
+				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
 			});
 
 			this._rightSnapBox = new Meta.Rectangle({
 				x: monitorGeometry.x + monitorGeometry.width / 2,
 				y: monitorGeometry.y + (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
 				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0)
+				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
 			});
 
 			this._direction = Clutter.Orientation.VERTICAL;
@@ -169,7 +169,7 @@ const TilePreview = GObject.registerClass(
 			easeActor(this._adjustment, state, {
 				duration: duration,
 				mode: Clutter.AnimationMode.EASE_OUT_CIRC,
-				onStopped: callback
+				onStopped: callback,
 			});
 		}
 
@@ -230,7 +230,7 @@ const TilePreview = GObject.registerClass(
 				mode: Clutter.AnimationMode.EASE_IN_OUT_BACK,
 				onStopped: () => {
 					this._direction = Clutter.Orientation.HORIZONTAL;
-				}
+				},
 			});
 		}
 
@@ -242,14 +242,14 @@ const TilePreview = GObject.registerClass(
 				onStopped: () => {
 					if (callback)
 						callback();
-				}
+				},
 			});
 		}
 
 		get adjustment(): St.Adjustment {
 			return this._adjustment;
 		}
-	}
+	},
 );
 
 export class SnapWindowExtension implements ISubExtension {
@@ -266,7 +266,7 @@ export class SnapWindowExtension implements ISubExtension {
 			global.stage,
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
 			Shell.ActionMode.NORMAL,
-			Clutter.Orientation.VERTICAL
+			Clutter.Orientation.VERTICAL,
 		);
 		this._swipeTracker.allowLongSwipes = true;
 		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture;
@@ -351,7 +351,7 @@ export class SnapWindowExtension implements ISubExtension {
 
 						this._directionChangeId = 0;
 						return GLib.SOURCE_REMOVE;
-					}
+					},
 				);
 			}
 		}

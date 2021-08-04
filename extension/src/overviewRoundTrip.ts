@@ -10,7 +10,7 @@ import { OverviewControlsState, ExtSettings } from '../constants';
 const ExtensionState = {
 	DISABLED: 0,
 	DEFAULT: 1,
-	CUSTOM: 2
+	CUSTOM: 2,
 };
 
 export class OverviewRoundTripGestureExtension implements ISubExtension {
@@ -60,7 +60,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 			global.stage,
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [3] : [4]),
 			Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-			Clutter.Orientation.VERTICAL
+			Clutter.Orientation.VERTICAL,
 		);
 		this._swipeTracker.orientation = Clutter.Orientation.VERTICAL;
 		this._connectors.push(this._swipeTracker.connect('begin', this._gestureBegin.bind(this)));
@@ -103,9 +103,9 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 					distance,
 					snapPoints,
 					currentProgress,
-					cancelProgress
+					cancelProgress,
 				);
-			}
+			},
 		};
 
 		Main.overview._gestureBegin(_tracker);
@@ -145,7 +145,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 			endProgress = Math.clamp(
 				endProgress,
 				OverviewControlsState.HIDDEN,
-				OverviewControlsState.APP_GRID
+				OverviewControlsState.APP_GRID,
 			);
 		}
 
@@ -157,13 +157,13 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 		if (progress < OverviewControlsState.HIDDEN) {
 			return Math.min(
 				OverviewControlsState.APP_GRID,
-				2 * Math.abs(OverviewControlsState.HIDDEN - progress)
+				2 * Math.abs(OverviewControlsState.HIDDEN - progress),
 			);
 		}
 		else if (progress > OverviewControlsState.APP_GRID) {
 			return Math.min(
 				OverviewControlsState.APP_GRID,
-				2 * Math.abs(OverviewControlsState.HIDDEN_N - progress)
+				2 * Math.abs(OverviewControlsState.HIDDEN_N - progress),
 			);
 		}
 
