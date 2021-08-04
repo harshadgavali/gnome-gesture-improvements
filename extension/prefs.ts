@@ -35,7 +35,7 @@ export function buildPrefsWidget(): Gtk.Widget {
 	const default_sesssion_workspace: Gtk.Switch = builder.get_object('default-session-workspace');
 	default_sesssion_workspace.set_active(settings.get_boolean('default-session-workspace'));
 	settings.bind('default-session-workspace', default_sesssion_workspace, 'active', Gio.SettingsBindFlags.DEFAULT);
-	
+
 	const default_overview: Gtk.Switch = builder.get_object('default-overview');
 	default_overview.set_active(settings.get_boolean('default-overview'));
 	settings.bind('default-overview', default_overview, 'active', Gio.SettingsBindFlags.DEFAULT);

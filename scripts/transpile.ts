@@ -22,8 +22,8 @@ const GIReplacements: Record<string, string> = {
  * Create Property access expression for code string
  * @param context
  * @param access javascript code for which to create expression
- * @returns 
- * 
+ * @returns
+ *
  * e.g., createAccessExpressionFor(context, 'obj.property')
  */
 function createAccessExpressionFor(context: ts.TransformationContext, access: string): ts.Expression {
@@ -45,10 +45,10 @@ function createAccessExpressionFor(context: ts.TransformationContext, access: st
 
 /**
  * Create variable declaration expression
- * @param context 
+ * @param context
  * @param name name of variable
  * @param initializer variable initizlizer expression
- * @returns 
+ * @returns
  */
 function createVariableDeclaration(
 	context: ts.TransformationContext,
@@ -65,11 +65,11 @@ function createVariableDeclaration(
 
 /**
  * Create variable declaration statement
- * @param context 
+ * @param context
  * @param name name of variable
  * @param initializer variable initizlizer expression
  * @param flags flags, e.g. ts.NodeFlags.Const
- * @returns 
+ * @returns
  */
 function createVariableStatement(
 	context: ts.TransformationContext,
@@ -88,7 +88,7 @@ function createVariableStatement(
 
 /**
  * Move all comments to node
- * @param node target node to move comments to 
+ * @param node target node to move comments to
  * @param originalNode original node
  * @returns target node
  */
@@ -106,9 +106,9 @@ const printer: ts.Printer = ts.createPrinter({ removeComments: false });
 
 /**
  * typescript transformer to transform exports
- * @param context 
+ * @param context
  * @returns transformation function
- * 
+ *
  * transformation function
  * 1. Removes 'export' modifier from function
  * 2. Convert exported ClassDeclaration into variable statement.
@@ -213,18 +213,18 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 /**
  * typescript transformer to transform exports
- * @param context 
+ * @param context
  * @returns transformation function
- * 
+ *
  * transformation function
  * 1. replaces @gi-types/* modules into imports.gi
  * 	e.g., "import St from '@gi-types/st';" => "const St = imports.gi.St;"
  * 2. Removes "import ... from 'gnome-shell'" statement.
  * 3. replaces local imports with statement compatible with extensions
- * 	e.g., in extension.js (top level) 
+ * 	e.g., in extension.js (top level)
  * 		"import { Indicator } from './indicator';" => "const { Indicator } = Me.imports.indicator;"
  * 		and it ensures "const Me = imports.misc.extensionUtils.getCurrentExtension();" is added before above statement.
- *  		
+ *
  */
 const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
@@ -385,18 +385,18 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 /**
  * typescript transformer to transform exports
- * @param context 
+ * @param context
  * @returns transformation function
- * 
+ *
  * transformation function
  * 1. Replace constructor with '_init' function.
- * 2. Replace 'super()' call with 'super._init' call. 
+ * 2. Replace 'super()' call with 'super._init' call.
  */
 const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context => {
 	/**
 	 * replace 'super()' call
 	 * @param node child node of function body
-	 * @returns 
+	 * @returns
 	 */
 	const replaceSuperCall = (node: ts.Node): ts.Node => {
 		if (node.kind === ts.SyntaxKind.CallExpression) {
@@ -421,7 +421,7 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 	/**
 	 * Replace constructor and super call
 	 * @param node child of class expression
-	 * @returns 
+	 * @returns
 	 */
 	const transformConstructor = (node: ts.Node): ts.Node => {
 		if (node.kind === ts.SyntaxKind.Constructor) {

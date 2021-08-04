@@ -280,6 +280,7 @@ export class SnapWindowExtension implements ISubExtension {
 		this._connectors.push(this._swipeTracker.connect('update', this._gestureUpdate.bind(this)));
 		this._connectors.push(this._swipeTracker.connect('end', this._gestureEnd.bind(this)));
 	}
+
 	destroy(): void {
 		if (this._directionChangeId) {
 			GLib.source_remove(this._directionChangeId);

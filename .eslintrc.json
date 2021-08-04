@@ -49,6 +49,20 @@
         "comma-dangle": [
             "error",
             "always-multiline"
+        ],
+        "lines-between-class-members": [
+            "error",
+            "always",
+            {
+                "exceptAfterSingleLine": true
+            }
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 2,
+                "maxEOF": 0
+            }
         ]
     },
     "overrides": [
@@ -70,7 +84,8 @@
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "no-unused-expressions": "off",
                 "no-mixed-spaces-and-tabs": "off",
-                "comma-dangle": "off"
+                "comma-dangle": "off",
+                "lines-between-class-members":"off"
             }
         },
         {

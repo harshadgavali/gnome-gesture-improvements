@@ -10,12 +10,12 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 import * as DBusUtils from './utils/dbus';
 import { TouchpadConstants } from '../constants';
 
-const TouchpadState = {
-	NONE: 0,
-	PENDING: 1,
-	HANDLING: 2,
-	IGNORED: 3,
-};
+enum TouchpadState {
+	NONE = 0,
+	PENDING = 1,
+	HANDLING =  2,
+	IGNORED = 3,
+}
 
 export const TouchpadSwipeGesture = GObject.registerClass({
 	Properties: {
@@ -37,7 +37,7 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 	private _nfingers: number[];
 	private _allowedModes: Shell.ActionMode;
 	orientation: Clutter.Orientation;
-	private _state: number;
+	private _state: TouchpadState;
 	private _checkAllowedGesture?: (event: CustomEventType) => boolean;
 	private _cumulativeX = 0;
 	private _cumulativeY = 0;
@@ -75,17 +75,11 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 	}
 
 	_handleEvent(_actor: undefined | Clutter.Actor, event: CustomEventType): boolean {
-		// log(`swipe multiplier = ${this.SWIPE_MULTIPLIER}`);
 		if (event.type() !== Clutter.EventType.TOUCHPAD_SWIPE)
 			return Clutter.EVENT_PROPAGATE;
 
-		if ((this._allowedModes !== Shell.ActionMode.ALL) && ((this._allowedModes & Main.actionMode) === 0))
-			return Clutter.EVENT_PROPAGATE;
-
-		if (!this._nfingers.includes(event.get_touchpad_gesture_finger_count()))
-			return Clutter.EVENT_PROPAGATE;
-
-		if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.BEGIN) {
+		const gesturePhase = event.get_gesture_phase();
+		if (gesturePhase === Clutter.TouchpadGesturePhase.BEGIN) {
 			this._state = TouchpadState.NONE;
 			this._toggledDirection = false;
 		}
@@ -96,13 +90,25 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		if (!this.enabled)
 			return Clutter.EVENT_PROPAGATE;
 
-		if (this._state === TouchpadState.NONE && this._checkAllowedGesture !== undefined) {
+		if ((this._allowedModes !== Shell.ActionMode.ALL) && ((this._allowedModes & Main.actionMode) === 0)) {
+			this._state = TouchpadState.IGNORED;
+			return Clutter.EVENT_PROPAGATE;
+		}
+
+		if (!this._nfingers.includes(event.get_touchpad_gesture_finger_count())) {
+			this._state = TouchpadState.IGNORED;
+			return Clutter.EVENT_PROPAGATE;
+		}
+
+		if (gesturePhase === Clutter.TouchpadGesturePhase.BEGIN && this._checkAllowedGesture !== undefined) {
 			try {
 				if (this._checkAllowedGesture(event) !== true) {
+					this._state = TouchpadState.IGNORED;
 					return Clutter.EVENT_PROPAGATE;
 				}
 			}
 			catch (ex) {
+				this._state = TouchpadState.IGNORED;
 				return Clutter.EVENT_PROPAGATE;
 			}
 		}
@@ -153,7 +159,7 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		let delta = ((vertical !== this._toggledDirection) ? dy : dx) * this.SWIPE_MULTIPLIER;
 		const distance = vertical ? this.TOUCHPAD_BASE_HEIGHT : this.TOUCHPAD_BASE_WIDTH;
 
-		switch (event.get_gesture_phase()) {
+		switch (gesturePhase) {
 		case Clutter.TouchpadGesturePhase.BEGIN:
 		case Clutter.TouchpadGesturePhase.UPDATE:
 			if (this._followNaturalScroll)
