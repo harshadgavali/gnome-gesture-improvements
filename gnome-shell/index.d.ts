@@ -79,9 +79,7 @@ declare namespace imports {
 			};
 
 			const wm: {
-				_workspaceAnimation: {
-					_swipeTracker: swipeTracker.SwipeTracker
-				};
+				_workspaceAnimation: workspaceAnimation.WorkspaceAnimationController;
 			};
 
 			const osdWindowManager: {
@@ -162,6 +160,18 @@ declare namespace imports {
 			declare class PopupMenuItem extends St.BoxLayout {
 				constructor(text: string);
 				addMenuItem(subMenu: PopupMenuItem);
+			}
+		}
+
+		namespace workspaceAnimation {
+			declare class WorkspaceAnimationController {
+				_swipeTracker: swipeTracker.SwipeTracker;
+				_switchWorkspaceBegin(tracker: {
+					orientation: Clutter.Orientation,
+					confirmSwipe: typeof swipeTracker.SwipeTracker.prototype.confirmSwipe
+				}, monitor: never);
+				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
+				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
 			}
 		}
 	}

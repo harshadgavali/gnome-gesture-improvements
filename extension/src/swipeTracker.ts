@@ -195,14 +195,16 @@ export function createSwipeTracker(
 	actor: Clutter.Actor,
 	nfingers: number[],
 	allowedModes: Shell.ActionMode,
-	orientation: Clutter.Orientation
+	orientation: Clutter.Orientation,
+	gestureSpeed = 1
 ): typeof SwipeTracker.prototype {
 	// create swipeTracker
 	const swipeTracker = new SwipeTracker(
 		actor,
 		orientation,
 		allowedModes,
-		{ allowDrag: false, allowScroll: false }
+		{ allowDrag: false, allowScroll: false },
+		
 	);
 
 	// remove old touchpad gesture from swipeTracker
@@ -216,7 +218,9 @@ export function createSwipeTracker(
 		nfingers,
 		swipeTracker._allowedModes,
 		swipeTracker.orientation,
-		true);
+		true,
+		undefined,
+		gestureSpeed);
 	swipeTracker._touchpadGesture.connect('begin', swipeTracker._beginGesture.bind(swipeTracker));
 	swipeTracker._touchpadGesture.connect('update', swipeTracker._updateGesture.bind(swipeTracker));
 	swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));

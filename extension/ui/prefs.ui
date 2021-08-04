@@ -23,7 +23,7 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkScrolledWindow" id="main_prefs_scrollwindow">
-        <property name="width-request">300</property>
+        <property name="width-request">650</property>
         <property name="vexpand">1</property>
         <property name="hscrollbar-policy">never</property>
         <property name="child">
@@ -84,7 +84,7 @@
                                     <property name="hexpand">1</property>
                                     <child>
                                       <object class="GtkScale" id="touchpad-speed-scale">
-                                        <property name="width-request">250</property>
+                                        <property name="width-request">300</property>
                                         <property name="valign">start</property>
                                         <property name="halign">end</property>
                                         <property name="draw-value">False</property>
@@ -174,7 +174,7 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3 finger horizontal swipe to switch workspace on desktop, and 4 finger to switch windows.</property>
+                                        <property name="label" translatable="yes">Uses 3 finger horizontal swipe to switch workspace on desktop&#xA;and 4 finger windows</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
@@ -224,7 +224,7 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3 finger vertical swipe to navigate between desktop, overview, appgrid and 4 finger to maximize/unmaximize/tile a window.</property>
+                                        <property name="label" translatable="yes">Uses 3 finger vertical swipe to navigate between desktop, overview, appgrid&#xA;and 4 finger to maximize/unmaximize/tile a window</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
