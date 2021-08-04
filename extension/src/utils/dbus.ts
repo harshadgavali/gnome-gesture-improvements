@@ -1,4 +1,4 @@
-import { CustomEventType, imports } from 'gnome-shell';
+import { CustomEventType, imports, global } from 'gnome-shell';
 
 import Clutter from '@gi-types/clutter';
 import Gio from '@gi-types/gio';
@@ -91,7 +91,7 @@ export function subscribe(callback: (actor: never | undefined, event: CustomEven
 					}
 				},
 				get_touchpad_gesture_finger_count: () => fingers,
-				get_coords: () => [0, 0],
+				get_coords: () => global.get_pointer().slice(0, 2) as [number, number],
 				get_gesture_motion_delta_unaccelerated: () => [dx, dy],
 				get_time: () => time,
 			};
