@@ -16,9 +16,14 @@ class Extension {
 	settings?: Gio.Settings;
 	private _settingChangedId = 0;
 	private _reloadWaitId = 0;
+	private _noReloadDelayFor: string[];
 
 	constructor() {
 		this._extensions = [];
+		this._noReloadDelayFor = [
+			'default-session-workspace',
+			'default-overview',
+		];
 	}
 
 	enable() {
@@ -49,7 +54,7 @@ class Extension {
 
 		this._reloadWaitId = GLib.timeout_add(
 			GLib.PRIORITY_DEFAULT,
-			(key == 'default-session-workspace' ? 0 : Constants.RELOAD_DELAY),
+			(this._noReloadDelayFor.includes(key) ? 0 : Constants.RELOAD_DELAY),
 			() => {
 				this._disable();
 				this._enable();
