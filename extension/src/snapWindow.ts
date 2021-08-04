@@ -293,12 +293,15 @@ export class SnapWindowExtension implements ISubExtension {
 		this._tilePreview.destroy();
 	}
 
-	_gestureBegin(tracker: typeof SwipeTracker.prototype): void {
+	_gestureBegin(tracker: typeof SwipeTracker.prototype, monitor: number): void {
 		if (this._directionChangeId) {
 			GLib.source_remove(this._directionChangeId);
 			this._directionChangeId = 0;
 		}
 		const window = global.display.get_focus_window();
+		if (window.get_monitor() !== monitor) {
+			return;
+		}
 		if (!window || window.is_fullscreen() || !window.can_maximize()) {
 			return;
 		}
