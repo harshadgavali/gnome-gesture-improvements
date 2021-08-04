@@ -22,17 +22,17 @@ gnome-extensions enable gestureImprovements@gestures
 ## Gestures available (including built-in ones)
 | Gesture                                     | Modes    | Fingers | Direction       |
 | :------------------------------------------ | :------- | :------ | :-------------- |
-| Desktop-Overview-AppGrid-Desktop navigation | *        | 3       | Vertical        |
 | Switch app pages                            | AppGrid  | 3       | Horizontal      |
 | Switch windows                              | Desktop  | 3       | Horizontal      |
 | Switch Workspace                            | Overview | 3       | Horizontal      |
 | Switch Workspace                            | *        | 4       | Horizontal      |
-| Maximize/Unmaximize                         | Desktop  | 4       | Vertical        |
-| Half-Tile window                            | Desktop  | 4       | Explained below |
+| Desktop-Overview-AppGrid-Desktop navigation | *        | 4       | Vertical        |
+| Maximize/Unmaximize                         | Desktop  | 3       | Vertical        |
+| Half-Tile window                            | Desktop  | 3       | Explained below |
 
 
 #### For activating tiling gesture
-1. Do 4-finger vertical gesture on a unmaximized window
+1. Do 3-finger vertical gesture on a unmaximized window
 2. Wait for few milliseconds
 3. Do 4-finger horizontal gesture to tile a window
 
@@ -46,4 +46,4 @@ gsettings set org.gnome.shell.window-switcher current-workspace-only false
 * Add delay to alt-tab gesture, to ensure second windows get's selected, when fast swipe is done.
 * Add sensitivity of swipe (touchpad swipe speed)
 * Option to 3 fingers to switch workspace on desktop, (4 fingers to switch windows)
-* Option to 4 fingers for overview navigation, (3 fingers to maximize/unmaximize/tile)
+* Option to 3 fingers for overview navigation, (4 fingers to maximize/unmaximize/tile)

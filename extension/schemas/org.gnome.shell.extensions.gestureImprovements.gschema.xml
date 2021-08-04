@@ -13,7 +13,7 @@
       <description>If true, use 3 finger to switch workspace, 4 for windows</description>
     </key>
     <key name='default-overview' type='b'>
-      <default>true</default>
+      <default>false</default>
       <description>If true, use 3 finger for overview gesture, 4 for snapping/tiling</description>
     </key>
   </schema>
