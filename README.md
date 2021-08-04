@@ -34,7 +34,7 @@ gnome-extensions enable gestureImprovements@gestures
 #### For activating tiling gesture
 1. Do 3-finger vertical gesture on a unmaximized window
 2. Wait for few milliseconds
-3. Do 4-finger horizontal gesture to tile a window
+3. Do 3-finger horizontal gesture to tile a window
 
 
 ## Customization
