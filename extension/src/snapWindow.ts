@@ -139,19 +139,25 @@ const TilePreview = GObject.registerClass(
 				this.easeOpacity(0, () => this.visible = false);
 				if (this._window) {
 					// maximize-unmaximize
+					this._window.raise();
 					if (this._direction === Clutter.Orientation.VERTICAL) {
+						// Main.wm.skipNextEffect(this._window.get_compositor_private() as Meta.WindowActor);
+						const stSettings = St.Settings.get();
+						// speedup animations
+						const prevSlowdown = stSettings.slow_down_factor;
+						stSettings.slow_down_factor = 1 / 1.5;
 						if (state === GestureMaxUnMaxState.MAXIMIZE) {
 							this._window.maximize(Meta.MaximizeFlags.BOTH);
 						} else {
 							this._window.unmaximize(Meta.MaximizeFlags.BOTH);
 						}
+						stSettings.slow_down_factor = prevSlowdown;
 					}
 					// snap-left,normal,snap-right
 					else {
 						if (state !== GestureTileState.NORMAL) {
 							const currentTime = Clutter.get_current_event_time();
 							const keys = [Clutter.KEY_Super_L, (state === GestureTileState.LEFT_TILE ? Clutter.KEY_Left : Clutter.KEY_Right)];
-							this._window.raise();
 							keys.forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.PRESSED));
 							keys.reverse().forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.RELEASED));
 						}
@@ -221,7 +227,7 @@ const TilePreview = GObject.registerClass(
 			this._adjustment.value = 0;
 			let toValue = -0.05;
 			if (this._maximizeBox && this._normalBox) {
-				toValue = -12 / Math.max(12, this._maximizeBox.width - this._normalBox.width);
+				toValue = -18 / Math.max(18, this._maximizeBox.width - this._normalBox.width);
 			}
 			easeActor(this._adjustment, toValue, {
 				duration: 100,
@@ -237,7 +243,7 @@ const TilePreview = GObject.registerClass(
 		easeOpacity(value: number, callback?: () => void) {
 			easeActor(this, undefined, {
 				opacity: value,
-				duration: 150,
+				duration: 100,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: () => {
 					if (callback)

@@ -79,6 +79,7 @@ declare namespace imports {
 			};
 
 			const wm: {
+				skipNextEffect(actor: Meta.WindowActor): void;
 				_workspaceAnimation: workspaceAnimation.WorkspaceAnimationController;
 			};
 
@@ -108,6 +109,7 @@ declare namespace imports {
 				layoutManager: Clutter.BoxLayout & {
 					_searchEntry: St.Bin
 				}
+
 				_toggleAppsPage(): void
 
 				_workspacesDisplay: {
@@ -170,6 +172,7 @@ declare namespace imports {
 					orientation: Clutter.Orientation,
 					confirmSwipe: typeof swipeTracker.SwipeTracker.prototype.confirmSwipe
 				}, monitor: never);
+
 				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
 				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
 			}
@@ -191,6 +194,7 @@ declare namespace imports {
 				_items: St.Widget & {
 					window: Meta.Window
 				}[];
+
 				_select(n: number): void;
 				_switcherList: {
 					_scrollView: {
@@ -199,6 +203,7 @@ declare namespace imports {
 						}
 					}
 				}
+
 				_noModsTimeoutId: number;
 				_initialDelayTimeoutId: number;
 				_selectedIndex: number;
