@@ -174,7 +174,7 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3 finger horizontal swipe to switch workspace on desktop&#xA;and 4 finger windows</property>
+                                        <property name="label" translatable="yes">Uses 3 finger horizontal swipe to switch workspace on desktop&#xA;and 4 finger to switch windows</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
