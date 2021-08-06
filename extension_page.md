@@ -16,5 +16,5 @@ For X11, you need to install https://github.com/harshadgavali/gnome-x11-gesture-
 This also adds option to configure speed of gestures. (1.0 is default)
 
 
-# Bugs
-Report bugs on github.
+# Bugs/Requests
+Report bugs/requests on github.
