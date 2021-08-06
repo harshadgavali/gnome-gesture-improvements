@@ -80,6 +80,10 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 
 	apply(): void {
 		this._workspaceAnimation._swipeTracker.enabled = false;
+		if (this._workspaceAnimation._swipeTracker._touchpadGesture) {
+			global.stage.disconnect(this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent);
+			this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent = 0;
+		}
 		super.apply();
 	}
 
@@ -106,8 +110,18 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	}
 
 	destroy(): void {
-		this._workspaceAnimation._swipeTracker.enabled = true;
 		super.destroy();
+		this._swipeTracker.destroy();
+		const swipeTracker = this._workspaceAnimation._swipeTracker;
+		swipeTracker.enabled = true;
+		if (swipeTracker._touchpadGesture) {
+			swipeTracker._touchpadGesture._stageCaptureEvent = global.stage.connect(
+				'captured-event::touchpad',
+				swipeTracker._touchpadGesture._handleEvent.bind(
+					swipeTracker._touchpadGesture,
+				),
+			);
+		}
 	}
 }
 
