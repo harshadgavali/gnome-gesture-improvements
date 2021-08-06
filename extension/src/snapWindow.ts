@@ -40,8 +40,8 @@ enum GestureMaxUnMaxState {
 
 enum GestureTileState {
 	RIGHT_TILE = -1,
-	NORMAL = 0,
-	LEFT_TILE = 1,
+	NORMAL = GestureMaxUnMaxState.UNMAXIMIZE,
+	LEFT_TILE = GestureMaxUnMaxState.MAXIMIZE,
 }
 
 const TilePreview = GObject.registerClass(
@@ -275,7 +275,7 @@ export class SnapWindowExtension implements ISubExtension {
 			Clutter.Orientation.VERTICAL,
 		);
 		this._swipeTracker.allowLongSwipes = true;
-		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture;
+		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
 		this._tilePreview = new TilePreview();
 		Main.layoutManager.uiGroup.add_child(this._tilePreview);
 	}

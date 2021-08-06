@@ -42,8 +42,8 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 	private _cumulativeX = 0;
 	private _cumulativeY = 0;
 	private _followNaturalScroll: boolean;
-	private _stageCaptureEvent = 0;
 	private _toggledDirection = false;
+	_stageCaptureEvent = 0;
 	SWIPE_MULTIPLIER: number;
 	TOUCHPAD_BASE_HEIGHT = TouchpadConstants.TOUCHPAD_BASE_HEIGHT;
 	TOUCHPAD_BASE_WIDTH = TouchpadConstants.TOUCHPAD_BASE_WIDTH;
@@ -217,7 +217,7 @@ export function createSwipeTracker(
 	// remove old touchpad gesture from swipeTracker
 	if (swipeTracker._touchpadGesture) {
 		swipeTracker._touchpadGesture.destroy();
-		swipeTracker._touchpadGesture = null;
+		swipeTracker._touchpadGesture = undefined;
 	}
 
 	// add touchpadBindings to tracker

@@ -28,7 +28,7 @@ namespace __shell_private_types {
 	declare class TouchpadGesture extends GObject.Object {
 		_stageCaptureEvent: number;
 		destroy(): void;
-		_handleEvent(actor: Clutter.Actor, event: Clutter.Event): boolean;
+		_handleEvent(actor: Clutter.Actor | undefined, event: CustomEventType): boolean;
 	}
 }
 
@@ -134,9 +134,9 @@ declare namespace imports {
 				confirmSwipe(distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number): void;
 				destroy(): void;
 
-				_touchpadGesture?: __private_types.TouchpadGesture;
+				_touchpadGesture?: __shell_private_types.TouchpadGesture;
 				// custom
-				__oldTouchpadGesture?: __private_types.TouchpadGesture;
+				__oldTouchpadGesture?: __shell_private_types.TouchpadGesture;
 				//
 				_allowedModes: Shell.ActionMode;
 
