@@ -23,7 +23,8 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkScrolledWindow" id="main_prefs_scrollwindow">
-        <property name="width-request">650</property>
+        <property name="width-request">700</property>
+        <property name="height-request">400</property>
         <property name="vexpand">1</property>
         <property name="hscrollbar-policy">never</property>
         <property name="child">
