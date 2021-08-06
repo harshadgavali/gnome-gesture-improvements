@@ -8,9 +8,9 @@ This extension adds or modifies existing touchpad gestures on GNOME.
 ### From git repo.
 * Install extension.
 ```
-git clone https://gitlab.gnome.org/harshadgavali/gnome-gestures.git/
-cd gnome-gestures 
-# git checkout origin/dev
+git clone https://github.com/harshadgavali/gnome-gesture-improvements.git/
+cd gnome-gesture-improvements
+npm install
 npm run update
 ```
 * Log out and log back in OR just restart.
