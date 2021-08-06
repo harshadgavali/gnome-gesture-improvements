@@ -22,13 +22,13 @@ gnome-extensions enable gestureImprovements@gestures
 ## Gestures available (including built-in ones)
 | Gesture                                     | Modes    | Fingers | Direction       |
 | :------------------------------------------ | :------- | :------ | :-------------- |
-| Switch app pages                            | AppGrid  | 3       | Horizontal      |
 | Switch windows                              | Desktop  | 3       | Horizontal      |
-| Switch Workspace                            | Overview | 3       | Horizontal      |
-| Switch Workspace                            | *        | 4       | Horizontal      |
+| Switch workspaces                           | Overview | 2/3     | Horizontal      |
+| Switch app pages                            | AppGrid  | 2/3     | Horizontal      |
+| Switch workspaces                           | *        | 4       | Horizontal      |
 | Desktop-Overview-AppGrid-Desktop navigation | *        | 4       | Vertical        |
-| Maximize/Unmaximize                         | Desktop  | 3       | Vertical        |
-| Half-Tile window                            | Desktop  | 3       | Explained below |
+| Maximize/Unmaximize a window                | Desktop  | 3       | Vertical        |
+| Snap/Half-Tile a window                     | Desktop  | 3       | Explained below |
 
 
 #### For activating tiling gesture
