@@ -104,13 +104,16 @@ export class AltTabGestureExtension implements ISubExtension {
 		this._progress = 0;
 		if (this._extState === AltTabExtState.DEFAULT) {
 			this._switcher = new WindowSwitcherPopup();
+			// remove timeout entirely
+			this._switcher._resetNoModsTimeout = function() {
+				if (this._noModsTimeoutId) {
+					GLib.source_remove(this._noModsTimeoutId);
+					this._noModsTimeoutId = 0;
+				}
+			};
 			const nelement = this._switcher._items.length;
 			if (nelement > 0) {
 				this._switcher.show(false, 'switch-windows', 0);
-				if (this._switcher._noModsTimeoutId != 0) {
-					GLib.source_remove(this._switcher._noModsTimeoutId);
-					this._switcher._noModsTimeoutId = 0;
-				}
 				if (this._switcher._initialDelayTimeoutId !== 0) {
 					GLib.source_remove(this._switcher._initialDelayTimeoutId);
 					this._switcher._initialDelayTimeoutId = 0;

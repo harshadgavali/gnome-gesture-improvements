@@ -204,6 +204,7 @@ declare namespace imports {
 					}
 				}
 
+				_resetNoModsTimeout(): void;
 				_noModsTimeoutId: number;
 				_initialDelayTimeoutId: number;
 				_selectedIndex: number;
