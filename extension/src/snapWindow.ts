@@ -305,10 +305,10 @@ export class SnapWindowExtension implements ISubExtension {
 			this._directionChangeId = 0;
 		}
 		const window = global.display.get_focus_window();
-		if (window.get_monitor() !== monitor) {
+		if (!window || window.is_fullscreen() || !window.can_maximize()) {
 			return;
 		}
-		if (!window || window.is_fullscreen() || !window.can_maximize()) {
+		if (window.get_monitor() !== monitor) {
 			return;
 		}
 
