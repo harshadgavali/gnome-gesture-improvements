@@ -328,7 +328,8 @@ export class SnapWindowExtension implements ISubExtension {
 				monitorGeo.height,
 				snapPoints,
 				progress,
-				progress);
+				progress,
+			);
 		}
 	}
 

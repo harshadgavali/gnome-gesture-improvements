@@ -147,7 +147,8 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 		variables.push(node.name?.text || '');
 		return moveComments(
-			createVariableStatement(context,
+			createVariableStatement(
+				context,
 				node.name?.text || '',
 				context.factory.createClassExpression(
 					node.decorators,
@@ -169,7 +170,8 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		}
 
 		return moveComments(
-			context.factory.createVariableStatement([],
+			context.factory.createVariableStatement(
+				[],
 				node.declarationList.declarations.map(d => {
 					if (d.name.kind == ts.SyntaxKind.Identifier) {
 						variables.push((d.name as ts.Identifier).text);
@@ -265,7 +267,8 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 		if (node.importClause?.name) {
 			/* import whole module 'St' in 'import St from ...' or 'Gtk' in 'import Gtk, {} from ...'  */
-			statements.push(createVariableStatement(context,
+			statements.push(createVariableStatement(
+				context,
 				node.importClause.name.text,
 				replacement.module,
 				ts.NodeFlags.Const,
@@ -280,7 +283,8 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 				return;
 			}
 			const bindingId = binding as ts.Identifier;
-			statements.push(createVariableStatement(context,
+			statements.push(createVariableStatement(
+				context,
 				bindingId.text,
 				replacement.module,
 				ts.NodeFlags.Const,
@@ -308,7 +312,8 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 				}),
 			);
 			/* replacing named imports with 'const { a, b } = ...' */
-			statements.push(createVariableStatement(context,
+			statements.push(createVariableStatement(
+				context,
 				bindingName,
 				replacement.module,
 				ts.NodeFlags.Const,
@@ -340,11 +345,13 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 				if (!addedMeStatement && ISEXTENSION) {
 					addedMeStatement = true;
 					//const Me = imports.misc.extensionUtils.getCurrentExtension();
-					statement = createVariableStatement(context,
+					statement = createVariableStatement(
+						context,
 						'Me',
 						context.factory.createCallExpression(
 							createAccessExpressionFor(context, 'imports.misc.extensionUtils.getCurrentExtension'),
-							[], [],
+							[],
+							[],
 						),
 						ts.NodeFlags.Const,
 					);

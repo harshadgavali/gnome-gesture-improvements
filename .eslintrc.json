@@ -31,6 +31,7 @@
             "warn",
             "always"
         ],
+        "no-var": "error",
         "no-unused-expressions": "error",
         "no-unused-labels": "error",
         "no-unused-vars": "off",
@@ -63,6 +64,20 @@
                 "max": 2,
                 "maxEOF": 0
             }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "multiline": true
+            }
+        ],
+        "function-call-argument-newline": [
+            "error",
+            "consistent"
+        ],
+        "function-paren-newline": [
+            "error",
+            "multiline-arguments"
         ]
     },
     "overrides": [
@@ -80,6 +95,7 @@
             },
             "rules": {
                 "no-console": "off",
+                "no-var": "off",
                 "@typescript-eslint/no-unused-vars": "off",
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "no-unused-expressions": "off",
