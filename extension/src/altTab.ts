@@ -49,7 +49,8 @@ export class AltTabGestureExtension implements ISubExtension {
 			Shell.ActionMode.ALL,
 			Clutter.Orientation.HORIZONTAL,
 			false,
-			this._checkAllowedGesture.bind(this));
+			this._checkAllowedGesture.bind(this),
+		);
 
 		this._adjustment = new St.Adjustment({
 			value: 0,

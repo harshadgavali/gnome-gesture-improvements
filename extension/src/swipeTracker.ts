@@ -20,13 +20,20 @@ enum TouchpadState {
 export const TouchpadSwipeGesture = GObject.registerClass({
 	Properties: {
 		'enabled': GObject.ParamSpec.boolean(
-			'enabled', 'enabled', 'enabled',
+			'enabled', 
+			'enabled', 
+			'enabled',
 			GObject.ParamFlags.READWRITE,
-			true),
+			true,
+		),
 		'orientation': GObject.ParamSpec.enum(
-			'orientation', 'orientation', 'orientation',
+			'orientation', 
+			'orientation', 
+			'orientation',
 			GObject.ParamFlags.READWRITE,
-			Clutter.Orientation, Clutter.Orientation.HORIZONTAL),
+			Clutter.Orientation, 
+			Clutter.Orientation.HORIZONTAL,
+		),
 	},
 	Signals: {
 		'begin': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
@@ -227,12 +234,17 @@ export function createSwipeTracker(
 		swipeTracker.orientation,
 		true,
 		undefined,
-		gestureSpeed);
+		gestureSpeed,
+	);
 	swipeTracker._touchpadGesture.connect('begin', swipeTracker._beginGesture.bind(swipeTracker));
 	swipeTracker._touchpadGesture.connect('update', swipeTracker._updateGesture.bind(swipeTracker));
 	swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));
 	swipeTracker.bind_property('enabled', swipeTracker._touchpadGesture, 'enabled', 0);
-	swipeTracker.bind_property('orientation', swipeTracker._touchpadGesture, 'orientation',
-		GObject.BindingFlags.SYNC_CREATE);
+	swipeTracker.bind_property(
+		'orientation', 
+		swipeTracker._touchpadGesture, 
+		'orientation',
+		GObject.BindingFlags.SYNC_CREATE,
+	);
 	return swipeTracker;
 }

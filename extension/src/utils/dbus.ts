@@ -76,8 +76,14 @@ export function subscribe(callback: (actor: never | undefined, event: CustomEven
 	}
 
 	connectedSignalIds.push(
-		proxy.connect('TouchpadSwipe', (_proxy: never, sphase: string,
-			fingers: number, dx: number, dy: number, time: number) => {
+		proxy.connect('TouchpadSwipe', (
+			_proxy: never, 
+			sphase: string,
+			fingers: number, 
+			dx: number, 
+			dy: number, 
+			time: number,
+		) => {
 			const event: CustomEventType = {
 				type: () => Clutter.EventType.TOUCHPAD_SWIPE,
 				get_gesture_phase: () => {

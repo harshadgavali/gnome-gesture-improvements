@@ -186,7 +186,8 @@ export class GestureExtension implements ISubExtension {
 				swipeTracker.orientation,
 				followNaturalScroll,
 				checkAllowedGesture,
-				gestureSpeed);
+				gestureSpeed,
+			);
 
 			this._attachGestureToTracker(swipeTracker, touchpadGesture, disableOldGesture);
 		});
@@ -213,7 +214,8 @@ export class GestureExtension implements ISubExtension {
 	_attachGestureToTracker(
 		swipeTracker: SwipeTrackerT,
 		touchpadSwipeGesture: typeof TouchpadSwipeGesture.prototype | __shell_private_types.TouchpadGesture,
-		disablePrevious: boolean): void {
+		disablePrevious: boolean,
+	): void {
 		if (swipeTracker._touchpadGesture) {
 			if (disablePrevious && swipeTracker._touchpadGesture._stageCaptureEvent) {
 				global.stage.disconnect(swipeTracker._touchpadGesture._stageCaptureEvent);
@@ -227,7 +229,11 @@ export class GestureExtension implements ISubExtension {
 		swipeTracker._touchpadGesture.connect('update', swipeTracker._updateGesture.bind(swipeTracker));
 		swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));
 		swipeTracker.bind_property('enabled', swipeTracker._touchpadGesture, 'enabled', 0);
-		swipeTracker.bind_property('orientation', swipeTracker._touchpadGesture, 'orientation',
-			GObject.BindingFlags.SYNC_CREATE);
+		swipeTracker.bind_property(
+			'orientation', 
+			swipeTracker._touchpadGesture, 
+			'orientation',
+			GObject.BindingFlags.SYNC_CREATE,
+		);
 	}
 }
