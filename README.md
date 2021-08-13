@@ -50,3 +50,9 @@ gsettings set org.gnome.shell.window-switcher current-workspace-only false
 * Change sensitivity of swipe (touchpad swipe speed)
 * Revert to 3-finger swipes to switch workspace on desktop (4-fingers to switch windows)
 * Revert to 3-finger swipes for overview navigation (4-fingers to maximize/unmaximize/tile)
+
+# Contributors
+[@jacksongoode](https://github.com/jacksongoode)
+
+# Thanks
+[@ewlsh](https://gitlab.gnome.org/ewlsh) for [Typescript definitions](https://www.npmjs.com/package/@gi-types/glib) for GLib, GObject, ...
