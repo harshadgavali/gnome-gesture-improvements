@@ -10,6 +10,7 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 import * as DBusUtils from './utils/dbus';
 import { TouchpadConstants } from '../constants';
 
+// define enum
 enum TouchpadState {
 	NONE = 0,
 	PENDING = 1,

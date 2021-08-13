@@ -33,11 +33,13 @@ function easeActor(actor: any, value: any, params: EaseParamsType) {
 		actor.ease(params);
 }
 
+// define enum
 enum GestureMaxUnMaxState {
 	UNMAXIMIZE = 0,
 	MAXIMIZE = 1,
 }
 
+// define enum
 enum GestureTileState {
 	RIGHT_TILE = -1,
 	NORMAL = GestureMaxUnMaxState.UNMAXIMIZE,
