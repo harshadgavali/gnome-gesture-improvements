@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Clutter from '@gi-types/clutter';
 import St from '@gi-types/st';
 import Gio from '@gi-types/gio';
@@ -24,11 +25,18 @@ declare interface ExtensionUtilsMeta {
 }
 
 namespace __shell_private_types {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	declare class TouchpadGesture extends GObject.Object {
 		_stageCaptureEvent: number;
 		destroy(): void;
 		_handleEvent(actor: Clutter.Actor | undefined, event: CustomEventType): boolean;
+	}
+
+	declare interface IMonitorState {
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		geometry_scale: number,
 	}
 }
 
@@ -75,7 +83,10 @@ declare namespace imports {
 			};
 
 			const layoutManager: {
-				uiGroup: Clutter.Actor
+				uiGroup: Clutter.Actor,
+				panelBox: St.BoxLayout,
+				primaryMonitor: __shell_private_types.IMonitorState,
+				currentMonitor: __shell_private_types.IMonitorState,
 			};
 
 			const wm: {

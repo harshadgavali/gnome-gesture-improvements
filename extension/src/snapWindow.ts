@@ -102,7 +102,16 @@ const TilePreview = GObject.registerClass(
 				height: frame_rect.height - height * 2,
 			});
 
-			const panelHeight = Main.panel.visible && window.is_on_primary_monitor() ? Main.panel.height : 0;
+			const panelBoxRely = Main.layoutManager.panelBox.y - Main.layoutManager.primaryMonitor.y;
+			const panelHeight = Main.panel.visible &&
+				window.is_on_primary_monitor() &&
+				panelBoxRely <= 0 ?
+				Math.clamp(
+					panelBoxRely + Main.panel.height,
+					0,
+					Main.panel.height,
+				) :
+				0;
 
 			this._maximizeBox = new Meta.Rectangle({
 				x: monitorGeometry.x,
