@@ -1,7 +1,7 @@
 {
   "name": "gnome-gestures",
   "version": "1.0.0",
-  "description": "Touchpad Gesture improvements",
+  "description": "Touchpad Gesture Improvements",
   "main": "extension.js",
   "type": "module",
   "scripts": {

@@ -10,11 +10,11 @@
     </key>
     <key name='default-session-workspace' type='b'>
       <default>false</default>
-      <description>If true, use 3 finger to switch workspace, 4 for windows</description>
+      <description>If true, use 3-fingers to switch workspace, 4 for windows</description>
     </key>
     <key name='default-overview' type='b'>
       <default>false</default>
-      <description>If true, use 3 finger for overview gesture, 4 for snapping/tiling</description>
+      <description>If true, use 3-fingers for overview gesture, 4 for snapping/tiling</description>
     </key>
   </schema>
 </schemalist>
