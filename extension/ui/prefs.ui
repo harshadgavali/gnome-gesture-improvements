@@ -75,7 +75,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">1</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Touchpad Swipe Speed</property>
+                                    <property name="label" translatable="yes">Touchpad swipe speed</property>
                                   </object>
                                 </child>
                                 <child>
@@ -130,7 +130,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">1</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Window-switching popup delay(in ms)</property>
+                                    <property name="label" translatable="yes">Window-switching popup delay (ms)</property>
                                   </object>
                                 </child>
                                 <child>
@@ -145,7 +145,7 @@
                           </object>
                         </child>
 
-                        <!-- Use default(3 finger) for session workspace switching -->
+                        <!-- Use default(3-finger) for session workspace switching -->
                         <child>
                           <object class="GtkListBoxRow" id="default_session_workspace_row">
                             <property name="margin-start">12</property>
@@ -165,7 +165,7 @@
                                         <property name="valign">start</property>
                                         <property name="hexpand">1</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Use 3 finger gesture on desktop for switching workspace</property>
+                                        <property name="label" translatable="yes">Enable 3-finger gestures for switching workspaces</property>
                                       </object>
                                     </child>
 
@@ -175,7 +175,7 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3 finger horizontal swipe to switch workspace on desktop&#xA;and 4 finger to switch windows</property>
+                                        <property name="label" translatable="yes">Uses 3-finger horizontal swipes to switch workspaces on desktop and 4-finger swipes to switch windows</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
@@ -195,7 +195,7 @@
                           </object>
                         </child>
 
-                        <!-- Use default(3 finger) for session overview navigation -->
+                        <!-- Use default(3-finger) for session overview navigation -->
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="margin-start">12</property>
@@ -215,7 +215,7 @@
                                         <property name="valign">start</property>
                                         <property name="hexpand">1</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Use 3 finger gesture for overview navigation</property>
+                                        <property name="label" translatable="yes">Enable 3-finger gestures for overview navigation</property>
                                       </object>
                                     </child>
 
@@ -225,7 +225,7 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3 finger vertical swipe to navigate between desktop, overview, appgrid&#xA;and 4 finger to maximize/unmaximize/tile a window</property>
+                                        <property name="label" translatable="yes">Uses 3-finger vertical swipes to navigate between Desktop, Overview, AppGrid and 4-finger swipes to maximize/unmaximize/tile a window</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
