@@ -102,25 +102,27 @@ const TilePreview = GObject.registerClass(
 				height: frame_rect.height - height * 2,
 			});
 
+			const panelHeight = Main.panel.visible && window.is_on_primary_monitor() ? Main.panel.height : 0;
+
 			this._maximizeBox = new Meta.Rectangle({
 				x: monitorGeometry.x,
-				y: monitorGeometry.y + (window.is_on_primary_monitor() ? Main.panel.height : 0),
+				y: monitorGeometry.y + panelHeight,
 				width: monitorGeometry.width,
-				height: monitorGeometry.height - (window.is_on_primary_monitor() ? Main.panel.height : 0),
+				height: monitorGeometry.height - panelHeight,
 			});
 
 			this._leftSnapBox = new Meta.Rectangle({
 				x: monitorGeometry.x,
-				y: monitorGeometry.y + (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
+				y: monitorGeometry.y + panelHeight,
 				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
+				height: monitorGeometry.height - panelHeight,
 			});
 
 			this._rightSnapBox = new Meta.Rectangle({
 				x: monitorGeometry.x + monitorGeometry.width / 2,
-				y: monitorGeometry.y + (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
+				y: monitorGeometry.y + panelHeight,
 				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - (this._window.is_on_primary_monitor() ? Main.panel.height : 0),
+				height: monitorGeometry.height - panelHeight,
 			});
 
 			this._direction = Clutter.Orientation.VERTICAL;
