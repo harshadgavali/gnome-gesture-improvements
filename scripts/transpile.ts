@@ -188,14 +188,14 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		const variables: string[] = [];
 		const visitor = (node: ts.Node): ts.Node => {
 			switch (node.kind) {
-			case ts.SyntaxKind.ClassDeclaration:
-				return transformClass(node as ts.ClassDeclaration, variables);
-			case ts.SyntaxKind.FunctionDeclaration:
-				return tranformFunction(node as ts.FunctionDeclaration, variables);
-			case ts.SyntaxKind.VariableStatement:
-				return tranformVariable(node as ts.VariableStatement, variables);
-			default:
-				return node;
+				case ts.SyntaxKind.ClassDeclaration:
+					return transformClass(node as ts.ClassDeclaration, variables);
+				case ts.SyntaxKind.FunctionDeclaration:
+					return tranformFunction(node as ts.FunctionDeclaration, variables);
+				case ts.SyntaxKind.VariableStatement:
+					return tranformVariable(node as ts.VariableStatement, variables);
+				default:
+					return node;
 			}
 		};
 		const modifiedSourceFile = ts.visitEachChild(sourceFile, visitor, context);

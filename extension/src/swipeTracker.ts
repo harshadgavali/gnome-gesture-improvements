@@ -168,20 +168,20 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		const distance = vertical ? this.TOUCHPAD_BASE_HEIGHT : this.TOUCHPAD_BASE_WIDTH;
 
 		switch (gesturePhase) {
-		case Clutter.TouchpadGesturePhase.BEGIN:
-		case Clutter.TouchpadGesturePhase.UPDATE:
-			if (this._followNaturalScroll)
-				delta = -delta;
+			case Clutter.TouchpadGesturePhase.BEGIN:
+			case Clutter.TouchpadGesturePhase.UPDATE:
+				if (this._followNaturalScroll)
+					delta = -delta;
 
-			this.emit('update', time, delta, distance);
-			break;
+				this.emit('update', time, delta, distance);
+				break;
 
-		case Clutter.TouchpadGesturePhase.END:
-		case Clutter.TouchpadGesturePhase.CANCEL:
-			this.emit('end', time, distance);
-			this._state = TouchpadState.NONE;
-			this._toggledDirection = false;
-			break;
+			case Clutter.TouchpadGesturePhase.END:
+			case Clutter.TouchpadGesturePhase.CANCEL:
+				this.emit('end', time, distance);
+				this._state = TouchpadState.NONE;
+				this._toggledDirection = false;
+				break;
 		}
 
 		return this._state === TouchpadState.HANDLING
