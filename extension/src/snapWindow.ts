@@ -12,8 +12,15 @@ const Utils = imports.misc.util;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { ExtSettings } from '../constants';
+import { WMsizeChangedWindow } from './patches/windowManager';
+import { block_signal_by_name } from './utils/gobjectSignal';
 
 const { SwipeTracker } = imports.ui.swipeTracker;
+
+const WINDOW_ANIMATION_TIME = 250;
+const UPDATED_WINDOW_ANIMATION_TIME = 150;
+const SNAPCHANGE_ANIMATION_TIME = 100;
+const TRIGGER_GESTURE_DELAY = 150;
 
 declare interface EaseParamsType {
 	duration: number,
@@ -158,7 +165,7 @@ const TilePreview = GObject.registerClass(
 						const stSettings = St.Settings.get();
 						// speedup animations
 						const prevSlowdown = stSettings.slow_down_factor;
-						stSettings.slow_down_factor = 1 / 1.5;
+						stSettings.slow_down_factor = UPDATED_WINDOW_ANIMATION_TIME / WINDOW_ANIMATION_TIME;
 						if (state === GestureMaxUnMaxState.MAXIMIZE) {
 							this._window.maximize(Meta.MaximizeFlags.BOTH);
 						} else {
@@ -243,7 +250,7 @@ const TilePreview = GObject.registerClass(
 				toValue = -18 / Math.max(18, this._maximizeBox.width - this._normalBox.width);
 			}
 			easeActor(this._adjustment, toValue, {
-				duration: 100,
+				duration: SNAPCHANGE_ANIMATION_TIME,
 				repeatCount: 1,
 				autoReverse: true,
 				mode: Clutter.AnimationMode.EASE_IN_OUT_BACK,
@@ -256,7 +263,7 @@ const TilePreview = GObject.registerClass(
 		easeOpacity(value: number, callback?: () => void) {
 			easeActor(this, undefined, {
 				opacity: value,
-				duration: 100,
+				duration: UPDATED_WINDOW_ANIMATION_TIME,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: () => {
 					if (callback)
@@ -279,6 +286,8 @@ export class SnapWindowExtension implements ISubExtension {
 	private _directionChangeId = 0;
 	private _toggledDirection = false;
 	private _allowChangeDirection = false;
+	private _wmBlockedSignalId = 0;
+	private _wmSizeChangedId = 0;
 
 	constructor() {
 		this._swipeTracker = createSwipeTracker(
@@ -291,6 +300,15 @@ export class SnapWindowExtension implements ISubExtension {
 		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
 		this._tilePreview = new TilePreview();
 		Main.layoutManager.uiGroup.add_child(this._tilePreview);
+		this._patchWMSizeChanged();
+	}
+
+	private _patchWMSizeChanged() {
+		this._wmBlockedSignalId = block_signal_by_name(global.windowManager, 'size-changed');
+
+		this._wmSizeChangedId = global.windowManager.connect('size-changed', (shellwm, actor) => {
+			return WMsizeChangedWindow.call(Main.wm, shellwm, actor, this._tilePreview);
+		});
 	}
 
 	apply(): void {
@@ -301,6 +319,16 @@ export class SnapWindowExtension implements ISubExtension {
 	}
 
 	destroy(): void {
+		if (this._wmSizeChangedId) {
+			global.windowManager.disconnect(this._wmSizeChangedId);
+			this._wmSizeChangedId = 0;
+		}
+
+		if (this._wmBlockedSignalId) {
+			global.windowManager.unblock_signal_handler(this._wmBlockedSignalId);
+			this._wmBlockedSignalId = 0;
+		}
+
 		if (this._directionChangeId) {
 			GLib.source_remove(this._directionChangeId);
 			this._directionChangeId = 0;
@@ -365,7 +393,7 @@ export class SnapWindowExtension implements ISubExtension {
 			if (!this._directionChangeId) {
 				this._directionChangeId = GLib.timeout_add(
 					GLib.PRIORITY_DEFAULT,
-					150,
+					TRIGGER_GESTURE_DELAY,
 					() => {
 						this._toggledDirection = true;
 						this._touchpadSwipeGesture.switchDirectionTo(Clutter.Orientation.HORIZONTAL);

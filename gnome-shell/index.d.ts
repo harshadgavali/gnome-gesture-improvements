@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Clutter from '@gi-types/clutter';
 import St from '@gi-types/st';
 import Gio from '@gi-types/gio';
@@ -19,12 +18,13 @@ declare interface ExtensionUtilsMeta {
 	getCurrentExtension(): {
 		metadata: ExtensionMeta,
 		dir: Gio.FilePrototype,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		imports: any,
 	};
 	initTranslations(domain?: string): void;
 }
 
-namespace __shell_private_types {
+declare namespace __shell_private_types {
 	declare class TouchpadGesture extends GObject.Object {
 		_stageCaptureEvent: number;
 		destroy(): void;
@@ -37,6 +37,8 @@ namespace __shell_private_types {
 		width: number,
 		height: number,
 		geometry_scale: number,
+		index: number,
+		inFullscreen: () => boolean,
 	}
 }
 
