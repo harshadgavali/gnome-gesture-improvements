@@ -17,7 +17,10 @@
     "rules": {
         "indent": [
             "error",
-            "tab"
+            "tab",
+            {
+                "SwitchCase": 1
+            }
         ],
         "linebreak-style": [
             "error",
@@ -101,7 +104,7 @@
                 "no-unused-expressions": "off",
                 "no-mixed-spaces-and-tabs": "off",
                 "comma-dangle": "off",
-                "lines-between-class-members":"off"
+                "lines-between-class-members": "off"
             }
         },
         {
