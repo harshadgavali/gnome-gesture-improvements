@@ -12,8 +12,6 @@ const Utils = imports.misc.util;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { ExtSettings } from '../constants';
-import { WMsizeChangedWindow } from './patches/windowManager';
-import { block_signal_by_name } from './utils/gobjectSignal';
 
 const { SwipeTracker } = imports.ui.swipeTracker;
 
@@ -286,8 +284,7 @@ export class SnapWindowExtension implements ISubExtension {
 	private _directionChangeId = 0;
 	private _toggledDirection = false;
 	private _allowChangeDirection = false;
-	private _wmBlockedSignalId = 0;
-	private _wmSizeChangedId = 0;
+	private _uiGroupAddedActorId: number;
 
 	constructor() {
 		this._swipeTracker = createSwipeTracker(
@@ -300,15 +297,10 @@ export class SnapWindowExtension implements ISubExtension {
 		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
 		this._tilePreview = new TilePreview();
 		Main.layoutManager.uiGroup.add_child(this._tilePreview);
-		this._patchWMSizeChanged();
-	}
-
-	private _patchWMSizeChanged() {
-		this._wmBlockedSignalId = block_signal_by_name(global.windowManager, 'size-changed');
-
-		this._wmSizeChangedId = global.windowManager.connect('size-changed', (shellwm, actor) => {
-			return WMsizeChangedWindow.call(Main.wm, shellwm, actor, this._tilePreview);
+		this._uiGroupAddedActorId = Main.layoutManager.uiGroup.connect('actor-added', () => {
+			Main.layoutManager.uiGroup.set_child_above_sibling(this._tilePreview, null);
 		});
+		Main.layoutManager.uiGroup.set_child_above_sibling(this._tilePreview, null);
 	}
 
 	apply(): void {
@@ -319,14 +311,9 @@ export class SnapWindowExtension implements ISubExtension {
 	}
 
 	destroy(): void {
-		if (this._wmSizeChangedId) {
-			global.windowManager.disconnect(this._wmSizeChangedId);
-			this._wmSizeChangedId = 0;
-		}
-
-		if (this._wmBlockedSignalId) {
-			global.windowManager.unblock_signal_handler(this._wmBlockedSignalId);
-			this._wmBlockedSignalId = 0;
+		if (this._uiGroupAddedActorId) {
+			Main.layoutManager.uiGroup.disconnect(this._uiGroupAddedActorId);
+			this._uiGroupAddedActorId = 0;
 		}
 
 		if (this._directionChangeId) {
