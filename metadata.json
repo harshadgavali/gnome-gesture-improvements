@@ -1,5 +1,5 @@
 {
-	"description": "Touchpad gesture improvements for Wayland/X11",
+	"description": "Improve touchpad gestures for Wayland/X11",
 	"name": "Gesture Improvements",
 	"shell-version": [
 		"40"
