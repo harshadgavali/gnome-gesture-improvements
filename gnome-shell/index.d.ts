@@ -147,6 +147,7 @@ declare namespace imports {
 				confirmSwipe(distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number): void;
 				destroy(): void;
 
+				_touchGesture?: Clutter.GestureAction;
 				_touchpadGesture?: __shell_private_types.TouchpadGesture;
 				// custom
 				__oldTouchpadGesture?: __shell_private_types.TouchpadGesture;

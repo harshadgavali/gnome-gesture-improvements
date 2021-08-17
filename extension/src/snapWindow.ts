@@ -292,7 +292,10 @@ export class SnapWindowExtension implements ISubExtension {
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.VERTICAL,
+			1,
+			{ allowTouch: false },
 		);
+
 		this._swipeTracker.allowLongSwipes = true;
 		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
 		this._tilePreview = new TilePreview();
