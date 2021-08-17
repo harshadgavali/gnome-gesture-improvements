@@ -65,6 +65,8 @@ const TilePreview = GObject.registerClass(
 
 		constructor() {
 			super({
+				can_focus: false,
+				offscreen_redirect: Clutter.OffscreenRedirect.ALWAYS,
 				reactive: false,
 				style_class: 'tile-preview',
 				style: 'border-radius: 8px',
@@ -91,10 +93,10 @@ const TilePreview = GObject.registerClass(
 
 			this._window = window;
 			this._normalBox = window.get_frame_rect();
-			if (currentProgress === GestureMaxUnMaxState.MAXIMIZE) {
+			if (window.get_maximized() === Meta.MaximizeFlags.BOTH) {
 				const [width, height] = [
-					this._normalBox.width * 0.05,
-					this._normalBox.height * 0.05,
+					Math.round(this._normalBox.width * 0.05),
+					Math.round(this._normalBox.height * 0.05),
 				];
 				this._normalBox.x += width;
 				this._normalBox.width -= 2 * width;
@@ -111,11 +113,11 @@ const TilePreview = GObject.registerClass(
 			this._rightSnapBox.x += this._rightSnapBox.width;
 
 			this._direction = Clutter.Orientation.VERTICAL;
+			this.opacity = 0;
 			this._adjustment.value = currentProgress;
 			this._valueChanged();
-			this.opacity = 0;
-			this.easeOpacity(255);
 			this.visible = true;
+			this.easeOpacity(255);
 			return true;
 		}
 
@@ -128,7 +130,6 @@ const TilePreview = GObject.registerClass(
 				this.easeOpacity(0, () => this.visible = false);
 				if (this._window) {
 					// maximize-unmaximize
-					this._window.raise();
 					if (this._direction === Clutter.Orientation.VERTICAL) {
 						// Main.wm.skipNextEffect(this._window.get_compositor_private() as Meta.WindowActor);
 						const stSettings = St.Settings.get();
@@ -163,14 +164,13 @@ const TilePreview = GObject.registerClass(
 
 			easeActor(this._adjustment, state, {
 				duration: duration,
-				mode: Clutter.AnimationMode.EASE_OUT_CIRC,
+				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: callback,
 			});
 		}
 
 		_valueChanged(): void {
 			let progress = this._adjustment.value;
-			// log(`progress: ${progress}`);
 			let startBox, endBox;
 
 			if (this._direction === Clutter.Orientation.VERTICAL) {
@@ -203,8 +203,6 @@ const TilePreview = GObject.registerClass(
 
 			this.set_position(x, y);
 			this.set_size(width, height);
-			// this.opacity = Math.round(25 + 230 * progress);
-			// log(`value changed: ${this.get_position()}, ${this.get_size()}`);
 		}
 
 		_onDestroy(): void {
