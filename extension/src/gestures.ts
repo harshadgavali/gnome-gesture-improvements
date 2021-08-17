@@ -75,6 +75,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
 			1 / 1.5,
+			{ allowTouch: false },
 		);
 	}
 
