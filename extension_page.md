@@ -1,4 +1,4 @@
-Gesture Improvements for Wayland/X11
+Improve touchpad gestures for Wayland/X11
 
 This extension adds following features:
 
