@@ -14,25 +14,25 @@ import { TouchpadConstants } from '../constants';
 enum TouchpadState {
 	NONE = 0,
 	PENDING = 1,
-	HANDLING =  2,
+	HANDLING = 2,
 	IGNORED = 3,
 }
 
 export const TouchpadSwipeGesture = GObject.registerClass({
 	Properties: {
 		'enabled': GObject.ParamSpec.boolean(
-			'enabled', 
-			'enabled', 
+			'enabled',
+			'enabled',
 			'enabled',
 			GObject.ParamFlags.READWRITE,
 			true,
 		),
 		'orientation': GObject.ParamSpec.enum(
-			'orientation', 
-			'orientation', 
+			'orientation',
+			'orientation',
 			'orientation',
 			GObject.ParamFlags.READWRITE,
-			Clutter.Orientation, 
+			Clutter.Orientation,
 			Clutter.Orientation.HORIZONTAL,
 		),
 	},
@@ -205,6 +205,11 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 	}
 });
 
+declare type _SwipeTrackerOptionalParams = {
+	allowTouch?: boolean,
+	allowDrag?: boolean,
+	allowScroll?: boolean,
+}
 
 export function createSwipeTracker(
 	actor: Clutter.Actor,
@@ -212,15 +217,28 @@ export function createSwipeTracker(
 	allowedModes: Shell.ActionMode,
 	orientation: Clutter.Orientation,
 	gestureSpeed = 1,
+	params?: _SwipeTrackerOptionalParams,
 ): typeof SwipeTracker.prototype {
+
+	params = params ?? {};
+	params.allowDrag = params.allowDrag ?? false;
+	params.allowScroll = params.allowScroll ?? false;
+	const allowTouch = params.allowTouch ?? true;
+	delete params.allowTouch;
+
 	// create swipeTracker
 	const swipeTracker = new SwipeTracker(
 		actor,
 		orientation,
 		allowedModes,
-		{ allowDrag: false, allowScroll: false },
-
+		params,
 	);
+
+	// remove touch gestures
+	if (!allowTouch && swipeTracker._touchGesture) {
+		global.stage.remove_action(swipeTracker._touchGesture);
+		delete swipeTracker._touchGesture;
+	}
 
 	// remove old touchpad gesture from swipeTracker
 	if (swipeTracker._touchpadGesture) {
@@ -242,8 +260,8 @@ export function createSwipeTracker(
 	swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));
 	swipeTracker.bind_property('enabled', swipeTracker._touchpadGesture, 'enabled', 0);
 	swipeTracker.bind_property(
-		'orientation', 
-		swipeTracker._touchpadGesture, 
+		'orientation',
+		swipeTracker._touchpadGesture,
 		'orientation',
 		GObject.BindingFlags.SYNC_CREATE,
 	);
