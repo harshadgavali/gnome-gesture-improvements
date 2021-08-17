@@ -89,6 +89,7 @@ declare namespace imports {
 				panelBox: St.BoxLayout,
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
+				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
 			};
 
 			const wm: {

@@ -89,55 +89,26 @@ const TilePreview = GObject.registerClass(
 				return false;
 			}
 
-			const currentMonitor = window.get_monitor();
-			const monitorGeometry = global.display.get_monitor_geometry(currentMonitor);
-
-			const frame_rect = window.get_frame_rect();
-
-			let [width, height] = [0, 0];
+			this._window = window;
+			this._normalBox = window.get_frame_rect();
 			if (currentProgress === GestureMaxUnMaxState.MAXIMIZE) {
-				[width, height] = [frame_rect.width * 0.05, frame_rect.height * 0.05];
+				const [width, height] = [
+					this._normalBox.width * 0.05,
+					this._normalBox.height * 0.05,
+				];
+				this._normalBox.x += width;
+				this._normalBox.width -= 2 * width;
+				this._normalBox.y += height;
+				this._normalBox.height -= 2 * height;
 			}
 
-			this._window = window;
-			this._normalBox = new Meta.Rectangle({
-				x: frame_rect.x + width,
-				y: frame_rect.y + height,
-				width: frame_rect.width - width * 2,
-				height: frame_rect.height - height * 2,
-			});
+			this._maximizeBox = Main.layoutManager.getWorkAreaForMonitor(window.get_monitor());
+			this._leftSnapBox = this._maximizeBox.copy();
+			this._rightSnapBox = this._maximizeBox.copy();
 
-			const panelBoxRely = Main.layoutManager.panelBox.y - Main.layoutManager.primaryMonitor.y;
-			const panelHeight = Main.panel.visible &&
-				window.is_on_primary_monitor() &&
-				panelBoxRely <= 0 ?
-				Math.clamp(
-					panelBoxRely + Main.panel.height,
-					0,
-					Main.panel.height,
-				) :
-				0;
-
-			this._maximizeBox = new Meta.Rectangle({
-				x: monitorGeometry.x,
-				y: monitorGeometry.y + panelHeight,
-				width: monitorGeometry.width,
-				height: monitorGeometry.height - panelHeight,
-			});
-
-			this._leftSnapBox = new Meta.Rectangle({
-				x: monitorGeometry.x,
-				y: monitorGeometry.y + panelHeight,
-				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - panelHeight,
-			});
-
-			this._rightSnapBox = new Meta.Rectangle({
-				x: monitorGeometry.x + monitorGeometry.width / 2,
-				y: monitorGeometry.y + panelHeight,
-				width: monitorGeometry.width / 2,
-				height: monitorGeometry.height - panelHeight,
-			});
+			this._leftSnapBox.width /= 2;
+			this._rightSnapBox.width /= 2;
+			this._rightSnapBox.x += this._rightSnapBox.width;
 
 			this._direction = Clutter.Orientation.VERTICAL;
 			this._adjustment.value = currentProgress;
