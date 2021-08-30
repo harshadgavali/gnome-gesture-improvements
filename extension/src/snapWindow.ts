@@ -2,7 +2,6 @@ import Shell from '@gi-types/shell';
 import Meta from '@gi-types/meta';
 import St from '@gi-types/st';
 import GObject from '@gi-types/gobject';
-import GLib from '@gi-types/glib';
 import Clutter from '@gi-types/clutter';
 
 import { imports, global } from 'gnome-shell';
@@ -17,8 +16,7 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 
 const WINDOW_ANIMATION_TIME = 250;
 const UPDATED_WINDOW_ANIMATION_TIME = 150;
-const SNAPCHANGE_ANIMATION_TIME = 100;
-const TRIGGER_GESTURE_DELAY = 150;
+const TRIGGER_THRESHOLD = 0.1;
 
 declare interface EaseParamsType {
 	duration: number,
@@ -209,22 +207,10 @@ const TilePreview = GObject.registerClass(
 			this._adjustment.run_dispose();
 		}
 
-		switchToSnapping(): void {
+		switchToSnapping(value: GestureTileState): void {
 			this._adjustment.remove_transition('value');
-			this._adjustment.value = 0;
-			let toValue = -0.05;
-			if (this._maximizeBox && this._normalBox) {
-				toValue = -18 / Math.max(18, this._maximizeBox.width - this._normalBox.width);
-			}
-			easeActor(this._adjustment, toValue, {
-				duration: SNAPCHANGE_ANIMATION_TIME,
-				repeatCount: 1,
-				autoReverse: true,
-				mode: Clutter.AnimationMode.EASE_IN_OUT_BACK,
-				onStopped: () => {
-					this._direction = Clutter.Orientation.HORIZONTAL;
-				},
-			});
+			this._adjustment.value = value;
+			this._direction = Clutter.Orientation.HORIZONTAL;
 		}
 
 		easeOpacity(value: number, callback?: () => void) {
@@ -250,7 +236,6 @@ export class SnapWindowExtension implements ISubExtension {
 	private _connectors: number[] = [];
 	private _tilePreview: typeof TilePreview.prototype;
 	private _touchpadSwipeGesture: typeof TouchpadSwipeGesture.prototype;
-	private _directionChangeId = 0;
 	private _toggledDirection = false;
 	private _allowChangeDirection = false;
 	private _uiGroupAddedActorId: number;
@@ -288,11 +273,6 @@ export class SnapWindowExtension implements ISubExtension {
 			this._uiGroupAddedActorId = 0;
 		}
 
-		if (this._directionChangeId) {
-			GLib.source_remove(this._directionChangeId);
-			this._directionChangeId = 0;
-		}
-
 		this._connectors.forEach(connector => this._swipeTracker.disconnect(connector));
 		Main.layoutManager.uiGroup.remove_child(this._tilePreview);
 		this._swipeTracker.destroy();
@@ -300,10 +280,6 @@ export class SnapWindowExtension implements ISubExtension {
 	}
 
 	_gestureBegin(tracker: typeof SwipeTracker.prototype, monitor: number): void {
-		if (this._directionChangeId) {
-			GLib.source_remove(this._directionChangeId);
-			this._directionChangeId = 0;
-		}
 		const window = global.display.get_focus_window();
 		if (!window || window.is_fullscreen() || !window.can_maximize()) {
 			return;
@@ -341,38 +317,19 @@ export class SnapWindowExtension implements ISubExtension {
 		}
 
 		if (progress >= GestureMaxUnMaxState.UNMAXIMIZE) {
-			if (this._directionChangeId) {
-				GLib.source_remove(this._directionChangeId);
-				this._directionChangeId = 0;
-			}
 			this._tilePreview.adjustment.value = progress;
 		}
 		// switch to horizontal
-		else if (this._allowChangeDirection && progress <= 0.05) {
-			if (!this._directionChangeId) {
-				this._directionChangeId = GLib.timeout_add(
-					GLib.PRIORITY_DEFAULT,
-					TRIGGER_GESTURE_DELAY,
-					() => {
-						this._toggledDirection = true;
-						this._touchpadSwipeGesture.switchDirectionTo(Clutter.Orientation.HORIZONTAL);
-						this._swipeTracker._progress = GestureTileState.NORMAL;
-						this._swipeTracker._history.reset();
-						this._tilePreview.switchToSnapping();
-
-						this._directionChangeId = 0;
-						return GLib.SOURCE_REMOVE;
-					},
-				);
-			}
+		else if (this._allowChangeDirection && progress <= TRIGGER_THRESHOLD) {
+			this._toggledDirection = true;
+			this._touchpadSwipeGesture.switchDirectionTo(Clutter.Orientation.HORIZONTAL);
+			this._swipeTracker._progress = GestureTileState.NORMAL;
+			this._swipeTracker._history.reset();
+			this._tilePreview.switchToSnapping(GestureTileState.NORMAL);
 		}
 	}
 
 	_gestureEnd(_tracker: never, duration: number, progress: number): void {
-		if (this._directionChangeId) {
-			GLib.source_remove(this._directionChangeId);
-			this._directionChangeId = 0;
-		}
 		if (!this._toggledDirection) {
 			progress = Math.clamp(progress, GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
 		}
