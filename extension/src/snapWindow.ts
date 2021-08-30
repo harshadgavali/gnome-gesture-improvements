@@ -320,7 +320,7 @@ export class SnapWindowExtension implements ISubExtension {
 			this._tilePreview.adjustment.value = progress;
 		}
 		// switch to horizontal
-		else if (this._allowChangeDirection && progress <= TRIGGER_THRESHOLD) {
+		else if (this._allowChangeDirection && progress <= GestureMaxUnMaxState.UNMAXIMIZE - TRIGGER_THRESHOLD) {
 			this._toggledDirection = true;
 			this._touchpadSwipeGesture.switchDirectionTo(Clutter.Orientation.HORIZONTAL);
 			this._swipeTracker._progress = GestureTileState.NORMAL;
