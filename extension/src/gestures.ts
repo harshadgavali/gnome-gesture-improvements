@@ -79,7 +79,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		);
 	}
 
-	apply(): void {
+	override apply(): void {
 		if (this._workspaceAnimation._swipeTracker._touchpadGesture) {
 			global.stage.disconnect(this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent);
 			this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent = 0;
@@ -109,7 +109,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		this._workspaceAnimation._switchWorkspaceEnd(tracker, duration, progress);
 	}
 
-	destroy(): void {
+	override destroy(): void {
 		super.destroy();
 		this._swipeTracker.destroy();
 		const swipeTracker = this._workspaceAnimation._swipeTracker;
@@ -231,8 +231,8 @@ export class GestureExtension implements ISubExtension {
 		swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));
 		swipeTracker.bind_property('enabled', swipeTracker._touchpadGesture, 'enabled', 0);
 		swipeTracker.bind_property(
-			'orientation', 
-			swipeTracker._touchpadGesture, 
+			'orientation',
+			swipeTracker._touchpadGesture,
 			'orientation',
 			GObject.BindingFlags.SYNC_CREATE,
 		);
