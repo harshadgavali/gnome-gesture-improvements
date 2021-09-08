@@ -7,11 +7,12 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 import { createSwipeTracker } from './swipeTracker';
 import { OverviewControlsState, ExtSettings } from '../constants';
 
-const ExtensionState = {
-	DISABLED: 0,
-	DEFAULT: 1,
-	CUSTOM: 2,
-};
+// declare enum
+enum ExtensionState {
+	DISABLED = 0,
+	DEFAULT = 1,
+	CUSTOM = 2,
+}
 
 export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _overviewControls: imports.ui.overviewControls.OverviewControlsManager;
