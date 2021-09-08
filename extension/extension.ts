@@ -72,7 +72,10 @@ class Extension {
 			new GestureExtension(),
 			new SnapWindowExtension(),
 		];
-		this._extensions.forEach(extension => extension.apply());
+		this._extensions.forEach(extension => {
+			if (extension.apply)
+				extension.apply();
+		});
 	}
 
 	_disable() {
