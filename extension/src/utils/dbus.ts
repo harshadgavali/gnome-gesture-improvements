@@ -77,11 +77,11 @@ export function subscribe(callback: (actor: never | undefined, event: CustomEven
 
 	connectedSignalIds.push(
 		proxy.connect('TouchpadSwipe', (
-			_proxy: never, 
+			_proxy: never,
 			sphase: string,
-			fingers: number, 
-			dx: number, 
-			dy: number, 
+			fingers: number,
+			dx: number,
+			dy: number,
 			time: number,
 		) => {
 			const event: CustomEventType = {
