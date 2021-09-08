@@ -70,6 +70,7 @@ declare namespace imports {
 				show(): void,
 				hide(): void,
 				showApps(): void,
+				animationInProgress: boolean;
 				connect(signal: 'showing' | 'hiding' | 'hidden' | 'shown', callback: () => void): number,
 				disconnect(id: number): void,
 				_overview: {
@@ -87,6 +88,7 @@ declare namespace imports {
 			const layoutManager: {
 				uiGroup: Clutter.Actor,
 				panelBox: St.BoxLayout,
+				primaryIndex: number,
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
 				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
@@ -204,27 +206,54 @@ declare namespace imports {
 	}
 
 	namespace ui {
-		namespace altTab {
-			declare class WindowSwitcherPopup extends St.Widget {
-				_items: St.Widget & {
-					window: Meta.Window
-				}[];
-
+		namespace switcherPopup {
+			declare class SwitcherPopup extends St.Widget {
+				constructor(items: never[]);
 				_select(n: number): void;
-				_switcherList: {
-					_scrollView: {
-						hscroll: {
-							adjustment: St.Adjustment
-						}
-					}
-				}
+				_selectedIndex: number;
 
 				_resetNoModsTimeout(): void;
 				_noModsTimeoutId: number;
-				_initialDelayTimeoutId: number;
-				_selectedIndex: number;
 
-				show(backward: boolean, binding: string, mask: number);
+				_initialDelayTimeoutId: number;
+				_showImmediately(): void;
+				_finish(timestamp?: number): void;
+
+				show(backward: boolean, binding: string, mask: number): boolean;
+			}
+
+			declare class SwitcherList extends St.Widget {
+				_init(squareItems: never[]);
+				_scrollView: St.ScrollView;
+			}
+		}
+
+		namespace altTab {
+			declare class ThumbnailSwitcher extends switcherPopup.SwitcherList { }
+
+			declare class AppSwitcherPopup extends switcherPopup.SwitcherPopup {
+				constructor();
+				_currentWindow: number;
+
+				_select(appIndex: number, windowIndex?: number, forceAppFocus?: boolean): void;
+
+				_switcherList: switcherPopup.SwitcherList;
+				_items: St.BoxLayout & {
+					cachedWindows: Meta.Window[]
+				}[];
+
+				_createThumbnails(): void;
+				_thumbnailTimeoutId: number;
+				_thumbnails?: ThumbnailSwitcher;
+			}
+
+			declare class WindowSwitcherPopup extends switcherPopup.SwitcherPopup {
+				constructor();
+				_items: St.BoxLayout & {
+					window: Meta.Window
+				}[];
+
+				_switcherList: switcherPopup.SwitcherList;
 			}
 		}
 	}
