@@ -186,7 +186,8 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 	/* transformation function */
 	return sourceFile => {
 		const variables: string[] = [];
-		const visitor = (node: ts.Node): ts.Node => {
+		let exportNode;
+		const visitor = (node: ts.Node): ts.Node | undefined => {
 			switch (node.kind) {
 				case ts.SyntaxKind.ClassDeclaration:
 					return transformClass(node as ts.ClassDeclaration, variables);
@@ -194,6 +195,16 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 					return tranformFunction(node as ts.FunctionDeclaration, variables);
 				case ts.SyntaxKind.VariableStatement:
 					return tranformVariable(node as ts.VariableStatement, variables);
+				case ts.SyntaxKind.ExportDeclaration:
+					exportNode = node as ts.ExportDeclaration;
+					if (exportNode.name !== undefined ||
+						exportNode.moduleSpecifier !== undefined ||
+						exportNode.exportClause === undefined ||
+						exportNode.exportClause.kind === ts.SyntaxKind.NamespaceExport ||
+						exportNode.exportClause.elements.length) {
+						throw new Error(`unknown export declaration ${printer.printNode(ts.EmitHint.Unspecified, exportNode, sourceFile)}`);
+					}
+					return;
 				default:
 					return node;
 			}
