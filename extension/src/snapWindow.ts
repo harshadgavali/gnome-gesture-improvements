@@ -63,8 +63,6 @@ const TilePreview = GObject.registerClass(
 
 		constructor() {
 			super({
-				can_focus: false,
-				offscreen_redirect: Clutter.OffscreenRedirect.ALWAYS,
 				reactive: false,
 				style_class: 'tile-preview',
 				style: 'border-radius: 8px',
