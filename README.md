@@ -3,12 +3,12 @@
 This extension modifies and extends existing touchpad gestures on GNOME.
 
 ## Installation
-### Supported Versions
-* GNOME Shell 40
-### GNOME Extensions 
-From [extension#4245](https://extensions.gnome.org/extension/4245/gesture-improvements/).
+### From GNOME Extensions Website
+<a href="https://extensions.gnome.org/extension/4245/gesture-improvements/">
+<img src="https://github.com/andyholmes/gnome-shell-extensions-badge/raw/master/get-it-on-ego.svg" alt="Get it on EGO" width="200" />
+</a>
 
-### GitHub
+### Manually
 1. Install extension
 ```
 git clone https://github.com/harshadgavali/gnome-gesture-improvements.git/
