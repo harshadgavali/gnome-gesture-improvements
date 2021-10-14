@@ -216,6 +216,7 @@ export function createSwipeTracker(
 	nfingers: number[],
 	allowedModes: Shell.ActionMode,
 	orientation: Clutter.Orientation,
+	followNaturalScroll = true,
 	gestureSpeed = 1,
 	params?: _SwipeTrackerOptionalParams,
 ): typeof SwipeTracker.prototype {
@@ -251,7 +252,7 @@ export function createSwipeTracker(
 		nfingers,
 		swipeTracker._allowedModes,
 		swipeTracker.orientation,
-		true,
+		followNaturalScroll,
 		undefined,
 		gestureSpeed,
 	);
