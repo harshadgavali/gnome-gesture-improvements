@@ -41,6 +41,7 @@ enum GestureMaxUnMaxState {
 	MINIMIZE = -1,
 	UNMAXIMIZE = 0,
 	MAXIMIZE = 1,
+	FULLSCREEN = 2,
 }
 
 // define enum
@@ -62,6 +63,7 @@ const TilePreview = GObject.registerClass(
 		private _leftSnapBox?: Meta.Rectangle;
 		private _rightSnapBox?: Meta.Rectangle;
 		private _virtualDevice: Clutter.VirtualInputDevice;
+		private _fullscreenBox?: Meta.Rectangle;
 
 		constructor() {
 			super({
@@ -76,7 +78,7 @@ const TilePreview = GObject.registerClass(
 				actor: this,
 				value: 0,
 				lower: -1,
-				upper: 1,
+				upper: 2,
 			});
 
 			this._adjustment.connect('notify::value', this._valueChanged.bind(this));
@@ -102,6 +104,7 @@ const TilePreview = GObject.registerClass(
 				this._normalBox.height -= 2 * height;
 			}
 
+			this._fullscreenBox = global.display.get_monitor_geometry(window.get_monitor());
 			this._maximizeBox = Main.layoutManager.getWorkAreaForMonitor(window.get_monitor());
 			this._leftSnapBox = this._maximizeBox.copy();
 			this._rightSnapBox = this._maximizeBox.copy();
@@ -135,13 +138,26 @@ const TilePreview = GObject.registerClass(
 						// speedup animations
 						const prevSlowdown = stSettings.slow_down_factor;
 						stSettings.slow_down_factor = UPDATED_WINDOW_ANIMATION_TIME / WINDOW_ANIMATION_TIME;
-						if (state === GestureMaxUnMaxState.MAXIMIZE) {
-							this._window.maximize(Meta.MaximizeFlags.BOTH);
-						} else if (state === GestureMaxUnMaxState.UNMAXIMIZE) {
-							this._window.unmaximize(Meta.MaximizeFlags.BOTH);
-						} else {
-							this._window.minimize();
+
+						switch (state) {
+							case GestureMaxUnMaxState.MINIMIZE:
+								this._window.minimize();
+								break;
+							case GestureMaxUnMaxState.UNMAXIMIZE:
+								if (this._window.is_fullscreen())
+									this._window.unmake_fullscreen();
+								this._window.unmaximize(Meta.MaximizeFlags.BOTH);
+								break;
+							case GestureMaxUnMaxState.MAXIMIZE:
+								if (this._window.is_fullscreen())
+									this._window.unmake_fullscreen();
+								this._window.maximize(Meta.MaximizeFlags.BOTH);
+								break;
+							case GestureMaxUnMaxState.FULLSCREEN:
+								this._window.make_fullscreen();
+								break;
 						}
+
 						stSettings.slow_down_factor = prevSlowdown;
 					}
 					// snap-left,normal,snap-right
@@ -176,12 +192,20 @@ const TilePreview = GObject.registerClass(
 			let startBox, endBox;
 
 			if (this._direction === Clutter.Orientation.VERTICAL) {
-				startBox = this._normalBox;
-				if (progress >= GestureMaxUnMaxState.UNMAXIMIZE) {
+				if (progress < GestureMaxUnMaxState.UNMAXIMIZE) {
+					startBox = this._minimizeBox;
+					endBox = this._normalBox;
+					progress -= GestureMaxUnMaxState.MINIMIZE;
+				}
+				else if (progress <= GestureMaxUnMaxState.MAXIMIZE) {
+					// no particular reason for equality here
+					startBox = this._normalBox;
 					endBox = this._maximizeBox;
+					progress -= GestureMaxUnMaxState.UNMAXIMIZE;
 				} else {
-					endBox = this._minimizeBox;
-					progress = -progress;
+					startBox = this._maximizeBox;
+					endBox = this._fullscreenBox;
+					progress -= GestureMaxUnMaxState.MAXIMIZE;
 				}
 			}
 			else {
@@ -302,9 +326,13 @@ export class SnapWindowExtension implements ISubExtension {
 
 	_gestureBegin(tracker: typeof SwipeTracker.prototype, monitor: number): void {
 		const window = global.display.get_focus_window();
-		if (!window || window.is_fullscreen() || !window.can_maximize()) {
+
+		// if window can't be maximized and window is not fullscreen
+		// fullscreen window's can't be maximized :O
+		if (!window || !(window.can_maximize() || window.is_fullscreen())) {
 			return;
 		}
+		// window is on different monitor
 		if (window.get_monitor() !== monitor) {
 			return;
 		}
@@ -312,19 +340,33 @@ export class SnapWindowExtension implements ISubExtension {
 		const currentMonitor = window.get_monitor();
 		const monitorGeo = global.display.get_monitor_geometry(currentMonitor);
 
-		const progress = window.get_maximized() === Meta.MaximizeFlags.BOTH ? GestureMaxUnMaxState.MAXIMIZE : GestureMaxUnMaxState.UNMAXIMIZE;
-		this._toggledDirection = false;
-		// allow tiling gesture, when window is unmaximized and minimized gesture is not enabled
-		this._allowChangeDirection = progress === GestureMaxUnMaxState.UNMAXIMIZE && !ExtSettings.ALLOW_MINIMIZE_WINDOW;
-
-		const snapPoints: number[] = [];
-		if (this._allowChangeDirection) {
-			snapPoints.push(GestureTileState.RIGHT_TILE, GestureTileState.NORMAL, GestureTileState.LEFT_TILE);
+		// if window is fullscreen and workArea of workspace is same as monitor
+		if (window.is_fullscreen() && monitorGeo.equal(Main.layoutManager.getWorkAreaForMonitor(currentMonitor))) {
+			return;
 		}
-		else {
-			if (progress === GestureMaxUnMaxState.UNMAXIMIZE)
-				snapPoints.push(GestureMaxUnMaxState.MINIMIZE);
-			snapPoints.push(GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
+
+		const progress = window.is_fullscreen() ? GestureMaxUnMaxState.FULLSCREEN
+			: window.get_maximized() === Meta.MaximizeFlags.BOTH ? GestureMaxUnMaxState.MAXIMIZE : GestureMaxUnMaxState.UNMAXIMIZE;
+
+		this._toggledDirection = false;
+		this._allowChangeDirection = false;
+
+		
+		const snapPoints: number[] = [];
+		switch (progress) {
+			case GestureMaxUnMaxState.UNMAXIMIZE:
+				snapPoints.push(GestureTileState.RIGHT_TILE, GestureTileState.NORMAL, GestureTileState.LEFT_TILE);
+				// allow tiling gesture, when window is unmaximized and minimized gesture is not enabled
+				this._allowChangeDirection = !ExtSettings.ALLOW_MINIMIZE_WINDOW;
+				break;
+			case GestureMaxUnMaxState.MAXIMIZE:
+				snapPoints.push(GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
+				if (!window.is_monitor_sized() && !monitorGeo.equal(window.get_buffer_rect()))
+					snapPoints.push(GestureMaxUnMaxState.FULLSCREEN);
+				break;
+			case GestureMaxUnMaxState.FULLSCREEN:
+				snapPoints.push(GestureMaxUnMaxState.MAXIMIZE, GestureMaxUnMaxState.FULLSCREEN);
+				break;
 		}
 
 		if (this._tilePreview.open(window, progress)) {
