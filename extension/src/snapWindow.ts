@@ -38,13 +38,14 @@ function easeActor(actor: any, value: any, params: EaseParamsType) {
 
 // define enum
 enum GestureMaxUnMaxState {
+	MINIMIZE = -1,
 	UNMAXIMIZE = 0,
 	MAXIMIZE = 1,
 }
 
 // define enum
 enum GestureTileState {
-	RIGHT_TILE = -1,
+	RIGHT_TILE = GestureMaxUnMaxState.MINIMIZE,
 	NORMAL = GestureMaxUnMaxState.UNMAXIMIZE,
 	LEFT_TILE = GestureMaxUnMaxState.MAXIMIZE,
 }
@@ -57,6 +58,7 @@ const TilePreview = GObject.registerClass(
 		private _direction = Clutter.Orientation.VERTICAL;
 		private _normalBox?: Meta.Rectangle;
 		private _maximizeBox?: Meta.Rectangle;
+		private _minimizeBox?: Meta.Rectangle;
 		private _leftSnapBox?: Meta.Rectangle;
 		private _rightSnapBox?: Meta.Rectangle;
 		private _virtualDevice: Clutter.VirtualInputDevice;
@@ -103,6 +105,7 @@ const TilePreview = GObject.registerClass(
 			this._maximizeBox = Main.layoutManager.getWorkAreaForMonitor(window.get_monitor());
 			this._leftSnapBox = this._maximizeBox.copy();
 			this._rightSnapBox = this._maximizeBox.copy();
+			this._minimizeBox = this.getMinimizedBox(this._window, this._maximizeBox);
 
 			this._leftSnapBox.width /= 2;
 			this._rightSnapBox.width /= 2;
@@ -134,8 +137,10 @@ const TilePreview = GObject.registerClass(
 						stSettings.slow_down_factor = UPDATED_WINDOW_ANIMATION_TIME / WINDOW_ANIMATION_TIME;
 						if (state === GestureMaxUnMaxState.MAXIMIZE) {
 							this._window.maximize(Meta.MaximizeFlags.BOTH);
-						} else {
+						} else if (state === GestureMaxUnMaxState.UNMAXIMIZE) {
 							this._window.unmaximize(Meta.MaximizeFlags.BOTH);
+						} else {
+							this._window.minimize();
 						}
 						stSettings.slow_down_factor = prevSlowdown;
 					}
@@ -153,6 +158,7 @@ const TilePreview = GObject.registerClass(
 				this._window = undefined;
 				this._normalBox = undefined;
 				this._maximizeBox = undefined;
+				this._minimizeBox = undefined;
 				this._leftSnapBox = undefined;
 				this._rightSnapBox = undefined;
 				this._direction = Clutter.Orientation.VERTICAL;
@@ -171,7 +177,12 @@ const TilePreview = GObject.registerClass(
 
 			if (this._direction === Clutter.Orientation.VERTICAL) {
 				startBox = this._normalBox;
-				endBox = this._maximizeBox;
+				if (progress >= GestureMaxUnMaxState.UNMAXIMIZE) {
+					endBox = this._maximizeBox;
+				} else {
+					endBox = this._minimizeBox;
+					progress = -progress;
+				}
 			}
 			else {
 				startBox = this._normalBox;
@@ -225,6 +236,17 @@ const TilePreview = GObject.registerClass(
 
 		get adjustment(): St.Adjustment {
 			return this._adjustment;
+		}
+
+		private getMinimizedBox(window: Meta.Window, monitorWorkArea: Meta.Rectangle) {
+			const [has_icon, icon_geometry] = window.get_icon_geometry();
+			if (has_icon)
+				return icon_geometry;
+
+			const rect = monitorWorkArea.copy();
+			rect.width = 0;
+			rect.height = 0;
+			return rect;
 		}
 	},
 );
@@ -289,15 +311,22 @@ export class SnapWindowExtension implements ISubExtension {
 		const currentMonitor = window.get_monitor();
 		const monitorGeo = global.display.get_monitor_geometry(currentMonitor);
 
-		const progress = window.get_maximized() === Meta.MaximizeFlags.BOTH ? 1 : 0;
+		const progress = window.get_maximized() === Meta.MaximizeFlags.BOTH ? GestureMaxUnMaxState.MAXIMIZE : GestureMaxUnMaxState.UNMAXIMIZE;
 		this._toggledDirection = false;
-		this._allowChangeDirection = progress === 0;
+		// allow tiling gesture, when window is unmaximized and minimized gesture is not enabled
+		this._allowChangeDirection = progress === GestureMaxUnMaxState.UNMAXIMIZE && !ExtSettings.ALLOW_MINIMIZE_WINDOW;
 
-		const snapPoints = progress === 1 ?
-			[GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE] :
-			[GestureTileState.RIGHT_TILE, GestureTileState.NORMAL, GestureTileState.LEFT_TILE];
+		const snapPoints: number[] = [];
+		if (this._allowChangeDirection) {
+			snapPoints.push(GestureTileState.RIGHT_TILE, GestureTileState.NORMAL, GestureTileState.LEFT_TILE);
+		}
+		else {
+			if (progress === GestureMaxUnMaxState.UNMAXIMIZE)
+				snapPoints.push(GestureMaxUnMaxState.MINIMIZE);
+			snapPoints.push(GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
+		}
 
-		if (this._tilePreview.open(window, progress ? GestureMaxUnMaxState.MAXIMIZE : GestureMaxUnMaxState.UNMAXIMIZE)) {
+		if (this._tilePreview.open(window, progress)) {
 			tracker.confirmSwipe(
 				monitorGeo.height,
 				snapPoints,
@@ -314,7 +343,8 @@ export class SnapWindowExtension implements ISubExtension {
 			return;
 		}
 
-		if (progress >= GestureMaxUnMaxState.UNMAXIMIZE) {
+		// if tiling gesture is not allowed or progress is above unmaximized state
+		if (progress >= GestureMaxUnMaxState.UNMAXIMIZE || !this._allowChangeDirection) {
 			this._tilePreview.adjustment.value = progress;
 		}
 		// switch to horizontal
@@ -328,10 +358,6 @@ export class SnapWindowExtension implements ISubExtension {
 	}
 
 	_gestureEnd(_tracker: never, duration: number, progress: number): void {
-		if (!this._toggledDirection) {
-			progress = Math.clamp(progress, GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
-		}
-
 		this._tilePreview.finish(duration, progress);
 	}
 }
