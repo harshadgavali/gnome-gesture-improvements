@@ -10,18 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/library/fedora
-      env:
-        PWD: /pwd
-      volumes:
-        - ${{ github.workspace }}:/pwd
+      image: docker.io/library/fedora:35
 
     steps:
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: Install host dependencies
         run: |
-          dnf install nodejs
+          dnf install -y nodejs dnf-plugins-core
+          dnf copr enable fmuellner/gnome-tools
+          dnf install -y gnome-extensions-tool
 
       - name: Install npm dependencies
         run: |
@@ -43,7 +41,12 @@ jobs:
 
       - name: Create archive artifact
         run: |
-          make pack
+          cp metadata.json build/extension
+          cp -r extension/ui extension/schemas build/extension
+          gnome-extensions pack --force \
+            --out-dir build/ build/extension \
+            --extra-source=constants.js \
+            --extra-source=src --extra-source=ui --extra-source=schemas
 
       - name: Upload archive artifact
         uses: actions/upload-artifact@v2
