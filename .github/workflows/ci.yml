@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          tsc
+          npx tsc
           node build/scripts/transpile.js
 
       - name: Lint package
