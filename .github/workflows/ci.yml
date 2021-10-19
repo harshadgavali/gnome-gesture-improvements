@@ -26,11 +26,21 @@ jobs:
         run: |
           npm install
 
+      - name: Lint Source
+        run: |
+          npm run clean
+          npm run lint:extension
+
       - name: Build
         run: |
-          npm run build
+          tsc
+          node build/scripts/transpile.js
 
-      - name: Create Zip
+      - name: Lint package
+        run: |
+          npm run lint:package
+
+      - name: Create archive artifact
         run: |
           make pack
 
