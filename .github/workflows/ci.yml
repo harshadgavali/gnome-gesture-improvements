@@ -20,7 +20,7 @@ jobs:
       - name: Install host dependencies
         run: |
           dnf install -y nodejs dnf-plugins-core
-          dnf copr enable fmuellner/gnome-tools
+          dnf copr enable -y fmuellner/gnome-tools
           dnf install -y gnome-extensions-tool
 
       - name: Install npm dependencies
