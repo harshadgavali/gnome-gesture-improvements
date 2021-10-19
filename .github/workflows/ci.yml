@@ -6,7 +6,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
 
 jobs:
   build:
