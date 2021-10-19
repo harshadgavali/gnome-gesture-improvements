@@ -2,9 +2,9 @@ name: Extension CI
 
 on:
   push:
-    branches: [ '*' ]
+    branches: ["*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -12,30 +12,30 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
-    
+        node-version: [16.x]
+
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: |
-        npm install
-    
-    - name: Build
-      run: |
-        npm run build
-        
-    - name: Create Zip
-      run: |
-        make pack
-    
-    - name: Upload archive artifact
-      uses: "actions/upload-artifact@v2"
-      with:
-        name: "gestureImprovements@gestures.shell-extension.zip"
-        path: "${{ github.workspace }}/build/gestureImprovements@gestures.shell-extension.zip"
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build
+        run: |
+          npm run build
+
+      - name: Create Zip
+        run: |
+          make pack
+
+      - name: Upload archive artifact
+        uses: "actions/upload-artifact@v2"
+        with:
+          name: "gestureImprovements@gestures.shell-extension.zip"
+          path: "${{ github.workspace }}/build/gestureImprovements@gestures.shell-extension.zip"
