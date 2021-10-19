@@ -58,4 +58,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: gestureImprovements@gestures.shell-extension.zip
-          path: /pwd/build/gestureImprovements@gestures.shell-extension.zip
+          path: build/gestureImprovements@gestures.shell-extension.zip
