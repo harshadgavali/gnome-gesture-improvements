@@ -2,13 +2,15 @@ import Clutter from '@gi-types/clutter';
 import GObject from '@gi-types/gobject';
 import Shell from '@gi-types/shell';
 import Meta from '@gi-types/meta';
-import { imports, global, CustomEventType } from 'gnome-shell';
+import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;
 const { SwipeTracker } = imports.ui.swipeTracker;
 
 import * as DBusUtils from './utils/dbus';
 import { TouchpadConstants } from '../constants';
+import { registerClass } from './utils/gobject';
+import { ClutterEventType, CustomEventType } from './utils/clutter';
 
 // define enum
 enum TouchpadState {
@@ -18,7 +20,7 @@ enum TouchpadState {
 	IGNORED = 3,
 }
 
-export const TouchpadSwipeGesture = GObject.registerClass({
+export const TouchpadSwipeGesture = registerClass({
 	Properties: {
 		'enabled': GObject.ParamSpec.boolean(
 			'enabled',
@@ -57,13 +59,17 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 	TOUCHPAD_BASE_WIDTH = TouchpadConstants.TOUCHPAD_BASE_WIDTH;
 	DRAG_THRESHOLD_DISTANCE = TouchpadConstants.DRAG_THRESHOLD_DISTANCE;
 	enabled = true;
+	private _lastHoldCancelledTime = 0;
+	private _hadHoldGesture = false;
+	private HOLD_TIME = 100; // ms
+	private _time = 0;
 
 	constructor(
 		nfingers: number[],
 		allowedModes: Shell.ActionMode,
 		orientation: Clutter.Orientation,
 		followNaturalScroll = true,
-		checkAllowedGesture = undefined,
+		checkAllowedGesture?: (event: CustomEventType) => boolean,
 		gestureSpeed = 1.0,
 	) {
 		super();
@@ -82,7 +88,17 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		this.SWIPE_MULTIPLIER = TouchpadConstants.SWIPE_MULTIPLIER * (typeof (gestureSpeed) !== 'number' ? 1.0 : gestureSpeed);
 	}
 
+	_handleHold(event: CustomEventType): void {
+		if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.END && event.get_is_cancelled())
+			this._lastHoldCancelledTime = event.get_time();
+	}
+
 	_handleEvent(_actor: undefined | Clutter.Actor, event: CustomEventType): boolean {
+		if (event.type() === ClutterEventType.TOUCHPAD_HOLD) {
+			this._handleHold(event);
+			return Clutter.EVENT_PROPAGATE;
+		}
+
 		if (event.type() !== Clutter.EventType.TOUCHPAD_SWIPE)
 			return Clutter.EVENT_PROPAGATE;
 
@@ -90,6 +106,8 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		if (gesturePhase === Clutter.TouchpadGesturePhase.BEGIN) {
 			this._state = TouchpadState.NONE;
 			this._toggledDirection = false;
+
+			this._hadHoldGesture = event.get_time() - this._lastHoldCancelledTime <= this.HOLD_TIME;
 		}
 
 		if (this._state === TouchpadState.IGNORED)
@@ -126,6 +144,7 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		const [x, y] = event.get_coords();
 		const [dx, dy] = event.get_gesture_motion_delta_unaccelerated();
 
+		this._time = time;
 		if (this._state === TouchpadState.NONE) {
 			if (dx === 0 && dy === 0)
 				return Clutter.EVENT_PROPAGATE;
@@ -202,6 +221,22 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 			global.stage.disconnect(this._stageCaptureEvent);
 			this._stageCaptureEvent = 0;
 		}
+	}
+
+	get hadHoldGesture(): boolean {
+		return this._hadHoldGesture;
+	}
+
+	get time(): number {
+		return this._time;
+	}
+
+	get followNaturalScroll(): boolean {
+		return this._followNaturalScroll;
+	}
+
+	set followNaturalScroll(follow: boolean) {
+		this._followNaturalScroll = follow;
 	}
 });
 
