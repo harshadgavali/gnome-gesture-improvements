@@ -22,10 +22,6 @@ update:
 build-tests: build/tests/prefs.js
 	node ${BUILDIR}/scripts/transpile.js --dir ${BUILDIR}/tests --type app
 	@npx eslint build/tests --fix
-	
-compile-schemas: extension/schemas/*.xml
-	@cp -r extension/schemas ${DESTDIR}/schemas
-	glib-compile-schemas ${DESTDIR}/schemas
 
-test-ui: build-tests compile-schemas
+test-ui: build-tests
 	gjs build/tests/prefs.js
