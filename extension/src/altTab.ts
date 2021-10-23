@@ -168,7 +168,7 @@ export class AltTabGestureExtension implements ISubExtension {
 		if (this._extState === AltTabExtState.ALTTAB ||
 			this._extState === AltTabExtState.ALTTABDELAY) {
 			this._extState = AltTabExtState.DEFAULT;
-			if (this._altTabTimeoutId != 0) {
+			if (this._altTabTimeoutId) {
 				GLib.source_remove(this._altTabTimeoutId);
 				this._altTabTimeoutId = 0;
 			}

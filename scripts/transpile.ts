@@ -173,7 +173,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 			context.factory.createVariableStatement(
 				[],
 				node.declarationList.declarations.map(d => {
-					if (d.name.kind == ts.SyntaxKind.Identifier) {
+					if (d.name.kind === ts.SyntaxKind.Identifier) {
 						variables.push((d.name as ts.Identifier).text);
 					}
 					return moveComments(createVariableDeclaration(context, d.name, d.initializer), d);
