@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import GObject from '@gi-types/gobject';
-import { Actor, AnimationMode } from '@gi-types/clutter';
-import { Adjustment } from '@gi-types/st';
+import GObject from '@gi-types/gobject2';
+import { Actor, AnimationMode } from '@gi-types/clutter8';
+import { Adjustment } from '@gi-types/st1';
 
 declare type EaseParamsType<T extends GObject.Object> = {
 	duration: number;

@@ -1,5 +1,5 @@
-import Clutter from '@gi-types/clutter';
-import Shell from '@gi-types/shell';
+import Clutter from '@gi-types/clutter8';
+import Shell from '@gi-types/shell0';
 import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;

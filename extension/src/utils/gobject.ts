@@ -9,7 +9,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import GObject from '@gi-types/gobject';
+import GObject from '@gi-types/gobject2';
 const OGRegisterClass = GObject.registerClass;
 
 type ConstructorType = new (...args: any[]) => any;

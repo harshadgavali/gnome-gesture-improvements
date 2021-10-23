@@ -1,7 +1,7 @@
-import Clutter from '@gi-types/clutter';
-import GLib from '@gi-types/glib';
-import Shell from '@gi-types/shell';
-import St from '@gi-types/st';
+import Clutter from '@gi-types/clutter8';
+import GLib from '@gi-types/glib2';
+import Shell from '@gi-types/shell0';
+import St from '@gi-types/st1';
 import { imports } from 'gnome-shell';
 
 const Main = imports.ui.main;

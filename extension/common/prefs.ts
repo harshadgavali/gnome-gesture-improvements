@@ -1,6 +1,6 @@
-import Gio from '@gi-types/gio';
-import Gtk from '@gi-types/gtk';
-import GObject from '@gi-types/gobject';
+import Gio from '@gi-types/gio2';
+import Gtk from '@gi-types/gtk4';
+import GObject from '@gi-types/gobject2';
 import { CanEnableMinimizeGesture } from './utils/prefs';
 
 /**
