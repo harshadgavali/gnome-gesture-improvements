@@ -7,9 +7,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:transpile": "tsc scripts/transpile.ts --outDir build --allowSyntheticDefaultImports --sourceMap --target esnext --module esnext --moduleResolution node",
-    "lint:extension": "eslint extension scripts",
+    "lint:extension": "eslint extension scripts tests",
     "lint:package": "eslint build --fix",
-    "build": "npm run clean && npm run lint:extension && tsc && node build/scripts/transpile.js && npm run lint:package",
+    "transpile:watch": "tsc --watch",
+    "transpile": "npm run lint:extension && tsc",
+    "build": "npm run clean && npm run transpile && node build/scripts/transpile.js && npm run lint:package",
     "clean": "rm -rf build && mkdir build",
     "pack": "npm run build && make pack",
     "update": "npm run pack && make update"
