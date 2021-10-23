@@ -29,6 +29,11 @@ declare namespace __shell_private_types {
 		_stageCaptureEvent: number;
 		destroy(): void;
 		_handleEvent(actor: Clutter.Actor | undefined, event: CustomEventType): boolean;
+
+		/** This values are provided by Modified TouchpadGesture */
+		hadHoldGesture?: boolean;
+		time?: number;
+		followNaturalScroll?: boolean;
 	}
 
 	declare interface IMonitorState {
@@ -190,6 +195,14 @@ declare namespace imports {
 
 				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
 				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
+
+				movingWindow: Meta.Window;
+			}
+		}
+
+		namespace layout {
+			declare class MonitorConstraint extends Clutter.Constraint {
+				constructor(params: Partial<{ primary: boolean }>);
 			}
 		}
 	}
@@ -228,15 +241,4 @@ declare namespace imports {
 			}
 		}
 	}
-}
-
-/// custom types
-
-declare interface CustomEventType {
-	type(): Clutter.EventType,
-	get_gesture_phase(): Clutter.TouchpadGesturePhase,
-	get_touchpad_gesture_finger_count(): number,
-	get_time(): number,
-	get_coords(): [number, number],
-	get_gesture_motion_delta_unaccelerated(): [number, number],
 }
