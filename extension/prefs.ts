@@ -1,4 +1,4 @@
-import Gtk from '@gi-types/gtk';
+import Gtk from '@gi-types/gtk4';
 import { imports } from 'gnome-shell';
 import { getPrefsWidget } from './common/prefs';
 

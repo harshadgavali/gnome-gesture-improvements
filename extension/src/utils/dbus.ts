@@ -1,9 +1,9 @@
 import { imports, global } from 'gnome-shell';
 
-import Clutter from '@gi-types/clutter';
-import Gio from '@gi-types/gio';
-import Meta from '@gi-types/meta';
-import GObject from '@gi-types/gobject';
+import Clutter from '@gi-types/clutter8';
+import Gio from '@gi-types/gio2';
+import Meta from '@gi-types/meta8';
+import GObject from '@gi-types/gobject2';
 import { registerClass } from './gobject';
 import { ClutterEventType, CustomEventType } from './clutter';
 
@@ -97,14 +97,13 @@ function GenerateEvent(type: number, sphase: string, fingers: number, time: numb
 				case 'Update':
 					return Clutter.TouchpadGesturePhase.UPDATE;
 				default:
-					return Clutter.TouchpadGesturePhase.END;
+					return is_cancelled ? Clutter.TouchpadGesturePhase.CANCEL : Clutter.TouchpadGesturePhase.END;
 			}
 		},
 		get_touchpad_gesture_finger_count: () => fingers,
 		get_coords: () => global.get_pointer().slice(0, 2) as [number, number],
 		get_gesture_motion_delta_unaccelerated: () => [dx ?? 0, dy ?? 0],
 		get_time: () => time,
-		get_is_cancelled: () => is_cancelled ?? false,
 	};
 }
 

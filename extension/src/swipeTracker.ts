@@ -1,7 +1,7 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject';
-import Shell from '@gi-types/shell';
-import Meta from '@gi-types/meta';
+import Clutter from '@gi-types/clutter8';
+import GObject from '@gi-types/gobject2';
+import Shell from '@gi-types/shell0';
+import Meta from '@gi-types/meta8';
 import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;
@@ -89,7 +89,7 @@ export const TouchpadSwipeGesture = registerClass({
 	}
 
 	_handleHold(event: CustomEventType): void {
-		if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.END && event.get_is_cancelled())
+		if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.CANCEL)
 			this._lastHoldCancelledTime = event.get_time();
 	}
 
@@ -142,7 +142,7 @@ export const TouchpadSwipeGesture = registerClass({
 		const time = event.get_time();
 
 		const [x, y] = event.get_coords();
-		const [dx, dy] = event.get_gesture_motion_delta_unaccelerated();
+		const [dx, dy] = event.get_gesture_motion_delta_unaccelerated() as [number, number];
 
 		this._time = time;
 		if (this._state === TouchpadState.NONE) {

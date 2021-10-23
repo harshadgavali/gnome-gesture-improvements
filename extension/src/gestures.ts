@@ -1,8 +1,8 @@
-import GObject from '@gi-types/gobject';
-import Shell from '@gi-types/shell';
-import Meta from '@gi-types/meta';
-import Clutter from '@gi-types/clutter';
-import St from '@gi-types/st';
+import GObject from '@gi-types/gobject2';
+import Shell from '@gi-types/shell0';
+import Meta from '@gi-types/meta8';
+import Clutter from '@gi-types/clutter8';
+import St from '@gi-types/st1';
 import { imports, global, __shell_private_types } from 'gnome-shell';
 
 const Main = imports.ui.main;

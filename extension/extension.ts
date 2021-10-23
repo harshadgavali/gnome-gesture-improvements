@@ -1,5 +1,5 @@
-import GLib from '@gi-types/glib';
-import Gio from '@gi-types/gio';
+import GLib from '@gi-types/glib2';
+import Gio from '@gi-types/gio2';
 
 import * as Constants from './constants';
 import { GestureExtension } from './src/gestures';
