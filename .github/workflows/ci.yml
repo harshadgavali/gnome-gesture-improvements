@@ -46,7 +46,7 @@ jobs:
 
       - name: Create ZipFile Name
         id: zipName
-        run: echo "::set-output name=filename::'gestureImprovements.$(date --iso-8601).$(git rev-parse --short HEAD)@gestures.shell-extension.zip'"
+        run: echo "::set-output name=filename::gestureImprovements.$(date --iso-8601).$(git rev-parse --short HEAD)@gestures.shell-extension.zip"
 
       - name: Upload archive artifact
         uses: "actions/upload-artifact@v2"
