@@ -20,5 +20,8 @@
       <default>false</default>
       <description>If true, when swipe down on non-maximized window minimizes it</description>
     </key>
+    <key name='follow-natural-scroll' type='b'>
+      <default>true</default>
+    </key>
   </schema>
 </schemalist>
