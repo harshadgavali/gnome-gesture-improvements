@@ -16,6 +16,10 @@
       <default>false</default>
       <description>If true, use 3-fingers for overview gesture, 4 for snapping/tiling</description>
     </key>
+    <key name='allow-minimize-window' type='b'>
+      <default>false</default>
+      <description>If true, when swipe down on non-maximized window minimizes it</description>
+    </key>
     <key name='follow-natural-scroll' type='b'>
       <default>true</default>
     </key>

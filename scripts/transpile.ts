@@ -3,8 +3,8 @@ import glob from 'glob';
 import path from 'path';
 import ts from 'typescript';
 
-const BASEDIR = 'build/extension';
-const ISEXTENSION = true; // is your code for extension?
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 // list of gi modules and their name in imports.gi
 const GIReplacements: Record<string, string> = {
@@ -521,12 +521,57 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 	};
 };
 
-const matches = new glob.GlobSync(`${BASEDIR}/**/*.js`);
-matches.found.forEach(file => {
-	console.log(`transpiling file: ${file}`);
+enum ProgramType {
+	App = 'app',
+	Extension = 'extension',
+}
 
-	const text = fs.readFileSync(file).toString();
-	let sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2018, true, ts.ScriptKind.JS);
-	sourceFile = ts.transform(sourceFile, [transformExports, transformImports, transformGObjectClasses]).transformed[0];
-	fs.writeFileSync(file, printer.printFile(sourceFile));
-});
+interface ProgramOptions {
+	dir: string,
+	type: ProgramType | string,
+}
+
+async function readCommandLineOptions(): Promise<ProgramOptions> {
+	const options = await yargs(hideBin(process.argv))
+		.option('dir', {
+			alias: 'd',
+			description: 'Directory of *javascript* files, which will be overwritten',
+			type: 'string',
+			default: 'build/extension',
+		})
+		.option('type', {
+			alias: 't',
+			choices: Object.values(ProgramType),
+			description: 'Is your code gjs-app or extension?',
+			default: 'extension',
+		})
+		.help()
+		.alias('h', 'help')
+		.parse();
+
+	return options;
+}
+
+function transpileFiles() {
+	const matches = new glob.GlobSync(`${BASEDIR}/**/*.js`);
+	matches.found.forEach(file => {
+		console.log(`transpiling file: ${file}`);
+
+		const text = fs.readFileSync(file).toString();
+		let sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2018, true, ts.ScriptKind.JS);
+		sourceFile = ts.transform(sourceFile, [transformExports, transformImports, transformGObjectClasses]).transformed[0];
+		fs.writeFileSync(file, printer.printFile(sourceFile));
+	});
+}
+
+let BASEDIR = 'build/extension';
+let ISEXTENSION = true; // is your code for extension?
+
+async function main() {
+	const options = await readCommandLineOptions();
+	BASEDIR = options.dir;
+	ISEXTENSION = options.type === ProgramType.Extension;
+	transpileFiles();
+}
+
+main();
