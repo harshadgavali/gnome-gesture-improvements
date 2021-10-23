@@ -14,3 +14,6 @@ declare interface ISubExtension {
 declare interface Math {
 	clamp(num: number, min: number, max: number): number;
 }
+
+// types
+declare type KeysOfType<T, U> = { [P in keyof T]: T[P] extends U ? P : never; }[keyof T];
