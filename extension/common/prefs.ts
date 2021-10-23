@@ -1,6 +1,7 @@
 import Gio from '@gi-types/gio';
 import Gtk from '@gi-types/gtk';
 import GObject from '@gi-types/gobject';
+import { CanEnableMinimizeGesture } from './utils/prefs';
 
 /**
  * Bind value of settings to {@link Gtk.SpinButton}
@@ -41,6 +42,15 @@ function display_in_log_scale(key: string, label_key: string, settings: Gio.Sett
 	scale.set_value(initialValue);
 }
 
+/** Show button to enable minimize gesture, returns whether button was shown */
+function showEnableMinimizeButton(key: string, settings: Gio.Settings, builder: Gtk.Builder) {
+	const row = builder.get_object<Gtk.ListBoxRow>(`${key}_box-row`);
+	row.visible = settings.get_boolean(key) || CanEnableMinimizeGesture();
+	if (row.visible)
+		bind_boolean_value(key, settings, builder);
+	return row.visible;
+}
+
 export function getPrefsWidget<T = GObject.Object>(settings: Gio.Settings, uiPath: string): T {
 	const builder = new Gtk.Builder();
 	builder.add_from_file(uiPath);
@@ -52,6 +62,8 @@ export function getPrefsWidget<T = GObject.Object>(settings: Gio.Settings, uiPat
 	bind_boolean_value('default-session-workspace', settings, builder);
 	bind_boolean_value('default-overview', settings, builder);
 	bind_boolean_value('follow-natural-scroll', settings, builder);
+
+	showEnableMinimizeButton('allow-minimize-window', settings, builder);
 
 	return builder.get_object<T>('main_prefs');
 }
