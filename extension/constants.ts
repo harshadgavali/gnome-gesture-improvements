@@ -26,10 +26,19 @@ export const OverviewControlsState = {
 	HIDDEN_N: 3,
 };
 
+// define enum
+export enum AnimatePanel {
+	None = 0,
+	MoveWindow = 1,
+	SwitchWorkspace = 2,
+	MoveWindowAndSwitchWorkspace = 3,
+}
+
 export const ExtSettings = {
 	DEFAULT_SESSION_WORKSPACE_GESTURE: false,
 	DEFAULT_OVERVIEW_GESTURE: false,
 	FOLLOW_NATURAL_SCROLL: true,
+	ANIMATE_PANEL: AnimatePanel.MoveWindow,
 };
 
 export const RELOAD_DELAY = 150; // reload extension delay in ms
