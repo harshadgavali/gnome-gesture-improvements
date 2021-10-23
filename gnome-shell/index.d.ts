@@ -6,13 +6,6 @@ import Meta from '@gi-types/meta';
 import GObject from '@gi-types/gobject';
 
 declare const global: import('@gi-types/shell').Global;
-
-declare interface ExtensionMeta {
-	uuid: string,
-	'settings-schema': string,
-	'gettext-domain': string
-}
-
 declare interface ExtensionUtilsMeta {
 	getSettings(schema?: string): Gio.Settings;
 	getCurrentExtension(): {

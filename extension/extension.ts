@@ -23,6 +23,7 @@ class Extension {
 		this._noReloadDelayFor = [
 			'default-session-workspace',
 			'default-overview',
+			'allow-minimize-window',
 			'follow-natural-scroll',
 		];
 	}
@@ -86,6 +87,7 @@ class Extension {
 		if (this.settings) {
 			Constants.ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE = this.settings.get_boolean('default-session-workspace');
 			Constants.ExtSettings.DEFAULT_OVERVIEW_GESTURE = this.settings.get_boolean('default-overview');
+			Constants.ExtSettings.ALLOW_MINIMIZE_WINDOW = this.settings.get_boolean('allow-minimize-window');
 			Constants.ExtSettings.FOLLOW_NATURAL_SCROLL = this.settings.get_boolean('follow-natural-scroll');
 			Constants.TouchpadConstants.SWIPE_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_SWIPE_MULTIPLIER * this.settings.get_double('touchpad-speed-scale');
 			Constants.AltTabConstants.DELAY_DURATION = this.settings.get_int('alttab-delay');
