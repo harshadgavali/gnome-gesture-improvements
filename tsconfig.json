@@ -62,13 +62,22 @@
     "skipLibCheck": true, /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "paths": {
-      "gnome-shell": ["./gnome-shell"]
-    }
+      "gnome-shell": [
+        "./gnome-shell"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@gi-types"
+    ],
+    "types": [
+      "gjs-environment",
+    ],
   },
   "include": [
     "extension/**/*.ts",
     "extension/**/*.js",
     "scripts/**/*.ts",
     "gnome-shell/*.d.ts",
+    "tests/**/*.ts"
   ]
 }
