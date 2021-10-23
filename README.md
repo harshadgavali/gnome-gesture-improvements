@@ -53,6 +53,7 @@ gsettings set org.gnome.shell.window-switcher current-workspace-only false
 
 # Contributors
 [@jacksongoode](https://github.com/jacksongoode)
+[@kyteinsky](https://github.com/kyteinsky)
 
 # Thanks
 [@ewlsh](https://gitlab.gnome.org/ewlsh) for [Typescript definitions](https://www.npmjs.com/package/@gi-types/glib) for GLib, GObject, ...
