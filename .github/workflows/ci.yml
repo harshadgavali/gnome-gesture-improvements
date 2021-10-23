@@ -1,0 +1,55 @@
+name: Extension CI
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Lint Source
+        run: |
+          npm run clean
+          npm run lint:extension
+
+      - name: Build
+        run: |
+          tsc
+          node build/scripts/transpile.js
+
+      - name: Lint package
+        run: |
+          npm run lint:package
+
+      - name: Create archive artifact
+        run: |
+          make pack
+
+      - name: Create ZipFile Name
+        id: zipName
+        run: echo "::set-output name=filename::gestureImprovements.$(date --iso-8601).$(git rev-parse --short HEAD)@gestures.shell-extension.zip"
+
+      - name: Upload archive artifact
+        uses: "actions/upload-artifact@v2"
+        with:
+          name: ${{ steps.zipName.outputs.filename }}
+          path: ${{ github.workspace }}/build/gestureImprovements@gestures.shell-extension.zip

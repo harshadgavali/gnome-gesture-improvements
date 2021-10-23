@@ -266,6 +266,7 @@ export class SnapWindowExtension implements ISubExtension {
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.VERTICAL,
+			true,
 			1,
 			{ allowTouch: false },
 		);
