@@ -4,8 +4,8 @@ import Clutter from '@gi-types/clutter8';
 import Gio from '@gi-types/gio2';
 import Meta from '@gi-types/meta8';
 import GObject from '@gi-types/gobject2';
-import { registerClass } from './gobject';
-import { ClutterEventType, CustomEventType } from './clutter';
+import { registerClass } from '../../common/utils/gobject';
+import { ClutterEventType, CustomEventType } from '../../common/utils/clutter';
 
 const Util = imports.misc.util;
 

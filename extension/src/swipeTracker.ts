@@ -9,8 +9,8 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 
 import * as DBusUtils from './utils/dbus';
 import { TouchpadConstants } from '../constants';
-import { registerClass } from './utils/gobject';
-import { ClutterEventType, CustomEventType } from './utils/clutter';
+import { registerClass } from '../common/utils/gobject';
+import { ClutterEventType, CustomEventType } from '../common/utils/clutter';
 
 // define enum
 enum TouchpadState {

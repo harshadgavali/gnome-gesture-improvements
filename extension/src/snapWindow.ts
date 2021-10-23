@@ -10,7 +10,7 @@ const Utils = imports.misc.util;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { ExtSettings } from '../constants';
-import { registerClass } from './utils/gobject';
+import { registerClass } from '../common/utils/gobject';
 import { easeActor, easeAdjustment } from './utils/environment';
 
 const { SwipeTracker } = imports.ui.swipeTracker;

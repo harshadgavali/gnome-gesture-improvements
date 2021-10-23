@@ -1,7 +1,7 @@
 import Gio from '@gi-types/gio2';
 import Gtk from '@gi-types/gtk4';
 import GObject from '@gi-types/gobject2';
-import { CanEnableMinimizeGesture } from './utils/prefs';
+import { CanEnableMinimizeGesture } from './utils/prefUtils';
 
 /**
  * Bind value of settings to {@link Gtk.SpinButton}

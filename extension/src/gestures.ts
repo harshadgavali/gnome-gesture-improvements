@@ -11,8 +11,8 @@ const { MonitorConstraint } = imports.ui.layout;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { OverviewControlsState, ExtSettings, AnimatePanel } from '../constants';
-import { CustomEventType } from './utils/clutter';
-import { registerClass } from './utils/gobject';
+import { CustomEventType } from '../common/utils/clutter';
+import { registerClass } from '../common/utils/gobject';
 import { easeActor } from './utils/environment';
 
 
