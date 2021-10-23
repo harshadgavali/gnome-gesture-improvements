@@ -1,7 +1,6 @@
 import Shell from '@gi-types/shell';
 import Meta from '@gi-types/meta';
 import St from '@gi-types/st';
-import GObject from '@gi-types/gobject';
 import Clutter from '@gi-types/clutter';
 
 import { imports, global } from 'gnome-shell';
@@ -11,30 +10,14 @@ const Utils = imports.misc.util;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { ExtSettings } from '../constants';
+import { registerClass } from './utils/gobject';
+import { easeActor, easeAdjustment } from './utils/environment';
 
 const { SwipeTracker } = imports.ui.swipeTracker;
 
 const WINDOW_ANIMATION_TIME = 250;
 const UPDATED_WINDOW_ANIMATION_TIME = 150;
 const TRIGGER_THRESHOLD = 0.1;
-
-declare interface EaseParamsType {
-	duration: number,
-	mode: Clutter.AnimationMode,
-	repeatCount?: number,
-	autoReverse?: boolean,
-	onStopped?: (isFinished?: boolean) => void,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[key: string]: any
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function easeActor(actor: any, value: any, params: EaseParamsType) {
-	if (value !== undefined)
-		actor.ease(value, params);
-	else
-		actor.ease(params);
-}
 
 // define enum
 enum GestureMaxUnMaxState {
@@ -49,7 +32,7 @@ enum GestureTileState {
 	LEFT_TILE = GestureMaxUnMaxState.MAXIMIZE,
 }
 
-const TilePreview = GObject.registerClass(
+const TilePreview = registerClass(
 	class TilePreview extends St.Widget {
 		private _adjustment: St.Adjustment;
 
@@ -158,7 +141,7 @@ const TilePreview = GObject.registerClass(
 				this._direction = Clutter.Orientation.VERTICAL;
 			};
 
-			easeActor(this._adjustment, state, {
+			easeAdjustment(this._adjustment, state, {
 				duration: duration,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: callback,
@@ -212,7 +195,7 @@ const TilePreview = GObject.registerClass(
 		}
 
 		easeOpacity(value: number, callback?: () => void) {
-			easeActor(this, undefined, {
+			easeActor(this as St.Widget, {
 				opacity: value,
 				duration: UPDATED_WINDOW_ANIMATION_TIME,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
