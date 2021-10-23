@@ -74,6 +74,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [3] : [4]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
+			ExtSettings.FOLLOW_NATURAL_SCROLL,
 			1 / 1.5,
 			{ allowTouch: false },
 		);
@@ -136,7 +137,7 @@ export class GestureExtension implements ISubExtension {
 				swipeTracker: Main.overview._overview._controls._workspacesDisplay._swipeTracker,
 				nfingers: [3, 4],
 				disableOldGesture: true,
-				followNaturalScroll: true,
+				followNaturalScroll: ExtSettings.FOLLOW_NATURAL_SCROLL,
 				modes: Shell.ActionMode.OVERVIEW,
 				gestureSpeed: 1 / 1.5,
 				checkAllowedGesture: (event: CustomEventType) => {
@@ -154,7 +155,7 @@ export class GestureExtension implements ISubExtension {
 				swipeTracker: Main.overview._overview._controls._appDisplay._swipeTracker,
 				nfingers: [3],
 				disableOldGesture: true,
-				followNaturalScroll: true,
+				followNaturalScroll: ExtSettings.FOLLOW_NATURAL_SCROLL,
 				modes: Shell.ActionMode.OVERVIEW,
 				checkAllowedGesture: () => {
 					if (Main.overview._overview._controls._searchController.searchActive) {
