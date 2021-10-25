@@ -344,8 +344,8 @@ export class SnapWindowExtension implements ISubExtension {
 	_gestureBegin(tracker: typeof SwipeTracker.prototype, monitor: number): void {
 		const window = global.display.get_focus_window() as Meta.Window | null;
 
-		// if window can't be maximized and window is not fullscreen
 		// fullscreen window's can't be maximized :O
+		// if window can't be maximized and window is not fullscreen, return
 		if (!window || !(window.can_maximize() || window.is_fullscreen())) {
 			return;
 		}
