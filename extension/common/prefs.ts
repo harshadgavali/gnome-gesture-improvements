@@ -31,10 +31,8 @@ type AllUIObjectKeys =
 	'alttab-delay_box-row'
 	;
 
-type FilterGetterFunctionsKeys<T> = T extends `get_${infer _R}` ? T : never;
-type GetterFunctionsKeys<T extends GObject.Object> = FilterGetterFunctionsKeys<keyof T>;
-
-export type GioSettings = Omit<Gio.Settings, GetterFunctionsKeys<Gio.Settings>> & {
+type KeysThatStartsWith<K extends string, U extends string> = K extends `${U}${infer _R}` ? K : never;
+export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_'>> & {
 	get_boolean(key: BooleanSettingsKeys): boolean;
 	get_int(key: IntegerSettingsKeys): number;
 	get_double(key: DoubleSettingsKeys): number;
@@ -45,26 +43,37 @@ type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 }
 
 /**
- * Bind value of settings to {@link Gtk.SpinButton}
- * @param key key of settings and id of {@link Gtk.SpinButton} object in builder
+ * Bind value of setting to {@link Gtk.SpinButton}
+ * @param key key of setting and id of {@link Gtk.SpinButton} object in builder
  */
 function bind_int_value(key: IntegerSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
 	const button = builder.get_object<Gtk.SpinButton>(key);
 	settings.bind(key, button, 'value', Gio.SettingsBindFlags.DEFAULT);
 }
 
+interface BindBooleanParams {
+	/** flag used when binding setting's key to switch's {@link Gtk.Switch.active} status */
+	flags?: Gio.SettingsBindFlags,
+	/** list of key of {@link Gtk.Box} object in builder, setting's key is binded to {@link Gtk.Box.sensitive} */
+	sensitiveRowKeys?: AllUIObjectKeys[],
+}
+
 /**
  * Bind value of settings to {@link Gtk.Swich}
- * @param key key of settings and id of {@link Gtk.Switch} object in builder
+ * @param key key of setting and id of {@link Gtk.Switch} object in builder
  */
-function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, builder: GtkBuilder, flags = Gio.SettingsBindFlags.DEFAULT) {
+function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, builder: GtkBuilder, params?: BindBooleanParams) {
 	const button = builder.get_object<Gtk.Switch>(key);
-	settings.bind(key, button, 'active', flags);
+	settings.bind(key, button, 'active', params?.flags ?? Gio.SettingsBindFlags.DEFAULT);
+	params?.sensitiveRowKeys?.forEach(row_key => {
+		const row = builder.get_object<Gtk.ListBoxRow>(row_key);
+		button.bind_property('active', row, 'sensitive', GObject.BindingFlags.SYNC_CREATE);
+	});
 }
 
 /**
  * Display value of `key` in log scale.
- * @param key key of settings and id of {@link Gtk.Scale} object in builder
+ * @param key key of setting and id of {@link Gtk.Scale} object in builder
  */
 function display_in_log_scale(key: DoubleSettingsKeys, label_key: AllUIObjectKeys, settings: GioSettings, builder: GtkBuilder) {
 	const scale = builder.get_object<Gtk.Scale>(key);
@@ -90,27 +99,13 @@ function showEnableMinimizeButton(key: BooleanSettingsKeys, row_key: AllUIObject
 	return row.visible;
 }
 
-function addToggleToDisableAltTabGesture(key: BooleanSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
-	bind_boolean_value(key, settings, builder);
-
-	const button = builder.get_object<Gtk.Switch>(key);
-	const delayButtonRow = builder.get_object<Gtk.ListBoxRow>('alttab-delay_box-row');
-	button.bind_property('active', delayButtonRow, 'sensitive', GObject.BindingFlags.SYNC_CREATE);
-}
-
-function addToggleToDisableWindowManipulationGesture(key: BooleanSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
-	const button = builder.get_object<Gtk.Switch>(key);
-	const minimizeButtonRow = builder.get_object<Gtk.ListBoxRow>('allow-minimize-window_box-row');
-	button.bind_property('active', minimizeButtonRow, 'sensitive', GObject.BindingFlags.SYNC_CREATE);
-	bind_boolean_value(key, settings, builder);
-}
-
-function addToggleToDisableGestures(settings: GioSettings, builder: GtkBuilder) {
-	addToggleToDisableAltTabGesture('enable-alttab-gesture', settings, builder);
-	addToggleToDisableWindowManipulationGesture('enable-window-manipulation-gesture', settings, builder);
-}
-
-export function getPrefsWidget<T = GObject.Object>(settings: Gio.Settings, uiPath: string): T {
+/**
+ * Binds preference widgets and settings keys
+ * @param settings setting object of extension
+ * @param uiPath path of ui file
+ * @returns Get preference widget of type {@link T}
+ */
+export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settings, uiPath: string): T {
 	const builder = new Gtk.Builder();
 	builder.add_from_file(uiPath);
 
@@ -118,13 +113,24 @@ export function getPrefsWidget<T = GObject.Object>(settings: Gio.Settings, uiPat
 
 	bind_int_value('alttab-delay', settings, builder);
 
-	bind_boolean_value('default-session-workspace', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
-	bind_boolean_value('default-overview', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
+	bind_boolean_value('default-session-workspace', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
+	bind_boolean_value('default-overview', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
 	bind_boolean_value('follow-natural-scroll', settings, builder);
+
+	bind_boolean_value('enable-alttab-gesture', settings, builder, { sensitiveRowKeys: ['alttab-delay_box-row'] });
+	bind_boolean_value('enable-window-manipulation-gesture', settings, builder, { sensitiveRowKeys: ['allow-minimize-window_box-row'] });
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
 
-	addToggleToDisableGestures(settings, builder);
+	const main_prefs = builder.get_object<T>('main_prefs');
+	const header_bar = builder.get_object<Gtk.HeaderBar>('header_bar');
 
-	return builder.get_object<T>('main_prefs');
+	main_prefs.connect('realize', () => {
+		const window = main_prefs.get_root();
+
+		if (window && window instanceof Gtk.Window)
+			window.set_titlebar(header_bar);
+	});
+
+	return main_prefs;
 }
