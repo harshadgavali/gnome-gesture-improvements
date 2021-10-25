@@ -1,5 +1,4 @@
 import GLib from '@gi-types/glib';
-import Gio from '@gi-types/gio';
 
 import * as Constants from './constants';
 import { GestureExtension } from './src/gestures';
@@ -8,12 +7,13 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
+import { GioSettings } from './common/prefs';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
 class Extension {
 	private _extensions: ISubExtension[];
-	settings?: Gio.Settings;
+	settings?: GioSettings;
 	private _settingChangedId = 0;
 	private _reloadWaitId = 0;
 	private _noReloadDelayFor: string[];
@@ -68,12 +68,18 @@ class Extension {
 
 	_enable() {
 		this._initializeSettings();
-		this._extensions = [
-			new AltTabGestureExtension(),
+		this._extensions = [];
+		if (this.settings?.get_boolean('enable-alttab-gesture'))
+			this._extensions.push(new AltTabGestureExtension());
+
+		this._extensions.push(
 			new OverviewRoundTripGestureExtension(),
 			new GestureExtension(),
-			new SnapWindowExtension(),
-		];
+		);
+
+		if (this.settings?.get_boolean('enable-window-manipulation-gesture'))
+			this._extensions.push(new SnapWindowExtension());
+
 		this._extensions.forEach(extension => extension.apply());
 	}
 

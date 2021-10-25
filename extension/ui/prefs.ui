@@ -19,6 +19,41 @@
     <!-- <signal name="value-changed" handler="onAltTabDelayChanged"/> -->
   </object>
 
+  <!-- CSD -->
+  <object class="GtkHeaderBar" id="header_bar">
+    <!-- Information popup -->
+    <child>
+      <object class="GtkMenuButton">
+        <property name="can-focus">start</property>
+        <property name="halign">start</property>
+        <property name="valign">center</property>
+        <property name="icon-name">dialog-information-symbolic</property>
+        <property name="popover">
+          <object class="GtkPopover">
+            <property name="halign">start</property>
+            <property name="child">
+              <object class="GtkLabel">
+                <property name="label" translatable="yes">
+Some gestures are related to others
+- Vertical gestures      : Overview nagivation and window manipulation
+- Horizontal gestures : Workspace switching and window switching
+
+If you enable 4-finger gesture for overview navigation or workspace switching,
+other gesture, if enabled, will be activated using 3-finger gesture.
+
+If you disable 4-finger gesture for overview navigation or workspace switching,
+these gesture will be activated using 3-finger gesture and
+other gesture, if enabled, will be activated using 4-finger gesture.
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </child>
+  </object>
+
+  <!-- Main prefs -->
   <object class="GtkBox" id="main_prefs">
     <property name="orientation">vertical</property>
     <child>
@@ -41,7 +76,6 @@
                 <child>
                   <object class="GtkBox">
                     <property name="margin-bottom">12</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel">
                         <property name="halign">start</property>
@@ -62,27 +96,29 @@
                       <object class="GtkListBox">
                         <property name="selection-mode">none</property>
 
-                        <!-- Use default(3-finger) for session workspace switching -->
+                        <!-- Use default(4-finger) for session overview navigation -->
                         <child>
                           <object class="GtkListBoxRow">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
                             <property name="child">
                               <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
                                 <property name="spacing">32</property>
+
                                 <child>
                                   <object class="GtkBox">
                                     <property name="orientation">vertical</property>
                                     <property name="halign">start</property>
+
                                     <child>
                                       <object class="GtkLabel">
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="hexpand">1</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Enable 3-finger gestures for switching workspaces</property>
+                                        <property name="label" translatable="yes">4-finger gestures for overview navigation</property>
                                       </object>
                                     </child>
 
@@ -92,64 +128,17 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3-finger horizontal swipes to switch workspaces on desktop and 4-finger swipes to switch windows</property>
+                                        <property name="margin-top">6</property>
+                                        <property name="label" translatable="yes">For navigating between desktop, activities and appgrid</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
                                       </object>
                                     </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkSwitch" id="default-session-workspace">
-                                    <property name="halign">end</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="valign">center</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
 
-                        <!-- Use default(3-finger) for session overview navigation -->
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">32</property>
-                                <child>
-                                  <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
-                                    <property name="halign">start</property>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">start</property>
-                                        <property name="valign">start</property>
-                                        <property name="hexpand">1</property>
-                                        <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Enable 3-finger gestures for overview navigation</property>
-                                      </object>
-                                    </child>
-
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">start</property>
-                                        <property name="valign">end</property>
-                                        <property name="wrap">True</property>
-                                        <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Uses 3-finger vertical swipes to navigate between Desktop, Overview, AppGrid and 4-finger swipes to maximize/unmaximize/tile a window</property>
-                                        <style>
-                                          <class name="dim-label" />
-                                        </style>
-                                      </object>
-                                    </child>
                                   </object>
                                 </child>
+
                                 <child>
                                   <object class="GtkSwitch" id="default-overview">
                                     <property name="halign">end</property>
@@ -157,32 +146,103 @@
                                     <property name="valign">center</property>
                                   </object>
                                 </child>
+
                               </object>
                             </property>
                           </object>
                         </child>
 
-                        <!-- Minimize window gesture -->
+                        <!-- Use default(4-finger) for session workspace switching -->
                         <child>
-                          <object class="GtkListBoxRow" id="allow-minimize-window_box-row">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
+                          <object class="GtkListBoxRow">
                             <property name="child">
                               <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
                                 <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">4-finger gestures for workspace switching</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSwitch" id="default-session-workspace">
+                                    <property name="halign">end</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- AltTab Gesture -->
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Window switching</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSwitch" id="enable-alttab-gesture">
+                                    <property name="halign">end</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- Window manipulation Gesture -->
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
                                 <child>
                                   <object class="GtkBox">
                                     <property name="orientation">vertical</property>
                                     <property name="halign">start</property>
+
                                     <child>
                                       <object class="GtkLabel">
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="hexpand">1</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Enable minimize window gesture</property>
+                                        <property name="label" translatable="yes">Window manipulation</property>
                                       </object>
                                     </child>
 
@@ -192,14 +252,73 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
+                                        <property name="margin-top">6</property>
+                                        <property name="label" translatable="yes">Tile, unmaximize, maximize or fullscreen a window</property>
+                                        <style>
+                                          <class name="dim-label" />
+                                        </style>
+                                      </object>
+                                    </child>
+
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSwitch" id="enable-window-manipulation-gesture">
+                                    <property name="halign">end</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- Minimize window -->
+                        <child>
+                          <object class="GtkListBoxRow" id="allow-minimize-window_box-row">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <property name="halign">start</property>
+
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="halign">start</property>
+                                        <property name="valign">start</property>
+                                        <property name="hexpand">1</property>
+                                        <property name="xalign">0</property>
+                                        <property name="label" translatable="yes">Minimize window</property>
+                                      </object>
+                                    </child>
+
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="halign">start</property>
+                                        <property name="valign">end</property>
+                                        <property name="wrap">True</property>
+                                        <property name="xalign">0</property>
+                                        <property name="margin-top">6</property>
                                         <property name="label" translatable="yes">This will disable tiling gesture</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
                                       </object>
                                     </child>
+
                                   </object>
                                 </child>
+
                                 <child>
                                   <object class="GtkSwitch" id="allow-minimize-window">
                                     <property name="halign">end</property>
@@ -207,6 +326,7 @@
                                     <property name="valign">center</property>
                                   </object>
                                 </child>
+
                               </object>
                             </property>
                           </object>
@@ -241,16 +361,18 @@
                     <property name="child">
                       <object class="GtkListBox">
                         <property name="selection-mode">none</property>
+
                         <!-- Touchpad speed -->
                         <child>
                           <object class="GtkListBoxRow">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
                             <property name="child">
                               <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
                                 <property name="spacing">32</property>
+
                                 <child>
                                   <object class="GtkLabel">
                                     <property name="halign">start</property>
@@ -260,11 +382,13 @@
                                     <property name="label" translatable="yes">Touchpad swipe speed</property>
                                   </object>
                                 </child>
+
                                 <child>
                                   <object class="GtkBox">
                                     <property name="orientation">horizontal</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">1</property>
+
                                     <child>
                                       <object class="GtkScale" id="touchpad-speed-scale">
                                         <property name="width-request">300</property>
@@ -279,6 +403,7 @@
                                         </marks>
                                       </object>
                                     </child>
+
                                     <child>
                                       <object class="GtkEditableLabel" id="touchpadspeed_speed_display_value">
                                         <property name="valign">center</property>
@@ -289,37 +414,7 @@
                                         <property name="text">1.00</property>
                                       </object>
                                     </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
 
-                        <!-- Alt Tab delay -->
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">32</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="halign">start</property>
-                                    <property name="valign">center</property>
-                                    <property name="hexpand">1</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Window-switching popup delay (ms)</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkSpinButton" id="alttab-delay">
-                                    <property name="halign">end</property>
-                                    <property name="adjustment">alttab_delay_adjustment</property>
-                                    <!-- <signal name="value-changed" handler="onAltTabDelayChanged"/> -->
                                   </object>
                                 </child>
                               </object>
@@ -330,17 +425,19 @@
                         <!-- Follow Natural scroll -->
                         <child>
                           <object class="GtkListBoxRow">
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="margin-top">12</property>
-                            <property name="margin-bottom">12</property>
                             <property name="child">
                               <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
                                 <property name="spacing">32</property>
+
                                 <child>
                                   <object class="GtkBox">
                                     <property name="orientation">vertical</property>
                                     <property name="halign">start</property>
+
                                     <child>
                                       <object class="GtkLabel">
                                         <property name="halign">start</property>
@@ -357,14 +454,17 @@
                                         <property name="valign">end</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
+                                        <property name="margin-top">6</property>
                                         <property name="label" translatable="yes">Similar to natural scrolling. Swipe moves the content, not the view</property>
                                         <style>
                                           <class name="dim-label" />
                                         </style>
                                       </object>
                                     </child>
+
                                   </object>
                                 </child>
+
                                 <child>
                                   <object class="GtkSwitch" id="follow-natural-scroll">
                                     <property name="halign">end</property>
@@ -372,6 +472,41 @@
                                     <property name="valign">center</property>
                                   </object>
                                 </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- Alt Tab delay -->
+                        <child>
+                          <object class="GtkListBoxRow" id="alttab-delay_box-row">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Window switcher popup delay (ms)</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSpinButton" id="alttab-delay">
+                                    <property name="halign">end</property>
+                                    <property name="adjustment">alttab_delay_adjustment</property>
+                                    <!-- <signal name="value-changed" handler="onAltTabDelayChanged"/> -->
+                                  </object>
+                                </child>
+
                               </object>
                             </property>
                           </object>
@@ -388,6 +523,5 @@
         </property>
       </object>
     </child>
-
   </object>
 </interface>
