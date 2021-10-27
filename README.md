@@ -22,6 +22,9 @@ npm run update
 gnome-extensions enable gestureImprovements@gestures
 ```
 
+### Additional app X11
+On X11, you also need to install [gnome-x11-gesture-daemon](https://github.com/harshadgavali/gnome-x11-gesture-daemon)
+
 ## Gestures (including built-in ones)
 | Gesture                                     | Modes    | Fingers | Direction       |
 | :------------------------------------------ | :------- | :------ | :-------------- |
@@ -30,11 +33,15 @@ gnome-extensions enable gestureImprovements@gestures
 | Switch app pages                            | AppGrid  | 2/3     | Horizontal      |
 | Switch workspaces                           | *        | 4       | Horizontal      |
 | Desktop/Overview/AppGrid navigation         | *        | 4       | Vertical        |
-| Maximize/unmaximize a window                | Desktop  | 3       | Vertical        |
+| Unmaximize/maximize/fullscreen a window     | Desktop  | 3       | Vertical        |
+| Minimize a window                           | Desktop  | 3       | Vertical        |
 | Snap/half-tile a window                     | Desktop  | 3       | Explained below |
 
+#### Notes
+* Minimize gesture is available if you have dash-to-dock/panel or similar extension enabled.
 
 #### For activating tiling gesture
+0. This can't be activated if you enable minimize gesture
 1. Do a 3-finger vertical downward gesture on a unmaximized window
 2. Wait a few milliseconds
 3. Do a 3-finger horizontal gesture to tile a window to either side
@@ -48,6 +55,7 @@ gsettings set org.gnome.shell.window-switcher current-workspace-only false
 
 * Add delay to alt-tab gesture, to ensure second windows gets selected when a fast swipe is done
 * Change sensitivity of swipe (touchpad swipe speed)
+* Option to follow natural scrolling (seperate from option in GNOME settings)
 * Revert to 3-finger swipes to switch workspace on desktop (4-fingers to switch windows)
 * Revert to 3-finger swipes for overview navigation (4-fingers to maximize/unmaximize/tile)
 

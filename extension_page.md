@@ -5,7 +5,8 @@ This extension adds following features:
 • Switch windows from current workspace using 3-finger horizontal swipe
 • Cyclic gestures between Desktop/Overview/AppGrid using 4 vertical swipe
 • Switch app-pages using 3-finger swipe gesture on AppGrid
-• Maximize/unmaximize/half-tiling using 3-finger vertical & horizontal gesture
+• Unmaximize/maximize/fullscreen/half-tiling using 3-finger vertical & horizontal gesture
+• Optional minimize a window gesture
 • Override 3-finger gesture with 4-finger for switching workspace
 • Configure speed of gestures
 • Support for X11
