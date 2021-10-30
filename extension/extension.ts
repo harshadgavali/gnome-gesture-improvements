@@ -7,7 +7,7 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
-import { AllSettingsKeys, GioSettings } from './common/prefs';
+import { AllSettingsKeys, AnimatePanel, GioSettings } from './common/prefs';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -97,7 +97,10 @@ class Extension {
 			ExtSettings.ENABLE_SHOW_DESKTOP = this.settings.get_boolean('enable-show-desktop');
 			ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE = this.settings.get_boolean('enable-move-window-to-workspace');
 
-			ExtSettings.ANIMATE_PANEL = this.settings.get_enum('animate-panel');
+			if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE)
+				ExtSettings.ANIMATE_PANEL = this.settings.get_enum('animate-panel');
+			else
+				ExtSettings.ANIMATE_PANEL = AnimatePanel.NONE;
 
 			TouchpadConstants.SWIPE_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_SWIPE_MULTIPLIER * this.settings.get_double('touchpad-speed-scale');
 			AltTabConstants.DELAY_DURATION = this.settings.get_int('alttab-delay');
