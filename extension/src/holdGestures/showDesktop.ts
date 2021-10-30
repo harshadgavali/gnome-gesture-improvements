@@ -94,9 +94,14 @@ export class ShowDesktopExtension implements ISubExtension {
 	}
 
 	private _getMinimizableWindows() {
+		const types = [Meta.WindowType.MODAL_DIALOG, Meta.WindowType.NORMAL, Meta.WindowType.DIALOG];
+
 		if (this._workspaceManagerState === WorkspaceManagerState.DEFAULT) {
 			this._minimizingWindows = Array.from(this._windows.keys())
-				.filter(win => win.can_minimize() && !win.minimized && !win.skip_taskbar);
+				.filter(win =>
+					!win.minimized &&
+					types.includes(win.get_window_type()) &&
+					!this._isDesktopIconExtensionWindow(win));
 		}
 
 		this._minimizingWindows.forEach(win => {
@@ -163,7 +168,6 @@ export class ShowDesktopExtension implements ISubExtension {
 		// throw new Error('Method not implemented.');
 		printStack();
 		let has_actor = false;
-		let workspace_activated = false;
 		this._minimizingWindows.forEach(win => {
 			const value = this._windows.get(win);
 			if (value === undefined)
@@ -198,16 +202,11 @@ export class ShowDesktopExtension implements ISubExtension {
 					value.actor.scale_y = 1;
 					value.actor.translation_x = 0;
 					value.actor.translation_y = 0;
-
-					if (!workspace_activated) {
-						workspace_activated = true;
-						this._workspace?.activate(global.get_current_time());
-					}
 				},
 			});
 		});
 
-		if (!has_actor) 
+		if (!has_actor)
 			this._easeOpacityDesktopWindows(255, duration);
 
 		this._extensionState = ExtensionState.DEFAULT;
@@ -293,6 +292,9 @@ export class ShowDesktopExtension implements ISubExtension {
 		const [has_icon, rect] = win.get_icon_geometry();
 		if (has_icon)
 			return rect;
+		const parent = win.get_transient_for() as Meta.Window | null;
+		if (parent)
+			return this._getMinimizedRect(parent);
 		const box = Main.layoutManager.getWorkAreaForMonitor(win.get_monitor());
 		return new Meta.Rectangle({
 			x: box.x,
