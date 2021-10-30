@@ -98,9 +98,11 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
 			ExtSettings.FOLLOW_NATURAL_SCROLL,
-			1 / 1.5,
+			1,
 			{ allowTouch: false },
 		);
+
+		this._swipeTracker.allowLongSwipes = false;
 
 		if (ExtSettings.ANIMATE_PANEL !== AnimatePanel.NONE)
 			this._dummyCyclicPanel = new DummyCyclicPanel();
@@ -135,6 +137,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		this._window = this._getWindowToMove(monitor);
 		this._workspaceAnimation.movingWindow = this._window;
 		if (this._window) {
+			this._swipeTracker.allowLongSwipes = true;
 			this._extensionState = ExtensionState.MOVE_WINDOW;
 			this._highlight = this._getWindowHighlight();
 			this._animateHighLight(() => {
@@ -148,6 +151,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			});
 		}
 		else {
+			this._swipeTracker.allowLongSwipes = false;
 			this._extensionState = ExtensionState.SWITCH_WORKSPACE;
 			if (this._swipeTracker._touchpadGesture?.followNaturalScroll !== undefined)
 				this._swipeTracker._touchpadGesture.followNaturalScroll = ExtSettings.FOLLOW_NATURAL_SCROLL;
@@ -345,7 +349,7 @@ export class GestureExtension implements ISubExtension {
 				disableOldGesture: true,
 				followNaturalScroll: ExtSettings.FOLLOW_NATURAL_SCROLL,
 				modes: Shell.ActionMode.OVERVIEW,
-				gestureSpeed: 1 / 1.5,
+				gestureSpeed: 1,
 				checkAllowedGesture: (event: CustomEventType) => {
 					if (Main.overview._overview._controls._searchController.searchActive) {
 						return false;
