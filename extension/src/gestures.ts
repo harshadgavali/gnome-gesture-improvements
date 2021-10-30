@@ -8,10 +8,11 @@ import { imports, global, __shell_private_types } from 'gnome-shell';
 const Main = imports.ui.main;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
-import { OverviewControlsState, ExtSettings, AnimatePanel } from '../constants';
+import { OverviewControlsState, ExtSettings } from '../constants';
 import { CustomEventType } from '../common/utils/clutter';
 import { easeActor } from './utils/environment';
 import { DummyCyclicPanel } from './holdGestures/animatePanel';
+import { AnimatePanel } from '../common/prefs';
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
@@ -115,7 +116,8 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 
 	private _getWindowToMove(monitor: number) {
 		const window = global.display.get_focus_window() as Meta.Window | null;
-		if (this._swipeTracker._touchpadGesture?.hadHoldGesture &&
+		if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE &&
+			this._swipeTracker._touchpadGesture?.hadHoldGesture &&
 			window &&
 			!window.skip_taskbar &&
 			!window.is_always_on_all_workspaces() &&

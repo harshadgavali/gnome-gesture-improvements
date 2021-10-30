@@ -3,13 +3,24 @@ import Gtk from '@gi-types/gtk4';
 import GObject from '@gi-types/gobject2';
 import { CanEnableMinimizeGesture } from './utils/prefUtils';
 
+// define enum
+export enum AnimatePanel {
+	NONE = 0,
+	SWITCH_WORKSPACE = 1,
+	MOVE_WINDOW = 2,
+	SWITCH_WORKSPACE_AND_MOVE_WINDOW = 3,
+}
+
 type BooleanSettingsKeys =
 	'default-session-workspace' |
 	'default-overview' |
 	'allow-minimize-window' |
 	'follow-natural-scroll' |
 	'enable-alttab-gesture' |
-	'enable-window-manipulation-gesture';
+	'enable-window-manipulation-gesture' |
+	'enable-move-window-to-workspace' |
+	'enable-show-desktop'
+	;
 
 type IntegerSettingsKeys =
 	'alttab-delay'
@@ -18,24 +29,29 @@ type DoubleSettingsKeys =
 	'touchpad-speed-scale'
 	;
 
-type AllSettingsKeys =
+export type AllSettingsKeys =
 	BooleanSettingsKeys |
 	IntegerSettingsKeys |
-	DoubleSettingsKeys
+	DoubleSettingsKeys |
+	'animate-panel'
 	;
 
 type AllUIObjectKeys =
 	AllSettingsKeys |
 	'touchpadspeed_speed_display_value' |
 	'allow-minimize-window_box-row' |
-	'alttab-delay_box-row'
+	'alttab-delay_box-row' |
+	'animate-panel_box-row'
 	;
 
 type KeysThatStartsWith<K extends string, U extends string> = K extends `${U}${infer _R}` ? K : never;
-export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_'>> & {
+export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_' | 'set_'>> & {
 	get_boolean(key: BooleanSettingsKeys): boolean;
 	get_int(key: IntegerSettingsKeys): number;
 	get_double(key: DoubleSettingsKeys): number;
+	set_double(key: DoubleSettingsKeys, value: number): void;
+	get_enum(key: 'animate-panel'): AnimatePanel;
+	set_enum(key: 'animate-panel', value: AnimatePanel): void;
 }
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
@@ -68,6 +84,14 @@ function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, bui
 	params?.sensitiveRowKeys?.forEach(row_key => {
 		const row = builder.get_object<Gtk.ListBoxRow>(row_key);
 		button.bind_property('active', row, 'sensitive', GObject.BindingFlags.SYNC_CREATE);
+	});
+}
+
+function bind_combo_box(key: 'animate-panel', settings: GioSettings, builder: GtkBuilder) {
+	const comboBox = builder.get_object<Gtk.ComboBoxText>(key);
+	comboBox.set_active_id(settings.get_enum(key).toString());
+	comboBox.connect('changed', () => {
+		settings.set_enum(key, parseInt(comboBox.active_id));
 	});
 }
 
@@ -121,6 +145,10 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	bind_boolean_value('enable-window-manipulation-gesture', settings, builder, { sensitiveRowKeys: ['allow-minimize-window_box-row'] });
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
+
+	bind_boolean_value('enable-show-desktop', settings, builder);
+	bind_boolean_value('enable-move-window-to-workspace', settings, builder, {sensitiveRowKeys: ['animate-panel_box-row']});
+	bind_combo_box('animate-panel', settings, builder);
 
 	const main_prefs = builder.get_object<T>('main_prefs');
 	const header_bar = builder.get_object<Gtk.HeaderBar>('header_bar');

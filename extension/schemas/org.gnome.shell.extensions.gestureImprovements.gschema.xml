@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+  <enum id='org.gnome.shell.extensions.gestureImprovements.animate-panel'>
+    <value value='0' nick='NONE' />
+    <value value='2' nick='MOVE_WINDOW' />
+    <value value='3' nick='SWITCH_WORKSPACE_AND_MOVE_WINDOW' />
+  </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://developer.gnome.org/glib/stable/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
@@ -31,6 +36,18 @@
     <key name='enable-window-manipulation-gesture' type='b'>
       <default>true</default>
       <description>Enable Window manipulation gesture</description>
+    </key>
+    <key name='enable-move-window-to-workspace' type='b'>
+      <default>true</default>
+      <description>Enable move window to workspace gesture</description>
+    </key>
+    <key name='enable-show-desktop' type='b'>
+      <default>true</default>
+      <description>Enable show desktop gesture</description>
+    </key>
+    <key name="animate-panel" enum="org.gnome.shell.extensions.gestureImprovements.animate-panel">
+      <default>'MOVE_WINDOW'</default>
+      <description>When to animate panel</description>
     </key>
   </schema>
 </schemalist>

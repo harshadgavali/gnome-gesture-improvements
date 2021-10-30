@@ -1,3 +1,6 @@
+
+import { AnimatePanel } from './common/prefs';
+
 // FIXME: ideally these values matches physical touchpad size. We can get the
 // correct values for gnome-shell specifically, since mutter uses libinput
 // directly, but GTK apps cannot get it, so use an arbitrary value so that
@@ -26,20 +29,13 @@ export const OverviewControlsState = {
 	HIDDEN_N: 3,
 };
 
-// define enum
-export enum AnimatePanel {
-	NONE = 0,
-	SWITCH_WORKSPACE = 1,
-	MOVE_WINDOW = 2,
-	SWITCH_WORKSPACE_AND_MOVE_WINDOW = 3,
-}
-
 export const ExtSettings = {
 	DEFAULT_SESSION_WORKSPACE_GESTURE: false,
 	DEFAULT_OVERVIEW_GESTURE: false,
 	ALLOW_MINIMIZE_WINDOW: false,
 	FOLLOW_NATURAL_SCROLL: true,
 	ENABLE_SHOW_DESKTOP: true,
+	ENABLE_MOVE_WINDOW_TO_WORKSPACE: true,
 	ANIMATE_PANEL: AnimatePanel.MOVE_WINDOW,
 };
 
