@@ -22,6 +22,15 @@
     </key>
     <key name='follow-natural-scroll' type='b'>
       <default>true</default>
+      <description>Whether to follow natural scroll for swipe</description>
+    </key>
+    <key name='enable-alttab-gesture' type='b'>
+      <default>true</default>
+      <description>Enable alttab gesture</description>
+    </key>
+    <key name='enable-window-manipulation-gesture' type='b'>
+      <default>true</default>
+      <description>Enable Window manipulation gesture</description>
     </key>
   </schema>
 </schemalist>
