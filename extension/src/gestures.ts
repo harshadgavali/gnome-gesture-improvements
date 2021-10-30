@@ -220,6 +220,8 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 
 		if (this._extensionState & ExtensionState.ANIMATE_PANEL)
 			this._dummyCyclicPanel?.endGesture(endProgress, duration);
+
+		this._extensionState = ExtensionState.DEFAULT;
 	}
 
 	private _getWindowHighlight() {
