@@ -7,6 +7,7 @@ const Main = imports.ui.main;
 const { lerp } = imports.misc.util;
 
 import { printStack } from '../../common/utils/logging';
+import { easeActor } from '../utils/environment';
 
 // declare enum 
 enum WorkspaceManagerState {
@@ -27,8 +28,6 @@ export class ShowDesktopExtension implements ISubExtension {
 		start: Meta.Rectangle,
 		end: Meta.Rectangle,
 		actor: Meta.WindowActor,
-		// connectorIds: number[],
-		// unmaximizeId: number,
 	}>>();
 
 	private _workspace?: Meta.Workspace;
@@ -176,7 +175,7 @@ export class ShowDesktopExtension implements ISubExtension {
 				return;
 
 			has_actor = true;
-			(value.actor as any).ease({
+			easeActor(value.actor, {
 				scale_x: lerp(1, value.end.width / value.start.width, -endProgress),
 				scale_y: lerp(1, value.end.height / value.start.height, -endProgress),
 				translation_x: lerp(0, value.end.x - value.start.x, -endProgress),
@@ -222,7 +221,7 @@ export class ShowDesktopExtension implements ISubExtension {
 			log(`resetting state: ${win.title}`);
 			if (!this._windows.has(win))
 				return;
-			const onStopped = (isFinished: boolean) => {
+			const onStopped = (isFinished?: boolean) => {
 				log('animate complete: ' + isFinished);
 				Main.wm.skipNextEffect(win.get_compositor_private());
 				win.unminimize();
@@ -232,7 +231,7 @@ export class ShowDesktopExtension implements ISubExtension {
 				log('animatine + ' + win.title);
 				actor.show();
 				actor.opacity = 0;
-				(actor as any).ease({
+				easeActor(actor, {
 					opacity: 255,
 					duration: 500,
 					mode: Clutter.AnimationMode.EASE_OUT_QUAD,

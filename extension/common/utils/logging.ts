@@ -1,5 +1,3 @@
-declare function log(message: any): void;
-
 export function printStack() {
 	const stack = new Error().stack;
 	if (stack) {
