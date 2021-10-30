@@ -6,15 +6,12 @@ import St from '@gi-types/st1';
 import { imports, global, __shell_private_types } from 'gnome-shell';
 
 const Main = imports.ui.main;
-const { lerp } = imports.misc.util;
-const { MonitorConstraint } = imports.ui.layout;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { OverviewControlsState, ExtSettings, AnimatePanel } from '../constants';
 import { CustomEventType } from '../common/utils/clutter';
-import { registerClass } from '../common/utils/gobject';
 import { easeActor } from './utils/environment';
-
+import { DummyCyclicPanel } from './holdGestures/animatePanel';
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
@@ -69,86 +66,16 @@ abstract class SwipeTrackerEndPointsModifer {
 	}
 }
 
-/**
- * GObject Class to animate top panel in circular animation
- * Without displaying it on any other monitors
- */
-const DummyCyclicPanel = registerClass(
-	class extends Clutter.Actor {
-		panelBox: St.BoxLayout<Clutter.Actor<Clutter.LayoutManager, Clutter.ContentPrototype>>;
-		private PADDING_WIDTH;
-		private _container: Clutter.Actor<Clutter.BoxLayout, Clutter.ContentPrototype>;
-
-		constructor() {
-			super({ visible: false });
-
-			this.PADDING_WIDTH = 100 * Main.layoutManager.primaryMonitor.geometry_scale;
-
-			this.panelBox = Main.layoutManager.panelBox;
-
-			this._container = new Clutter.Actor({ layoutManager: new Clutter.BoxLayout({ orientation: Clutter.Orientation.HORIZONTAL, spacing: this.PADDING_WIDTH }) });
-			this.add_child(this._container);
-
-			this._container.add_child(new Clutter.Clone({ source: this.panelBox }));
-			this._container.add_child(new Clutter.Clone({ source: this.panelBox }));
-
-			this.add_constraint(new MonitorConstraint({ primary: true }));
-			this.set_clip_to_allocation(true);
-			Main.layoutManager.uiGroup.add_child(this);
-		}
-
-		vfunc_get_preferred_height(for_width: number) {
-			return this.panelBox.get_preferred_height(for_width);
-		}
-
-		vfunc_get_preferred_width(for_height: number) {
-			return this.panelBox.get_preferred_width(for_height);
-		}
-
-		beginGesture() {
-			// hide main panel
-			Main.layoutManager.panelBox.opacity = 0;
-			this.visible = true;
-			Main.layoutManager.uiGroup.set_child_above_sibling(this, null);
-		}
-
-		updateGesture(progress: number) {
-			this._container.translation_x = this._getTranslationFor(progress);
-		}
-
-		endGesture(endProgress: number, duration: number) {
-			// gesture returns accelerated end value, hence need to do this
-			const current_workspace = global.workspace_manager.get_active_workspace_index();
-			const translation_x = (
-				endProgress > current_workspace ||
-				(endProgress === current_workspace && this._container.translation_x <= this.min_cyclic_translation / 2)
-			) ? this.min_cyclic_translation : 0;
-
-			easeActor(this._container, {
-				translation_x,
-				duration,
-				mode: Clutter.AnimationMode.EASE_OUT_CUBIC,
-				onStopped: () => {
-					this.visible = false;
-					Main.layoutManager.panelBox.opacity = 255;
-				},
-			});
-		}
-
-		private _getTranslationFor(progress: number) {
-			const begin = Math.floor(progress);
-			const end = Math.ceil(progress);
-			progress = begin === end ? 0 : (progress - begin) / (end - begin);
-
-			return lerp(0, this.min_cyclic_translation, progress);
-		}
-
-		/** returns maximium negative value because translation is always negative */
-		get min_cyclic_translation(): number {
-			return -(this.width + this.PADDING_WIDTH);
-		}
-	},
-);
+// declare enum
+enum ExtensionState {
+	DEFAULT = 0,
+	SWITCH_WORKSPACE = AnimatePanel.SWITCH_WORKSPACE,
+	MOVE_WINDOW = AnimatePanel.MOVE_WINDOW,
+	/** flag: whether to animate panel */
+	ANIMATE_PANEL = 4,
+	/** flag: whether update/end signal was received from tracker */
+	UPDATE_RECEIVED = 8,
+}
 
 class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	private _workspaceAnimation: imports.ui.workspaceAnimation.WorkspaceAnimationController;
@@ -156,9 +83,9 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	private _window?: Meta.Window;
 	private _highlight?: St.Widget;
 
-	private GESTURE_DELAY = 100;
+	private GESTURE_DELAY = 75;
 	private _workspaceChangedId = 0;
-	private _animatePanel = false;
+	private _extensionState = ExtensionState.DEFAULT;
 	private _dummyCyclicPanel?: typeof DummyCyclicPanel.prototype;
 
 	constructor(wm: typeof imports.ui.main.wm) {
@@ -174,7 +101,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			{ allowTouch: false },
 		);
 
-		if (ExtSettings.ANIMATE_PANEL !== AnimatePanel.None)
+		if (ExtSettings.ANIMATE_PANEL !== AnimatePanel.NONE)
 			this._dummyCyclicPanel = new DummyCyclicPanel();
 	}
 
@@ -190,6 +117,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		const window = global.display.get_focus_window() as Meta.Window | null;
 		if (this._swipeTracker._touchpadGesture?.hadHoldGesture &&
 			window &&
+			!window.skip_taskbar &&
 			!window.is_always_on_all_workspaces() &&
 			window.get_monitor() === monitor &&
 			(!Meta.prefs_get_workspaces_only_on_primary() || monitor === Main.layoutManager.primaryMonitor.index)
@@ -199,14 +127,14 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	}
 
 	protected _gestureBegin(tracker: SwipeTrackerT, monitor: number): void {
+		this.reset();
 		this._highlight?.destroy();
-
-		let panelAnimation = AnimatePanel.None;
+		this._extensionState = ExtensionState.DEFAULT;
 
 		this._window = this._getWindowToMove(monitor);
+		this._workspaceAnimation.movingWindow = this._window;
 		if (this._window) {
-			panelAnimation = AnimatePanel.MoveWindow;
-			this._workspaceAnimation.movingWindow = this._window;
+			this._extensionState = ExtensionState.MOVE_WINDOW;
 			this._highlight = this._getWindowHighlight();
 			this._animateHighLight(() => {
 				if (this._swipeTracker._touchpadGesture?.followNaturalScroll !== undefined)
@@ -219,7 +147,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			});
 		}
 		else {
-			panelAnimation = AnimatePanel.SwitchWorkspace;
+			this._extensionState = ExtensionState.SWITCH_WORKSPACE;
 			if (this._swipeTracker._touchpadGesture?.followNaturalScroll !== undefined)
 				this._swipeTracker._touchpadGesture.followNaturalScroll = ExtSettings.FOLLOW_NATURAL_SCROLL;
 
@@ -229,15 +157,16 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			});
 		}
 
-		if (ExtSettings.ANIMATE_PANEL & panelAnimation) {
-			this._animatePanel = true;
+		if (ExtSettings.ANIMATE_PANEL & this._extensionState) {
+			this._extensionState |= ExtensionState.ANIMATE_PANEL;
 			this._dummyCyclicPanel?.beginGesture();
-		} else {
-			this._animatePanel = false;
 		}
 	}
 
 	protected _gestureUpdate(tracker: SwipeTrackerT, progress: number): void {
+		if (this._extensionState === ExtensionState.DEFAULT)
+			return;
+		this._extensionState |= ExtensionState.UPDATE_RECEIVED;
 		if (progress < this._firstVal) {
 			progress = this._firstVal - (this._firstVal - progress) * 0.05;
 		}
@@ -246,11 +175,14 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		}
 		this._workspaceAnimation._switchWorkspaceUpdate(tracker, progress);
 
-		if (this._animatePanel)
+		if (this._extensionState & ExtensionState.ANIMATE_PANEL)
 			this._dummyCyclicPanel?.updateGesture(progress);
 	}
 
 	protected _gestureEnd(tracker: SwipeTrackerT, duration: number, endProgress: number): void {
+		if (this._extensionState === ExtensionState.DEFAULT)
+			return;
+		this._extensionState |= ExtensionState.UPDATE_RECEIVED;
 		endProgress = Math.clamp(endProgress, this._firstVal, this._lastVal);
 
 		this._workspaceAnimation._switchWorkspaceEnd(tracker, duration, endProgress);
@@ -281,7 +213,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			});
 		}
 
-		if (this._animatePanel)
+		if (this._extensionState & ExtensionState.ANIMATE_PANEL)
 			this._dummyCyclicPanel?.endGesture(endProgress, duration);
 	}
 
@@ -330,15 +262,51 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		});
 
 		easeActor(this._highlight, {
+			opacity: 200,
+			mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+			duration: 2 * this.GESTURE_DELAY,
+			onStopped: () => {
+				callback();
+				this._animateHighLightWaitForGestureUpdate(windowActor);
+			},
+		});
+	}
+
+	private _animateHighLightWaitForGestureUpdate(actor: Meta.WindowActor) {
+		if (!this._highlight) {
+			actor.set_pivot_point(0, 0);
+			return;
+		}
+		easeActor(this._highlight, {
 			opacity: 255,
 			mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 			duration: 2 * this.GESTURE_DELAY,
 			onStopped: () => {
-				windowActor.set_pivot_point(0, 0);
+				log('animate highlight complete');
+				actor.set_pivot_point(0, 0);
 				this._highlight?.set_pivot_point(0, 0);
-				callback();
+				// no update received on highlight showing
+				if ((this._extensionState & ExtensionState.UPDATE_RECEIVED) === 0)
+					this.reset();
 			},
 		});
+	}
+
+	private reset() {
+		this._highlight?.destroy();
+		this._highlight = undefined;
+
+		const active_workspace = global.workspace_manager.get_active_workspace_index();
+
+		if ((this._extensionState & ExtensionState.SWITCH_WORKSPACE) || (this._extensionState & ExtensionState.MOVE_WINDOW))
+			this._workspaceAnimation._switchWorkspaceEnd(this._swipeTracker, 0, active_workspace);
+
+		if (this._extensionState & ExtensionState.ANIMATE_PANEL)
+			this._dummyCyclicPanel?.endGesture(global.workspace_manager.get_active_workspace_index(), 0);
+
+		this._extensionState = ExtensionState.DEFAULT;
+		this._window = undefined;
+		this._workspaceAnimation.movingWindow = undefined;
 	}
 
 	destroy(): void {
