@@ -9,6 +9,7 @@ export function CanEnableMinimizeGesture() {
 		'dash-to-dock@micxgx.gmail.com',
 		'dash-to-panel@jderose9.github.com',
 		'window-list@gnome-shell-extensions.gcampax.github.com',
+		'ubuntu-dock@ubuntu.com',
 	];
 
 	const shellSettings = getShellSettings();
