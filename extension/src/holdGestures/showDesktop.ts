@@ -186,14 +186,14 @@ export class ShowDesktopExtension implements ISubExtension {
 				onStopped: () => {
 					if (value.actor === undefined)
 						return;
-					Main.wm.skipNextEffect(value.actor);
-					if (endProgress === WorkspaceManagerState.DEFAULT) {
-						value.actor.meta_window.unminimize();
-						this._minimizingWindows = [];
-					}
-					else {
-						value.actor.meta_window.minimize();
-						value.actor.hide();
+					if (win.can_minimize()) {
+						Main.wm.skipNextEffect(value.actor);
+						if (endProgress === WorkspaceManagerState.DEFAULT)
+							value.actor.meta_window.unminimize();
+						else {
+							value.actor.meta_window.minimize();
+							value.actor.hide();
+						}
 					}
 
 					this._easeOpacityDesktopWindows(255, duration);
@@ -208,6 +208,9 @@ export class ShowDesktopExtension implements ISubExtension {
 
 		if (!has_actor)
 			this._easeOpacityDesktopWindows(255, duration);
+
+		if (endProgress === WorkspaceManagerState.DEFAULT)
+			this._minimizingWindows = [];
 
 		this._extensionState = ExtensionState.DEFAULT;
 		this._workspaceManagerState = endProgress;
