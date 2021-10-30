@@ -189,7 +189,7 @@ declare namespace imports {
 				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
 				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
 
-				movingWindow: Meta.Window;
+				movingWindow: Meta.Window | undefined;
 			}
 		}
 

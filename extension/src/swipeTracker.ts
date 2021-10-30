@@ -59,9 +59,13 @@ export const TouchpadSwipeGesture = registerClass({
 	TOUCHPAD_BASE_WIDTH = TouchpadConstants.TOUCHPAD_BASE_WIDTH;
 	DRAG_THRESHOLD_DISTANCE = TouchpadConstants.DRAG_THRESHOLD_DISTANCE;
 	enabled = true;
-	private _lastHoldCancelledTime = 0;
-	private _hadHoldGesture = false;
+
+	private DELAY_BETWEEN_HOLD = 150; // ms
 	private HOLD_TIME = 100; // ms
+	private _lastHoldBeginTime = - this.DELAY_BETWEEN_HOLD;
+	private _lastHoldCancelledTime = 0;
+	private _beginTime = this.HOLD_TIME;
+	// private _hadHoldGesture = false;
 	private _time = 0;
 
 	constructor(
@@ -89,8 +93,18 @@ export const TouchpadSwipeGesture = registerClass({
 	}
 
 	_handleHold(event: CustomEventType): void {
-		if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.CANCEL)
-			this._lastHoldCancelledTime = event.get_time();
+		switch (event.get_gesture_phase()) {
+			case Clutter.TouchpadGesturePhase.BEGIN:
+				this._lastHoldBeginTime = event.get_time();
+				break;
+			case Clutter.TouchpadGesturePhase.CANCEL:
+				this._lastHoldCancelledTime = event.get_time();
+				break;
+			default:
+				this._lastHoldBeginTime = - this.DELAY_BETWEEN_HOLD;
+				this._lastHoldCancelledTime = 0;
+		}
+
 	}
 
 	_handleEvent(_actor: undefined | Clutter.Actor, event: CustomEventType): boolean {
@@ -107,7 +121,7 @@ export const TouchpadSwipeGesture = registerClass({
 			this._state = TouchpadState.NONE;
 			this._toggledDirection = false;
 
-			this._hadHoldGesture = event.get_time() - this._lastHoldCancelledTime <= this.HOLD_TIME;
+			this._beginTime = event.get_time();
 		}
 
 		if (this._state === TouchpadState.IGNORED)
@@ -200,6 +214,9 @@ export const TouchpadSwipeGesture = registerClass({
 				this.emit('end', time, distance);
 				this._state = TouchpadState.NONE;
 				this._toggledDirection = false;
+				this._lastHoldCancelledTime = 0;
+				this._lastHoldBeginTime = - this.DELAY_BETWEEN_HOLD;
+				this._beginTime = this.HOLD_TIME;
 				break;
 		}
 
@@ -224,7 +241,8 @@ export const TouchpadSwipeGesture = registerClass({
 	}
 
 	get hadHoldGesture(): boolean {
-		return this._hadHoldGesture;
+		return (this._beginTime - this._lastHoldCancelledTime) < this.HOLD_TIME &&
+			(this._lastHoldCancelledTime - this._lastHoldBeginTime) > this.DELAY_BETWEEN_HOLD;
 	}
 
 	get time(): number {

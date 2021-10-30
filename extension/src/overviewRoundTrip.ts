@@ -4,22 +4,34 @@ import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;
 const { SwipeTracker } = imports.ui.swipeTracker;
-import { createSwipeTracker } from './swipeTracker';
+import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { OverviewControlsState, ExtSettings } from '../constants';
+import { ShowDesktopExtension } from './holdGestures/showDesktop';
 
-const ExtensionState = {
-	DISABLED: 0,
-	DEFAULT: 1,
-	CUSTOM: 2,
-};
+// declare enum
+enum ExtensionState {
+	// DISABLED = 0,
+	DEFAULT = 1,
+	CUSTOM = 2,
+}
+
+// declare enum
+enum GestureState {
+	// DEFAULT,
+	OVERVIEW,
+	SHOW_DESKTOP,
+}
 
 export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _overviewControls: imports.ui.overviewControls.OverviewControlsManager;
 	private _stateAdjustment: imports.ui.overviewControls.OverviewAdjustment;
 	private _oldGetStateTransitionParams: typeof imports.ui.overviewControls.OverviewAdjustment.prototype.getStateTransitionParams;
 	private _swipeTracker?: typeof SwipeTracker.prototype;
+	private _touchpadGesture?: typeof TouchpadSwipeGesture.prototype;
+	private _showDesktopAnimation?: ShowDesktopExtension;
 	private _progress = 0;
-	private _extensionState = ExtensionState.DISABLED;
+	private _extensionState = ExtensionState.DEFAULT;
+	private _gestureState = GestureState.OVERVIEW;
 	private _connectors: number[];
 	private _shownEventId = 0;
 	private _hiddenEventId = 0;
@@ -62,6 +74,13 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 			Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
 			Clutter.Orientation.VERTICAL,
 		);
+		this._touchpadGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
+
+		if (ExtSettings.ENABLE_SHOW_DESKTOP) {
+			this._showDesktopAnimation = new ShowDesktopExtension();
+			this._showDesktopAnimation.apply();
+		}
+
 		this._swipeTracker.orientation = Clutter.Orientation.VERTICAL;
 		this._connectors.push(this._swipeTracker.connect('begin', this._gestureBegin.bind(this)));
 		this._connectors.push(this._swipeTracker.connect('update', this._gestureUpdate.bind(this)));
@@ -80,7 +99,6 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	}
 
 	destroy(): void {
-		this._extensionState = ExtensionState.DISABLED;
 		if (this._swipeTracker) {
 			this._connectors.forEach(connector => this._swipeTracker?.disconnect(connector));
 			this._swipeTracker.destroy();
@@ -92,9 +110,18 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 		this._stateAdjustment.getStateTransitionParams = this._oldGetStateTransitionParams.bind(this._stateAdjustment);
 		Main.overview.disconnect(this._shownEventId);
 		Main.overview.disconnect(this._hiddenEventId);
+		
+		this._showDesktopAnimation?.destroy();
 	}
 
 	_gestureBegin(tracker: typeof SwipeTracker.prototype): void {
+		this._gestureState = GestureState.OVERVIEW;
+		if (this._touchpadGesture?.hadHoldGesture && this._showDesktopAnimation && Main.actionMode === Shell.ActionMode.NORMAL) {
+			this._gestureState = GestureState.SHOW_DESKTOP;
+			this._showDesktopAnimation.gestureBegin(tracker);
+			return;
+		}
+
 		const _tracker = {
 			confirmSwipe: (distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number) => {
 				snapPoints.unshift(OverviewControlsState.APP_GRID_P);
@@ -114,6 +141,11 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	}
 
 	_gestureUpdate(tracker: typeof SwipeTracker.prototype, progress: number): void {
+		if (this._gestureState === GestureState.SHOW_DESKTOP) {
+			this._showDesktopAnimation?.gestureUpdate(tracker, progress);
+			return;
+		}
+
 		if (progress < OverviewControlsState.HIDDEN ||
 			progress > OverviewControlsState.APP_GRID) {
 			this._extensionState = ExtensionState.CUSTOM;
@@ -128,6 +160,11 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	}
 
 	_gestureEnd(tracker: typeof SwipeTracker.prototype, duration: number, endProgress: number): void {
+		if (this._gestureState === GestureState.SHOW_DESKTOP) {
+			this._showDesktopAnimation?.gestureEnd(tracker, duration, endProgress);
+			return;
+		}
+
 		if (this._progress < OverviewControlsState.HIDDEN) {
 			this._extensionState = ExtensionState.CUSTOM;
 			endProgress = endProgress >= OverviewControlsState.HIDDEN ?
