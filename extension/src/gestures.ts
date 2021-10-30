@@ -119,9 +119,8 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE &&
 			this._swipeTracker._touchpadGesture?.hadHoldGesture &&
 			window &&
-			!window.skip_taskbar &&
-			!window.is_always_on_all_workspaces() &&
 			window.get_monitor() === monitor &&
+			!window.is_always_on_all_workspaces() &&
 			(!Meta.prefs_get_workspaces_only_on_primary() || monitor === Main.layoutManager.primaryMonitor.index)
 		)
 			return window;
