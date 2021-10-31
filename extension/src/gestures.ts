@@ -117,10 +117,15 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	}
 
 	private _getWindowToMove(monitor: number) {
+		const types = [Meta.WindowType.MODAL_DIALOG, Meta.WindowType.NORMAL, Meta.WindowType.DIALOG];
+
 		const window = global.display.get_focus_window() as Meta.Window | null;
 		if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE &&
 			this._swipeTracker._touchpadGesture?.hadHoldGesture &&
 			window &&
+			types.includes(window.get_window_type()) &&
+			// ignore window is it's skipbar and type is normal
+			(!window.skip_taskbar || window.get_window_type() !== Meta.WindowType.NORMAL) &&
 			window.get_monitor() === monitor &&
 			!window.is_always_on_all_workspaces() &&
 			(!Meta.prefs_get_workspaces_only_on_primary() || monitor === Main.layoutManager.primaryMonitor.index)
