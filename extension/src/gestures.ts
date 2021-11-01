@@ -102,8 +102,6 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			{ allowTouch: false },
 		);
 
-		this._swipeTracker.allowLongSwipes = false;
-
 		if (ExtSettings.ANIMATE_PANEL !== AnimatePanel.NONE)
 			this._dummyCyclicPanel = new DummyCyclicPanel();
 	}
@@ -142,7 +140,6 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		this._window = this._getWindowToMove(monitor);
 		this._workspaceAnimation.movingWindow = this._window;
 		if (this._window) {
-			this._swipeTracker.allowLongSwipes = true;
 			this._extensionState = ExtensionState.MOVE_WINDOW;
 			this._highlight = this._getWindowHighlight();
 			this._animateHighLight(() => {
@@ -156,7 +153,6 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			});
 		}
 		else {
-			this._swipeTracker.allowLongSwipes = false;
 			this._extensionState = ExtensionState.SWITCH_WORKSPACE;
 			if (this._swipeTracker._touchpadGesture?.followNaturalScroll !== undefined)
 				this._swipeTracker._touchpadGesture.followNaturalScroll = ExtSettings.FOLLOW_NATURAL_SCROLL;
