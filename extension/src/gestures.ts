@@ -121,6 +121,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE &&
 			this._swipeTracker._touchpadGesture?.hadHoldGesture &&
 			window &&
+			!window.is_fullscreen() &&
 			types.includes(window.get_window_type()) &&
 			// ignore window is it's skipbar and type is normal
 			(!window.skip_taskbar || window.get_window_type() !== Meta.WindowType.NORMAL) &&
