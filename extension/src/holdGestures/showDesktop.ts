@@ -37,6 +37,9 @@ export class ShowDesktopExtension implements ISubExtension {
 	private _windowUnMinimizedId = 0;
 	private _extensionState = ExtensionState.DEFAULT;
 
+	private _circularValue = 0;
+	private _finalLocations: { [unit: string]: number[] } = {};
+
 	private _minimizingWindows: Meta.Window[] = [];
 	private _workspaceManagerState = WorkspaceManagerState.DEFAULT;
 
@@ -124,6 +127,34 @@ export class ShowDesktopExtension implements ISubExtension {
 		this._minimizingWindows = this._getMinimizableWindows();
 		this._easeOpacityDesktopWindows(0, this._workspaceManagerState === WorkspaceManagerState.DEFAULT ? 0 : 100);
 
+		// add minimization location (final location not minimization)
+		// TL, TR, BL, BR
+		this._minimizingWindows.forEach((win) => {
+			let finalLoc: number[] = [];
+			const value = this._windows.get(win);
+			if (value === undefined)
+				return;
+			if (value.actor === undefined || value.end === undefined || value.start === undefined)
+				return;
+			
+			switch (this._circularValue) {
+				case 0: // top-left
+					finalLoc = [-value.actor.width, -value.actor.height];
+					break;
+				case 1: // top-right
+					finalLoc = [global.screen_width, -value.actor.height];
+					break;
+				case 2: // bottom-right
+					finalLoc = [global.screen_width, global.screen_height];
+					break;
+				case 3: // bottom-left
+					finalLoc = [-value.actor.width, global.screen_height];
+					break;
+			}
+			this._finalLocations[win.get_id()] = finalLoc;
+			this._circularValue = (this._circularValue + 1) % 4;
+		});
+
 		log(JSON.stringify(
 			{
 				_workspaceManagerState: this._workspaceManagerState,
@@ -144,7 +175,7 @@ export class ShowDesktopExtension implements ISubExtension {
 	gestureUpdate(_tracker: unknown, progress: number) {
 		// progress 0 -> NORMAL state, - 1 -> SHOW Desktop
 		// printStack();
-		this._minimizingWindows.forEach(win => {
+		this._minimizingWindows.forEach((win) => {
 			const value = this._windows.get(win);
 			if (value === undefined)
 				return;
@@ -154,11 +185,19 @@ export class ShowDesktopExtension implements ISubExtension {
 			if (value.actor === undefined || value.end === undefined || value.start === undefined)
 				return;
 
-			value.actor.translation_x = lerp(0, value.end.x - value.start.x, -progress);
-			value.actor.translation_y = lerp(0, value.end.y - value.start.y, -progress);
+			const { actor, start } = value;
+			const [ fx, fy ] = [...this._finalLocations[win.get_id()]];
 
-			value.actor.scale_x = lerp(1, value.end.width / value.start.width, -progress);
-			value.actor.scale_y = lerp(1, value.end.height / value.start.height, -progress);
+			actor.translation_x = lerp(
+				0,
+				fx - start.x < 0 ? fx - start.x - global.screen_width*0.3 : fx - start.x + global.screen_width*0.3,
+				progress,
+			);
+			actor.translation_y = lerp(
+				0,
+				fy - start.y < 0 ? fy - start.y - global.screen_height*0.3 : fy - start.y + global.screen_width*0.3,
+				progress,
+			);
 		});
 	}
 
@@ -175,11 +214,25 @@ export class ShowDesktopExtension implements ISubExtension {
 				return;
 
 			has_actor = true;
+
+			const { start } = value;
+			const [ fx, fy ] = [...this._finalLocations[win.get_id()]];
+
 			easeActor(value.actor, {
-				scale_x: lerp(1, value.end.width / value.start.width, -endProgress),
-				scale_y: lerp(1, value.end.height / value.start.height, -endProgress),
-				translation_x: lerp(0, value.end.x - value.start.x, -endProgress),
-				translation_y: lerp(0, value.end.y - value.start.y, -endProgress),
+				translation_x: lerp(
+					0,
+					fx - start.x < 0
+						? fx - start.x - global.screen_width*0.3
+						: fx - start.x + global.screen_width*0.3,
+					endProgress,
+				),
+				translation_y: lerp(
+					0,
+					fy - start.y < 0
+						? fy - start.y - global.screen_height*0.3
+						: fy - start.y + global.screen_width*0.3,
+					endProgress,
+				),
 				duration,
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				onStopped: () => {
@@ -213,6 +266,8 @@ export class ShowDesktopExtension implements ISubExtension {
 
 		this._extensionState = ExtensionState.DEFAULT;
 		this._workspaceManagerState = endProgress;
+
+		this._finalLocations = {};
 	}
 
 	private _resetState(animate = false) {
