@@ -69,7 +69,7 @@ class MonitorGroup {
 		];
 
 		this._container.set_clip_to_allocation(true);
-		Main.layoutManager.uiGroup.add_child(this._container);
+		Main.layoutManager.uiGroup.insert_child_above(this._container, global.window_group);
 	}
 
 	_addWindowActor(windowActor: Meta.WindowActor) {
