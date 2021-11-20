@@ -85,6 +85,7 @@ declare namespace imports {
 			const layoutManager: {
 				uiGroup: Clutter.Actor,
 				panelBox: St.BoxLayout,
+				monitors: __shell_private_types.IMonitorState[]
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
 				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
@@ -195,7 +196,7 @@ declare namespace imports {
 
 		namespace layout {
 			declare class MonitorConstraint extends Clutter.Constraint {
-				constructor(params: Partial<{ primary: boolean }>);
+				constructor(params: Partial<{ primary: boolean, index: number }>);
 			}
 		}
 	}
