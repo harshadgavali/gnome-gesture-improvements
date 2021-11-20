@@ -169,16 +169,16 @@ class MonitorGroup {
 			clone.x = lerp(translation.start.x, translation.end.x, -progress);
 			clone.y = lerp(translation.start.y, translation.end.y, -progress);
 			clone.opacity = lerp(255, 128, -progress);
-			// if (!value.actor.visible)
-			// 	value.actor.show();
 		});
 	}
 
 	gestureEnd(progress: WorkspaceManagerState, duration: number) {
 		this._windowActorClones.forEach(actorClone => {
 			const { clone, translation, windowActor } = actorClone;
-			if (translation === undefined)
+			if (translation === undefined) {
+				clone.destroy();
 				return;
+			}
 
 			easeActor(clone, {
 				x: lerp(translation.start.x, translation.end.x, -progress),
@@ -281,18 +281,14 @@ export class ShowDesktopExtension implements ISubExtension {
 		const types = [Meta.WindowType.MODAL_DIALOG, Meta.WindowType.NORMAL, Meta.WindowType.DIALOG];
 
 		if (this._workspaceManagerState === WorkspaceManagerState.DEFAULT) {
-			const windowActors = global.window_group
-				.get_children()
-				.filter((w): w is Meta.WindowActor => w instanceof Meta.WindowActor)
-				.filter(w => w.meta_window.is_always_on_all_workspaces() || w.meta_window.get_workspace().index === this._workspace?.index);
-
-			this._minimizingWindows = Array.from(this._windows)
-				.map(win => win.get_compositor_private() as Meta.WindowActor)
-				.filter(actor => windowActors.includes(actor))
-				// top actors will be at the start
-				.sort((a, b) => windowActors.indexOf(b) - windowActors.indexOf(a))
+			this._minimizingWindows = global
+				.get_window_actors()
+				// top actors should be at the beginning
+				.reverse()
 				.map(actor => actor.meta_window)
 				.filter(win =>
+					this._windows.has(win) &&
+					(win.is_always_on_all_workspaces() || win.get_workspace().index === this._workspace?.index) &&
 					!win.minimized &&
 					types.includes(win.get_window_type()) &&
 					!this._isDesktopIconExtensionWindow(win));
