@@ -8,6 +8,12 @@ export enum AnimatePanel {
     SWITCH_WORKSPACE_AND_MOVE_WINDOW = 3,
 }
 
+// define enum
+export enum PinchGestureType {
+    NONE = 0,
+    SHOW_DESKTOP = 1,
+}
+
 export type BooleanSettingsKeys =
     'default-session-workspace' |
     'default-overview' |
@@ -15,8 +21,7 @@ export type BooleanSettingsKeys =
     'follow-natural-scroll' |
     'enable-alttab-gesture' |
     'enable-window-manipulation-gesture' |
-    'enable-move-window-to-workspace' |
-    'enable-show-desktop'
+    'enable-move-window-to-workspace'
     ;
 
 export type IntegerSettingsKeys =
@@ -27,11 +32,18 @@ export type DoubleSettingsKeys =
     'touchpad-pinch-speed'
     ;
 
+export type EnumSettingsKeys =
+    'animate-panel' |
+    'pinch-3-finger-gesture' |
+    'pinch-4-finger-gesture'
+    ;
+
+
 export type AllSettingsKeys =
     BooleanSettingsKeys |
     IntegerSettingsKeys |
     DoubleSettingsKeys |
-    'animate-panel'
+    EnumSettingsKeys
     ;
 
 export type AllUIObjectKeys =
@@ -43,11 +55,23 @@ export type AllUIObjectKeys =
     'animate-panel_box-row'
     ;
 
-export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_' | 'set_'>> & {
-    get_boolean(key: BooleanSettingsKeys): boolean;
-    get_int(key: IntegerSettingsKeys): number;
-    get_double(key: DoubleSettingsKeys): number;
-    set_double(key: DoubleSettingsKeys, value: number): void;
-    get_enum(key: 'animate-panel'): AnimatePanel;
-    set_enum(key: 'animate-panel', value: AnimatePanel): void;
+type Enum_Functions<K extends EnumSettingsKeys, T> = {
+    get_enum(key: K): T;
+    set_enum(key: K, value: T): void;
 }
+
+type SettingsEnumFunctions =
+    Enum_Functions<'animate-panel', AnimatePanel> &
+    Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType>
+    ;
+
+export type GioSettings =
+    Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_' | 'set_'>> &
+    {
+        get_boolean(key: BooleanSettingsKeys): boolean;
+        get_int(key: IntegerSettingsKeys): number;
+        get_double(key: DoubleSettingsKeys): number;
+        set_double(key: DoubleSettingsKeys, value: number): void;
+    } &
+    SettingsEnumFunctions
+    ;
