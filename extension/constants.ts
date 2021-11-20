@@ -1,5 +1,5 @@
 
-import { AnimatePanel } from './common/prefs';
+import { AnimatePanel } from './common/settings';
 
 // FIXME: ideally these values matches physical touchpad size. We can get the
 // correct values for gnome-shell specifically, since mutter uses libinput

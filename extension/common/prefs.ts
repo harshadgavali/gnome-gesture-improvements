@@ -2,59 +2,7 @@ import Gio from '@gi-types/gio2';
 import Gtk from '@gi-types/gtk4';
 import GObject from '@gi-types/gobject2';
 import { CanEnableMinimizeGesture } from './utils/prefUtils';
-
-// define enum
-export enum AnimatePanel {
-	NONE = 0,
-	SWITCH_WORKSPACE = 1,
-	MOVE_WINDOW = 2,
-	SWITCH_WORKSPACE_AND_MOVE_WINDOW = 3,
-}
-
-type BooleanSettingsKeys =
-	'default-session-workspace' |
-	'default-overview' |
-	'allow-minimize-window' |
-	'follow-natural-scroll' |
-	'enable-alttab-gesture' |
-	'enable-window-manipulation-gesture' |
-	'enable-move-window-to-workspace' |
-	'enable-show-desktop'
-	;
-
-type IntegerSettingsKeys =
-	'alttab-delay'
-	;
-type DoubleSettingsKeys =
-	'touchpad-speed-scale' |
-	'touchpad-pinch-speed'
-	;
-
-export type AllSettingsKeys =
-	BooleanSettingsKeys |
-	IntegerSettingsKeys |
-	DoubleSettingsKeys |
-	'animate-panel'
-	;
-
-type AllUIObjectKeys =
-	AllSettingsKeys |
-	'touchpad-speed_scale_display-value' |
-	'touchpad-pinch-speed_display-value' |
-	'allow-minimize-window_box-row' |
-	'alttab-delay_box-row' |
-	'animate-panel_box-row'
-	;
-
-type KeysThatStartsWith<K extends string, U extends string> = K extends `${U}${infer _R}` ? K : never;
-export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_' | 'set_'>> & {
-	get_boolean(key: BooleanSettingsKeys): boolean;
-	get_int(key: IntegerSettingsKeys): number;
-	get_double(key: DoubleSettingsKeys): number;
-	set_double(key: DoubleSettingsKeys, value: number): void;
-	get_enum(key: 'animate-panel'): AnimatePanel;
-	set_enum(key: 'animate-panel', value: AnimatePanel): void;
-}
+import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 	get_object<T = GObject.Object>(name: AllUIObjectKeys): T;

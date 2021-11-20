@@ -7,7 +7,7 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
-import { AllSettingsKeys, AnimatePanel, GioSettings } from './common/prefs';
+import { AllSettingsKeys, AnimatePanel, GioSettings } from './common/settings';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 

@@ -8,7 +8,6 @@ const Main = imports.ui.main;
 const Layout = imports.ui.layout;
 const { lerp } = imports.misc.util;
 
-import { printStack } from '../../common/utils/logging';
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { easeActor } from '../utils/environment';
 import { findCentroid, findCornerForWindow, Point } from '../utils/pointsArithmetic';
@@ -303,7 +302,6 @@ export class ShowDesktopExtension implements ISubExtension {
 	}
 
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
-		printStack();
 		log(JSON.stringify({ _workspaceManagerState: this._workspaceManagerState }));
 		this._extensionState = ExtensionState.ANIMATING;
 
@@ -338,7 +336,6 @@ export class ShowDesktopExtension implements ISubExtension {
 
 	gestureEnd(_tracker: unknown, duration: number, endProgress: number) {
 		// endProgress 0 -> NORMAL state, 1 -> SHOW Desktop
-		printStack();
 		for (const monitor of this._monitorGroups)
 			monitor.gestureEnd(endProgress, duration);
 

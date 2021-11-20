@@ -5,6 +5,7 @@ import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
 import { registerClass } from '../../common/utils/gobject';
 import { ClutterEventType, CustomEventType } from '../../common/utils/clutter';
+import { printStack } from '../../common/utils/logging';
 
 const Util = imports.misc.util;
 
@@ -143,6 +144,7 @@ let connectedSignalIds: number[] = [];
 
 export function subscribe(callback: (actor: never | undefined, event: CustomEventType) => boolean): void {
 	if (!proxy) {
+		printStack('starting dbus service via spawn');
 		Util.spawn(['systemctl', '--user', 'start', 'gesture_improvements_gesture_daemon.service']);
 		connectedSignalIds = [];
 		proxy = new DBusWrapperGIExtension();
