@@ -12,7 +12,7 @@ import { OverviewControlsState, ExtSettings } from '../constants';
 import { CustomEventType } from '../common/utils/clutter';
 import { easeActor } from './utils/environment';
 import { DummyCyclicPanel } from './holdGestures/animatePanel';
-import { AnimatePanel } from '../common/prefs';
+import { AnimatePanel } from '../common/settings';
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
