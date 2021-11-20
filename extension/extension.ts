@@ -7,7 +7,7 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
-import { AllSettingsKeys, AnimatePanel, GioSettings } from './common/settings';
+import { AllSettingsKeys, AnimatePanel, GioSettings, PinchGestureType } from './common/settings';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 
@@ -70,7 +70,10 @@ class Extension {
 	_enable() {
 		this._initializeSettings();
 		this._extensions = [];
-		if (this.settings?.get_boolean('enable-alttab-gesture'))
+		if (this.settings === undefined)
+			return;
+
+		if (this.settings.get_boolean('enable-alttab-gesture'))
 			this._extensions.push(new AltTabGestureExtension());
 
 		this._extensions.push(
@@ -78,11 +81,17 @@ class Extension {
 			new GestureExtension(),
 		);
 
-		if (this.settings?.get_boolean('enable-window-manipulation-gesture'))
+		if (this.settings.get_boolean('enable-window-manipulation-gesture'))
 			this._extensions.push(new SnapWindowExtension());
 
-		if (this.settings?.get_boolean('enable-show-desktop'))
-			this._extensions.push(new ShowDesktopExtension());
+		// pinch to show desktop
+		const showDesktopFingers = [
+			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.SHOW_DESKTOP ? 3 : undefined,
+			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.SHOW_DESKTOP ? 4 : undefined,
+		].filter((f): f is number => typeof f === 'number');
+
+		if (showDesktopFingers.length)
+			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
 
 		this._extensions.forEach(extension => extension.apply());
 	}

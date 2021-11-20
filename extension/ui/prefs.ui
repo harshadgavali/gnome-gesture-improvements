@@ -361,7 +361,7 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                       <object class="GtkListBox">
                         <property name="selection-mode">none</property>
 
-                        <!-- Show Desktop Gesture -->
+                        <!-- 3 finger pinch gesture -->
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="child">
@@ -378,15 +378,51 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                                     <property name="valign">center</property>
                                     <property name="hexpand">1</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Show Desktop</property>
+                                    <property name="label" translatable="yes">3 finger pinch</property>
                                   </object>
                                 </child>
 
                                 <child>
-                                  <object class="GtkSwitch" id="enable-show-desktop">
-                                    <property name="halign">end</property>
-                                    <property name="can-focus">True</property>
+                                  <object class="GtkComboBoxText" id="pinch-3-finger-gesture">
+                                    <items>
+                                      <item translatable="yes" id="0">None</item>
+                                      <item translatable="yes" id="1">Show Desktop</item>
+                                    </items>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- 4 finger pinch gesture -->
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
                                     <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">4 finger pinch</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkComboBoxText" id="pinch-4-finger-gesture">
+                                    <items>
+                                      <item translatable="yes" id="0">None</item>
+                                      <item translatable="yes" id="1">Show Desktop</item>
+                                    </items>
                                   </object>
                                 </child>
 

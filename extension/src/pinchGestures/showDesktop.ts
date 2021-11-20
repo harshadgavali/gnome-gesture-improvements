@@ -229,14 +229,16 @@ export class ShowDesktopExtension implements ISubExtension {
 	private _minimizingWindows: Meta.Window[] = [];
 	private _workspaceManagerState = WorkspaceManagerState.DEFAULT;
 	private _monitorGroups: MonitorGroup[] = [];
-	private _pinchTracker?: Type_TouchpadPinchGesture;
+	private _pinchTracker: Type_TouchpadPinchGesture;
 
-	apply(): void {
+	constructor(nfingers: number[]) {
 		this._pinchTracker = new TouchpadPinchGesture({
-			nfingers: [3],
+			nfingers: nfingers,
 			allowedModes: Shell.ActionMode.NORMAL,
 		});
+	}
 
+	apply(): void {
 		this._pinchTracker.connect('begin', this.gestureBegin.bind(this));
 		this._pinchTracker.connect('update', this.gestureUpdate.bind(this));
 		this._pinchTracker.connect('end', this.gestureEnd.bind(this));

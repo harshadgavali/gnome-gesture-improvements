@@ -2,7 +2,7 @@ import Gio from '@gi-types/gio2';
 import Gtk from '@gi-types/gtk4';
 import GObject from '@gi-types/gobject2';
 import { CanEnableMinimizeGesture } from './utils/prefUtils';
-import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
+import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 	get_object<T = GObject.Object>(name: AllUIObjectKeys): T;
@@ -37,11 +37,14 @@ function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, bui
 	});
 }
 
-function bind_combo_box(key: 'animate-panel', settings: GioSettings, builder: GtkBuilder) {
+function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
 	const comboBox = builder.get_object<Gtk.ComboBoxText>(key);
-	comboBox.set_active_id(settings.get_enum(key).toString());
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const enumKey = key as any;
+	comboBox.set_active_id(settings.get_enum(enumKey).toString());
+
 	comboBox.connect('changed', () => {
-		settings.set_enum(key, parseInt(comboBox.active_id));
+		settings.set_enum(enumKey, parseInt(comboBox.active_id));
 	});
 }
 
@@ -97,9 +100,10 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
 
-	bind_boolean_value('enable-show-desktop', settings, builder);
 	bind_boolean_value('enable-move-window-to-workspace', settings, builder, { sensitiveRowKeys: ['animate-panel_box-row'] });
 	bind_combo_box('animate-panel', settings, builder);
+	bind_combo_box('pinch-3-finger-gesture', settings, builder);
+	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 
 	const main_prefs = builder.get_object<T>('main_prefs');
 	const header_bar = builder.get_object<Gtk.HeaderBar>('header_bar');
