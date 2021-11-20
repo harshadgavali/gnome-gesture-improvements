@@ -10,6 +10,9 @@
     <key name="touchpad-speed-scale" type="d">
       <default>1.0</default>
     </key>
+    <key name="touchpad-pinch-speed" type="d">
+      <default>1.0</default>
+    </key>
     <key name="alttab-delay" type="i">
       <default>150</default>
     </key>

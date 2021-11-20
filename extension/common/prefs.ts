@@ -26,7 +26,8 @@ type IntegerSettingsKeys =
 	'alttab-delay'
 	;
 type DoubleSettingsKeys =
-	'touchpad-speed-scale'
+	'touchpad-speed-scale' |
+	'touchpad-pinch-speed'
 	;
 
 export type AllSettingsKeys =
@@ -38,7 +39,8 @@ export type AllSettingsKeys =
 
 type AllUIObjectKeys =
 	AllSettingsKeys |
-	'touchpadspeed_speed_display_value' |
+	'touchpad-speed_scale_display-value' |
+	'touchpad-pinch-speed_display-value' |
 	'allow-minimize-window_box-row' |
 	'alttab-delay_box-row' |
 	'animate-panel_box-row'
@@ -133,7 +135,8 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	const builder = new Gtk.Builder();
 	builder.add_from_file(uiPath);
 
-	display_in_log_scale('touchpad-speed-scale', 'touchpadspeed_speed_display_value', settings, builder);
+	display_in_log_scale('touchpad-speed-scale', 'touchpad-speed_scale_display-value', settings, builder);
+	display_in_log_scale('touchpad-pinch-speed', 'touchpad-pinch-speed_display-value', settings, builder);
 
 	bind_int_value('alttab-delay', settings, builder);
 
@@ -147,7 +150,7 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
 
 	bind_boolean_value('enable-show-desktop', settings, builder);
-	bind_boolean_value('enable-move-window-to-workspace', settings, builder, {sensitiveRowKeys: ['animate-panel_box-row']});
+	bind_boolean_value('enable-move-window-to-workspace', settings, builder, { sensitiveRowKeys: ['animate-panel_box-row'] });
 	bind_combo_box('animate-panel', settings, builder);
 
 	const main_prefs = builder.get_object<T>('main_prefs');

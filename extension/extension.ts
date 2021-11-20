@@ -9,6 +9,7 @@ import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
 import { AllSettingsKeys, AnimatePanel, GioSettings } from './common/prefs';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
+import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
@@ -24,6 +25,7 @@ class Extension {
 		this._addReloadDelayFor = [
 			'touchpad-speed-scale',
 			'alttab-delay',
+			'touchpad-pinch-speed',
 		];
 	}
 
@@ -79,6 +81,9 @@ class Extension {
 		if (this.settings?.get_boolean('enable-window-manipulation-gesture'))
 			this._extensions.push(new SnapWindowExtension());
 
+		if (this.settings?.get_boolean('enable-show-desktop'))
+			this._extensions.push(new ShowDesktopExtension());
+
 		this._extensions.forEach(extension => extension.apply());
 	}
 
@@ -94,7 +99,6 @@ class Extension {
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE = this.settings.get_boolean('default-overview');
 			ExtSettings.ALLOW_MINIMIZE_WINDOW = this.settings.get_boolean('allow-minimize-window');
 			ExtSettings.FOLLOW_NATURAL_SCROLL = this.settings.get_boolean('follow-natural-scroll');
-			ExtSettings.ENABLE_SHOW_DESKTOP = this.settings.get_boolean('enable-show-desktop');
 			ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE = this.settings.get_boolean('enable-move-window-to-workspace');
 
 			if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE)
@@ -103,6 +107,7 @@ class Extension {
 				ExtSettings.ANIMATE_PANEL = AnimatePanel.NONE;
 
 			TouchpadConstants.SWIPE_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_SWIPE_MULTIPLIER * this.settings.get_double('touchpad-speed-scale');
+			TouchpadConstants.PINCH_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_PINCH_MULTIPLIER * this.settings.get_double('touchpad-pinch-speed');
 			AltTabConstants.DELAY_DURATION = this.settings.get_int('alttab-delay');
 		}
 	}

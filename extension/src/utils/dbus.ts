@@ -2,7 +2,6 @@ import { imports, global } from 'gnome-shell';
 
 import Clutter from '@gi-types/clutter8';
 import Gio from '@gi-types/gio2';
-import Meta from '@gi-types/meta8';
 import GObject from '@gi-types/gobject2';
 import { registerClass } from '../../common/utils/gobject';
 import { ClutterEventType, CustomEventType } from '../../common/utils/clutter';
@@ -17,6 +16,9 @@ const X11GestureDaemonXml = `<node>
 		<signal name="TouchpadHold">
 			<arg name="event" type="(siub)"/>
 		</signal>
+		<signal name="TouchpadPinch">
+			<arg name="event" type="(siddu)" />
+	  	</signal>
 	</interface>
 </node>`;
 
@@ -44,6 +46,17 @@ const DBusWrapperGIExtension = registerClass({
 			accumulator: GObject.AccumulatorType.TRUE_HANDLED,
 			return_type: GObject.TYPE_BOOLEAN,
 		},
+		'TouchpadPinch': {
+			param_types: [
+				GObject.TYPE_STRING,	// phase
+				GObject.TYPE_INT,		// fingers
+				GObject.TYPE_DOUBLE,	// angle_delta
+				GObject.TYPE_DOUBLE, 	// scale
+				GObject.TYPE_UINT],		// time
+			flags: GObject.SignalFlags.RUN_LAST,
+			accumulator: GObject.AccumulatorType.TRUE_HANDLED,
+			return_type: GObject.TYPE_BOOLEAN,
+		},
 	},
 	Properties: {},
 }, class DBusWrapperGIExtension extends GObject.Object {
@@ -53,17 +66,16 @@ const DBusWrapperGIExtension = registerClass({
 	constructor() {
 		super();
 
-		if (!Meta.is_wayland_compositor()) {
-			const ProxyClass = Gio.DBusProxy.makeProxyWrapper(X11GestureDaemonXml);
-			this._proxy = new ProxyClass(
-				Gio.DBus.session,
-				'org.gestureImprovements.gestures',
-				'/org/gestureImprovements/gestures',
-			);
+		const ProxyClass = Gio.DBusProxy.makeProxyWrapper(X11GestureDaemonXml);
+		this._proxy = new ProxyClass(
+			Gio.DBus.session,
+			'org.gestureImprovements.gestures',
+			'/org/gestureImprovements/gestures',
+		);
 
-			this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadSwipe', this._handleDbusSwipeSignal.bind(this)));
-			this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadHold', this._handleDbusHoldSignal.bind(this)));
-		}
+		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadSwipe', this._handleDbusSwipeSignal.bind(this)));
+		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadHold', this._handleDbusHoldSignal.bind(this)));
+		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadPinch', this._handleDbusPinchSignal.bind(this)));
 	}
 
 	dropProxy() {
@@ -76,18 +88,35 @@ const DBusWrapperGIExtension = registerClass({
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	_handleDbusSwipeSignal(_proxy: never, _sender: never, params: [any]): void {
+		// (siddu)
 		const [sphase, fingers, dx, dy, time] = params[0];
 		this.emit('TouchpadSwipe', sphase, fingers, dx, dy, time);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	_handleDbusHoldSignal(_proxy: never, _sender: never, params: [any]): void {
+		// (siub)
 		const [sphase, fingers, time, is_cancelled] = params[0];
 		this.emit('TouchpadHold', sphase, fingers, time, is_cancelled);
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_handleDbusPinchSignal(_proxy: never, _sender: never, params: [any]): void {
+		// (siddu)
+		const [sphase, fingers, angle_delta, scale, time] = params[0];
+		this.emit('TouchpadPinch', sphase, fingers, angle_delta, scale, time);
+	}
 });
 
-function GenerateEvent(type: number, sphase: string, fingers: number, time: number, dx?: number, dy?: number, is_cancelled?: boolean): CustomEventType {
+type EventOptionalParams = Partial<{
+	dx: number,
+	dy: number,
+	pinch_scale: number,
+	pinch_angle_delta: number,
+	is_cancelled: boolean,
+}>;
+
+function GenerateEvent(type: number, sphase: string, fingers: number, time: number, params: EventOptionalParams): CustomEventType {
 	return {
 		type: () => type,
 		get_gesture_phase: () => {
@@ -97,13 +126,15 @@ function GenerateEvent(type: number, sphase: string, fingers: number, time: numb
 				case 'Update':
 					return Clutter.TouchpadGesturePhase.UPDATE;
 				default:
-					return is_cancelled ? Clutter.TouchpadGesturePhase.CANCEL : Clutter.TouchpadGesturePhase.END;
+					return params.is_cancelled ? Clutter.TouchpadGesturePhase.CANCEL : Clutter.TouchpadGesturePhase.END;
 			}
 		},
 		get_touchpad_gesture_finger_count: () => fingers,
 		get_coords: () => global.get_pointer().slice(0, 2) as [number, number],
-		get_gesture_motion_delta_unaccelerated: () => [dx ?? 0, dy ?? 0],
+		get_gesture_motion_delta_unaccelerated: () => [params.dx ?? 0, params.dy ?? 0],
 		get_time: () => time,
+		get_gesture_pinch_scale: () => params.pinch_scale ?? 1.0,
+		get_gesture_pinch_angle_delta: () => params.pinch_angle_delta ?? 0,
 	};
 }
 
@@ -112,23 +143,28 @@ let connectedSignalIds: number[] = [];
 
 export function subscribe(callback: (actor: never | undefined, event: CustomEventType) => boolean): void {
 	if (!proxy) {
-		if (!Meta.is_wayland_compositor()) {
-			Util.spawn(['systemctl', '--user', 'start', 'gesture_improvements_gesture_daemon.service']);
-		}
+		Util.spawn(['systemctl', '--user', 'start', 'gesture_improvements_gesture_daemon.service']);
 		connectedSignalIds = [];
 		proxy = new DBusWrapperGIExtension();
 	}
 
 	connectedSignalIds.push(
 		proxy.connect('TouchpadSwipe', (_source, sphase, fingers, dx, dy, time) => {
-			const event = GenerateEvent(ClutterEventType.TOUCHPAD_SWIPE, sphase, fingers, time, dx, dy);
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_SWIPE, sphase, fingers, time, { dx, dy });
 			return callback(undefined, event);
 		}),
 	);
 
 	connectedSignalIds.push(
 		proxy.connect('TouchpadHold', (_source, sphase, fingers, time, is_cancelled) => {
-			const event = GenerateEvent(ClutterEventType.TOUCHPAD_HOLD, sphase, fingers, time, undefined, undefined, is_cancelled);
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_HOLD, sphase, fingers, time, { is_cancelled });
+			return callback(undefined, event);
+		}),
+	);
+
+	connectedSignalIds.push(
+		proxy.connect('TouchpadPinch', (_source, sphase, fingers, pinch_angle_delta, pinch_scale, time) => {
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_PINCH, sphase, fingers, time, { pinch_angle_delta, pinch_scale });
 			return callback(undefined, event);
 		}),
 	);
@@ -147,8 +183,6 @@ export function drop_proxy(): void {
 		proxy.dropProxy();
 		proxy.run_dispose();
 		proxy = undefined;
-		if (!Meta.is_wayland_compositor()) {
-			Util.spawn(['systemctl', '--user', 'stop', 'gesture_improvements_gesture_daemon.service']);
-		}
+		Util.spawn(['systemctl', '--user', 'stop', 'gesture_improvements_gesture_daemon.service']);
 	}
 }
