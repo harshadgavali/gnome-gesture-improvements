@@ -145,7 +145,7 @@ class MonitorGroup {
 	gestureBegin(windowActors: Meta.WindowActor[]) {
 		windowActors.forEach(this._addWindowActor.bind(this));
 		this._fillCloneDestPosition(this._windowActorClones);
-		this._container.visible = true;
+		this._container.show();
 	}
 
 	gestureUpdate(progress: number) {
@@ -175,6 +175,8 @@ class MonitorGroup {
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				duration,
 				onStopped: () => {
+					this._container.hide();
+
 					const window = windowActor.meta_window as Meta.Window | null;
 					if (window?.can_minimize()) {
 						Main.wm.skipNextEffect(windowActor);
@@ -190,11 +192,13 @@ class MonitorGroup {
 						windowActor.show();
 					}
 
-					this._container.visible = false;
 					clone.destroy();
 				},
 			});
 		});
+
+		if (this._windowActorClones.length ===0)
+			this._container.hide();
 
 		this._windowActorClones = [];
 	}
