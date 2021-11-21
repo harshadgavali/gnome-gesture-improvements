@@ -26,16 +26,20 @@ gnome-extensions enable gestureImprovements@gestures
 On X11, you also need to install [gnome-x11-gesture-daemon](https://github.com/harshadgavali/gnome-x11-gesture-daemon)
 
 ## Gestures (including built-in ones)
-| Gesture                                     | Modes    | Fingers | Direction       |
-| :------------------------------------------ | :------- | :------ | :-------------- |
-| Switch windows                              | Desktop  | 3       | Horizontal      |
-| Switch workspaces                           | Overview | 2/3     | Horizontal      |
-| Switch app pages                            | AppGrid  | 2/3     | Horizontal      |
-| Switch workspaces                           | *        | 4       | Horizontal      |
-| Desktop/Overview/AppGrid navigation         | *        | 4       | Vertical        |
-| Unmaximize/maximize/fullscreen a window     | Desktop  | 3       | Vertical        |
-| Minimize a window                           | Desktop  | 3       | Vertical        |
-| Snap/half-tile a window                     | Desktop  | 3       | Explained below |
+| Swipe Gesture                           | Modes    | Fingers | Direction       |
+| :-------------------------------------- | :------- | :------ | :-------------- |
+| Switch windows                          | Desktop  | 3       | Horizontal      |
+| Switch workspaces                       | Overview | 2/3     | Horizontal      |
+| Switch app pages                        | AppGrid  | 2/3     | Horizontal      |
+| Switch workspaces                       | *        | 4       | Horizontal      |
+| Desktop/Overview/AppGrid navigation     | *        | 4       | Vertical        |
+| Unmaximize/maximize/fullscreen a window | Desktop  | 3       | Vertical        |
+| Minimize a window                       | Desktop  | 3       | Vertical        |
+| Snap/half-tile a window                 | Desktop  | 3       | Explained below |
+
+| Pinch Gesture | Modes   | Fingers |
+| :------------ | :------ | :------ |
+| Show Desktop  | Desktop | 3/4     |
 
 #### Notes
 * Minimize gesture is available if you have dash-to-dock/panel or similar extension enabled.
