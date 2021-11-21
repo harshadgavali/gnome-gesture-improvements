@@ -1,7 +1,7 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject';
-import Shell from '@gi-types/shell';
-import Meta from '@gi-types/meta';
+import Clutter from '@gi-types/clutter8';
+import GObject from '@gi-types/gobject2';
+import Shell from '@gi-types/shell0';
+import Meta from '@gi-types/meta8';
 import { imports, global, CustomEventType } from 'gnome-shell';
 
 const Main = imports.ui.main;
@@ -9,6 +9,7 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 
 import * as DBusUtils from './utils/dbus';
 import { TouchpadConstants } from '../constants';
+import { registerClass } from '../common/utils/gobject';
 
 // define enum
 enum TouchpadState {
@@ -18,7 +19,7 @@ enum TouchpadState {
 	IGNORED = 3,
 }
 
-export const TouchpadSwipeGesture = GObject.registerClass({
+export const TouchpadSwipeGesture = registerClass({
 	Properties: {
 		'enabled': GObject.ParamSpec.boolean(
 			'enabled',
@@ -63,7 +64,7 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		allowedModes: Shell.ActionMode,
 		orientation: Clutter.Orientation,
 		followNaturalScroll = true,
-		checkAllowedGesture = undefined,
+		checkAllowedGesture?: (event: CustomEventType) => boolean,
 		gestureSpeed = 1.0,
 	) {
 		super();
@@ -124,7 +125,7 @@ export const TouchpadSwipeGesture = GObject.registerClass({
 		const time = event.get_time();
 
 		const [x, y] = event.get_coords();
-		const [dx, dy] = event.get_gesture_motion_delta_unaccelerated();
+		const [dx, dy] = event.get_gesture_motion_delta_unaccelerated() as [number, number];
 
 		if (this._state === TouchpadState.NONE) {
 			if (dx === 0 && dy === 0)

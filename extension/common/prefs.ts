@@ -1,42 +1,8 @@
-import Gio from '@gi-types/gio';
-import Gtk from '@gi-types/gtk';
-import GObject from '@gi-types/gobject';
-import { CanEnableMinimizeGesture } from './utils/prefsUtils';
-
-type BooleanSettingsKeys =
-	'default-session-workspace' |
-	'default-overview' |
-	'allow-minimize-window' |
-	'follow-natural-scroll' |
-	'enable-alttab-gesture' |
-	'enable-window-manipulation-gesture';
-
-type IntegerSettingsKeys =
-	'alttab-delay'
-	;
-type DoubleSettingsKeys =
-	'touchpad-speed-scale'
-	;
-
-type AllSettingsKeys =
-	BooleanSettingsKeys |
-	IntegerSettingsKeys |
-	DoubleSettingsKeys
-	;
-
-type AllUIObjectKeys =
-	AllSettingsKeys |
-	'touchpadspeed_speed_display_value' |
-	'allow-minimize-window_box-row' |
-	'alttab-delay_box-row'
-	;
-
-type KeysThatStartsWith<K extends string, U extends string> = K extends `${U}${infer _R}` ? K : never;
-export type GioSettings = Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_'>> & {
-	get_boolean(key: BooleanSettingsKeys): boolean;
-	get_int(key: IntegerSettingsKeys): number;
-	get_double(key: DoubleSettingsKeys): number;
-}
+import Gio from '@gi-types/gio2';
+import Gtk from '@gi-types/gtk4';
+import GObject from '@gi-types/gobject2';
+import { CanEnableMinimizeGesture } from './utils/prefUtils';
+import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 	get_object<T = GObject.Object>(name: AllUIObjectKeys): T;
@@ -68,6 +34,17 @@ function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, bui
 	params?.sensitiveRowKeys?.forEach(row_key => {
 		const row = builder.get_object<Gtk.ListBoxRow>(row_key);
 		button.bind_property('active', row, 'sensitive', GObject.BindingFlags.SYNC_CREATE);
+	});
+}
+
+function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
+	const comboBox = builder.get_object<Gtk.ComboBoxText>(key);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const enumKey = key as any;
+	comboBox.set_active_id(settings.get_enum(enumKey).toString());
+
+	comboBox.connect('changed', () => {
+		settings.set_enum(enumKey, parseInt(comboBox.active_id));
 	});
 }
 
@@ -109,7 +86,8 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	const builder = new Gtk.Builder();
 	builder.add_from_file(uiPath);
 
-	display_in_log_scale('touchpad-speed-scale', 'touchpadspeed_speed_display_value', settings, builder);
+	display_in_log_scale('touchpad-speed-scale', 'touchpad-speed_scale_display-value', settings, builder);
+	display_in_log_scale('touchpad-pinch-speed', 'touchpad-pinch-speed_display-value', settings, builder);
 
 	bind_int_value('alttab-delay', settings, builder);
 
@@ -121,6 +99,9 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	bind_boolean_value('enable-window-manipulation-gesture', settings, builder, { sensitiveRowKeys: ['allow-minimize-window_box-row'] });
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
+
+	bind_combo_box('pinch-3-finger-gesture', settings, builder);
+	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 
 	const main_prefs = builder.get_object<T>('main_prefs');
 	const header_bar = builder.get_object<Gtk.HeaderBar>('header_bar');

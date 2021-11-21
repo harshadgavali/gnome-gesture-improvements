@@ -1,11 +1,11 @@
-import Clutter from '@gi-types/clutter';
-import St from '@gi-types/st';
-import Gio from '@gi-types/gio';
-import Shell from '@gi-types/shell';
-import Meta from '@gi-types/meta';
-import GObject from '@gi-types/gobject';
+import Clutter from '@gi-types/clutter8';
+import St from '@gi-types/st1';
+import Gio from '@gi-types/gio2';
+import Shell from '@gi-types/shell0';
+import Meta from '@gi-types/meta8';
+import GObject from '@gi-types/gobject2';
 
-declare const global: import('@gi-types/shell').Global;
+declare const global: import('@gi-types/shell0').Global;
 declare interface ExtensionUtilsMeta {
 	getSettings(schema?: string): Gio.Settings;
 	getCurrentExtension(): {
@@ -80,6 +80,7 @@ declare namespace imports {
 			const layoutManager: {
 				uiGroup: Clutter.Actor,
 				panelBox: St.BoxLayout,
+				monitors: __shell_private_types.IMonitorState[],
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
 				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
@@ -115,21 +116,21 @@ declare namespace imports {
 				_stateAdjustment: OverviewAdjustment;
 				layoutManager: Clutter.BoxLayout & {
 					_searchEntry: St.Bin
-				}
+				};
 
 				_toggleAppsPage(): void
 
 				_workspacesDisplay: {
 					_swipeTracker: swipeTracker.SwipeTracker
-				}
+				};
 
 				_appDisplay: {
 					_swipeTracker: swipeTracker.SwipeTracker
-				}
+				};
 
 				_searchController: {
 					searchActive: boolean
-				}
+				};
 			}
 		}
 
@@ -154,7 +155,7 @@ declare namespace imports {
 				_endTouchpadGesture(): void;
 				_history: {
 					reset(): void;
-				}
+				};
 			}
 		}
 
@@ -179,10 +180,18 @@ declare namespace imports {
 				_switchWorkspaceBegin(tracker: {
 					orientation: Clutter.Orientation,
 					confirmSwipe: typeof swipeTracker.SwipeTracker.prototype.confirmSwipe
-				}, monitor: never);
+				}, monitor: number);
 
 				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
 				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
+
+				movingWindow: Meta.Window | undefined;
+			}
+		}
+
+		namespace layout {
+			declare class MonitorConstraint extends Clutter.Constraint {
+				constructor(params: Partial<{ primary: boolean, index: number }>);
 			}
 		}
 	}
@@ -210,7 +219,7 @@ declare namespace imports {
 							adjustment: St.Adjustment
 						}
 					}
-				}
+				};
 
 				_resetNoModsTimeout(): void;
 				_noModsTimeoutId: number;
@@ -223,13 +232,11 @@ declare namespace imports {
 	}
 }
 
-/// custom types
-
-declare interface CustomEventType {
-	type(): Clutter.EventType,
-	get_gesture_phase(): Clutter.TouchpadGesturePhase,
-	get_touchpad_gesture_finger_count(): number,
-	get_time(): number,
-	get_coords(): [number, number],
-	get_gesture_motion_delta_unaccelerated(): [number, number],
-}
+// types
+export type CustomEventType = Pick<
+	import('@gi-types/clutter8').Event,
+	'type' | 'get_gesture_phase' |
+	'get_touchpad_gesture_finger_count' | 'get_time' |
+	'get_coords' | 'get_gesture_motion_delta_unaccelerated' |
+	'get_gesture_pinch_scale' | 'get_gesture_pinch_angle_delta'
+>;

@@ -1,5 +1,5 @@
-import Clutter from '@gi-types/clutter';
-import Shell from '@gi-types/shell';
+import Clutter from '@gi-types/clutter8';
+import Shell from '@gi-types/shell0';
 import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;
@@ -7,11 +7,12 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 import { createSwipeTracker } from './swipeTracker';
 import { OverviewControlsState, ExtSettings } from '../constants';
 
-const ExtensionState = {
-	DISABLED: 0,
-	DEFAULT: 1,
-	CUSTOM: 2,
-};
+// declare enum
+enum ExtensionState {
+	// DISABLED = 0,
+	DEFAULT = 1,
+	CUSTOM = 2,
+}
 
 export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _overviewControls: imports.ui.overviewControls.OverviewControlsManager;
@@ -19,7 +20,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _oldGetStateTransitionParams: typeof imports.ui.overviewControls.OverviewAdjustment.prototype.getStateTransitionParams;
 	private _swipeTracker?: typeof SwipeTracker.prototype;
 	private _progress = 0;
-	private _extensionState = ExtensionState.DISABLED;
+	private _extensionState = ExtensionState.DEFAULT;
 	private _connectors: number[];
 	private _shownEventId = 0;
 	private _hiddenEventId = 0;
@@ -62,6 +63,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 			Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
 			Clutter.Orientation.VERTICAL,
 		);
+
 		this._swipeTracker.orientation = Clutter.Orientation.VERTICAL;
 		this._connectors.push(this._swipeTracker.connect('begin', this._gestureBegin.bind(this)));
 		this._connectors.push(this._swipeTracker.connect('update', this._gestureUpdate.bind(this)));
@@ -80,7 +82,6 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	}
 
 	destroy(): void {
-		this._extensionState = ExtensionState.DISABLED;
 		if (this._swipeTracker) {
 			this._connectors.forEach(connector => this._swipeTracker?.disconnect(connector));
 			this._swipeTracker.destroy();
