@@ -275,27 +275,18 @@ export class ShowDesktopExtension implements ISubExtension {
 		this._monitorGroups = [];
 	}
 
-	private _isDesktopIconExtensionWindow(window: Meta.Window) {
-		return window.skip_taskbar &&
-			window.gtk_application_id === 'com.rastersoft.ding' &&
-			window.gtk_application_object_path === '/com/rastersoft/ding';
-	}
-
 	private _getMinimizableWindows() {
-		const types = [Meta.WindowType.MODAL_DIALOG, Meta.WindowType.NORMAL, Meta.WindowType.DIALOG];
-
 		if (this._workspaceManagerState === WorkspaceManagerState.DEFAULT) {
 			this._minimizingWindows = global
 				.get_window_actors()
+				.filter(a => a.visible)
 				// top actors should be at the beginning
 				.reverse()
 				.map(actor => actor.meta_window)
 				.filter(win =>
 					this._windows.has(win) &&
 					(win.is_always_on_all_workspaces() || win.get_workspace().index === this._workspace?.index) &&
-					!win.minimized &&
-					types.includes(win.get_window_type()) &&
-					!this._isDesktopIconExtensionWindow(win));
+					!win.minimized);
 		}
 
 		return this._minimizingWindows;
