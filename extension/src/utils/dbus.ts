@@ -144,7 +144,7 @@ let connectedSignalIds: number[] = [];
 
 export function subscribe(callback: (actor: never | undefined, event: CustomEventType) => boolean): void {
 	if (!proxy) {
-		printStack('starting dbus service via spawn');
+		printStack('starting dbus service \'gesture_improvements_gesture_daemon.service\' via spawn');
 		Util.spawn(['systemctl', '--user', 'start', 'gesture_improvements_gesture_daemon.service']);
 		connectedSignalIds = [];
 		proxy = new DBusWrapperGIExtension();
