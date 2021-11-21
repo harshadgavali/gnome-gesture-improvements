@@ -1,10 +1,9 @@
-import { imports, global } from 'gnome-shell';
+import { imports, global, CustomEventType } from 'gnome-shell';
 
 import Clutter from '@gi-types/clutter8';
 import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
 import { registerClass } from '../../common/utils/gobject';
-import { CustomEventType } from '../../common/utils/clutter';
 import { printStack } from '../../common/utils/logging';
 
 const Util = imports.misc.util;
