@@ -81,7 +81,8 @@
         "function-paren-newline": [
             "error",
             "multiline-arguments"
-        ]
+        ],
+        "eqeqeq": "error"
     },
     "overrides": [
         {

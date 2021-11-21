@@ -1,7 +1,7 @@
-import Gio from '@gi-types/gio';
+import Gio from '@gi-types/gio2';
 
 function getShellSettings() {
-	return new Gio.Settings({schema_id: 'org.gnome.shell'});
+	return new Gio.Settings({ schema_id: 'org.gnome.shell' });
 }
 
 export function CanEnableMinimizeGesture() {

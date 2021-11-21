@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+  <enum id='org.gnome.shell.extensions.gestureImprovements.pinch-gestures'>
+    <value value='0' nick='NONE' />
+    <value value='1' nick='SHOW_DESKTOP' />
+  </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://developer.gnome.org/glib/stable/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
+      <default>1.0</default>
+    </key>
+    <key name="touchpad-pinch-speed" type="d">
       <default>1.0</default>
     </key>
     <key name="alttab-delay" type="i">
@@ -31,6 +38,14 @@
     <key name='enable-window-manipulation-gesture' type='b'>
       <default>true</default>
       <description>Enable Window manipulation gesture</description>
+    </key>
+    <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
+      <default>'SHOW_DESKTOP'</default>
+      <description>Gesture for 3 finger pinch</description>
+    </key>
+    <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
+      <default>'NONE'</default>
+      <description>Gesture for 4 finger pinch</description>
     </key>
   </schema>
 </schemalist>

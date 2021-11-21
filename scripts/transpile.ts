@@ -6,16 +6,16 @@ import ts from 'typescript';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-// list of gi modules and their name in imports.gi
+// list of gi modules (regex) and their name in imports.gi
 const GIReplacements: Record<string, string> = {
-	'@gi-types/gtk': 'Gtk',
-	'@gi-types/st': 'St',
-	'@gi-types/clutter': 'Clutter',
-	'@gi-types/gobject': 'GObject',
-	'@gi-types/glib': 'GLib',
-	'@gi-types/gio': 'Gio',
-	'@gi-types/shell': 'Shell',
-	'@gi-types/meta': 'Meta',
+	'^@gi-types/gtk(\\d+)?$': 'Gtk',
+	'^@gi-types/st(\\d+)?$': 'St',
+	'^@gi-types/clutter(\\d+)?$': 'Clutter',
+	'^@gi-types/gobject(\\d+)?$': 'GObject',
+	'^@gi-types/glib(\\d+)?$': 'GLib',
+	'^@gi-types/gio(\\d+)?$': 'Gio',
+	'^@gi-types/shell(\\d+)?$': 'Shell',
+	'^@gi-types/meta(\\d+)?$': 'Meta',
 };
 
 /**
@@ -173,7 +173,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 			context.factory.createVariableStatement(
 				[],
 				node.declarationList.declarations.map(d => {
-					if (d.name.kind == ts.SyntaxKind.Identifier) {
+					if (d.name.kind === ts.SyntaxKind.Identifier) {
 						variables.push((d.name as ts.Identifier).text);
 					}
 					return moveComments(createVariableDeclaration(context, d.name, d.initializer), d);
@@ -220,7 +220,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
  *
  * transformation function
  * 1. replaces @gi-types/* modules into imports.gi
- * 	e.g., "import St from '@gi-types/st';" => "const St = imports.gi.St;"
+ * 	e.g., "import St from '@gi-types/st1';" => "const St = imports.gi.St;"
  * 2. Removes "import ... from 'gnome-shell'" statement.
  * 3. replaces local imports with statement compatible with extensions
  * 	e.g., in extension.js (top level)
@@ -234,8 +234,8 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 	 * Actual transformation function
 	 * @param node ImportDeclaration node
 	 * @param getModuleReplacement function which returns object with module expression and "const Me ...." statement is necessary
-	 * 			e.g., getModuleReplacement('@gi-types/clutter') => {statement: undefined, module: Expression('imports.gi.Clutter')}
-	 * 			e.g., getModuleReplacement('@gi-types/gobject') => {statement: Expression('const Me = ...'), module: Expression('imports.gi.GObject')}
+	 * 			e.g., getModuleReplacement('@gi-types/clutter8') => {statement: undefined, module: Expression('imports.gi.Clutter')}
+	 * 			e.g., getModuleReplacement('@gi-types/gobject2') => {statement: Expression('const Me = ...'), module: Expression('imports.gi.GObject')}
 	 * @returns returns either	throws when import declaration doesn't fit into above categories
 	 * 							or returns list of variable statements or empty statement
 	 */
@@ -256,7 +256,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 		const replacement = getModuleReplacement(module.text);
 		/* unknown import statement */
 		if (!replacement) {
-			throw new Error(`Unknown import statement '${node}'`);
+			throw new Error(`Unknown import statement '${node.getFullText()}'`);
 		}
 
 		const statements: ts.VariableStatement[] = [];
@@ -335,9 +335,10 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 
 		/* function which returns object with module expression and "const Me ...." statement is necessary */
 		const getModuleReplacement = (module: string): { statement?: ts.VariableStatement, module: ts.Expression } | null => {
-			if (GIReplacements[module]) {
+			const giModule = Object.keys(GIReplacements).find(key => module.match(new RegExp(key)));
+			if (giModule) {
 				/* GI import */
-				return { module: createAccessExpressionFor(context, `imports.gi.${GIReplacements[module]}`) };
+				return { module: createAccessExpressionFor(context, `imports.gi.${GIReplacements[giModule]}`) };
 			}
 			if (module.startsWith('.')) {
 				/* local import */

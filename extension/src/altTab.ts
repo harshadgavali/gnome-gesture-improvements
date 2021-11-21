@@ -1,7 +1,7 @@
-import Clutter from '@gi-types/clutter';
-import GLib from '@gi-types/glib';
-import Shell from '@gi-types/shell';
-import St from '@gi-types/st';
+import Clutter from '@gi-types/clutter8';
+import GLib from '@gi-types/glib2';
+import Shell from '@gi-types/shell0';
+import St from '@gi-types/st1';
 import { imports } from 'gnome-shell';
 
 const Main = imports.ui.main;
@@ -106,7 +106,7 @@ export class AltTabGestureExtension implements ISubExtension {
 		if (this._extState === AltTabExtState.DEFAULT) {
 			this._switcher = new WindowSwitcherPopup();
 			// remove timeout entirely
-			this._switcher._resetNoModsTimeout = function() {
+			this._switcher._resetNoModsTimeout = function () {
 				if (this._noModsTimeoutId) {
 					GLib.source_remove(this._noModsTimeoutId);
 					this._noModsTimeoutId = 0;
@@ -168,7 +168,7 @@ export class AltTabGestureExtension implements ISubExtension {
 		if (this._extState === AltTabExtState.ALTTAB ||
 			this._extState === AltTabExtState.ALTTABDELAY) {
 			this._extState = AltTabExtState.DEFAULT;
-			if (this._altTabTimeoutId != 0) {
+			if (this._altTabTimeoutId) {
 				GLib.source_remove(this._altTabTimeoutId);
 				this._altTabTimeoutId = 0;
 			}

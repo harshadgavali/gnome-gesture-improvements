@@ -1,13 +1,12 @@
-import GObject from '@gi-types/gobject';
-import Shell from '@gi-types/shell';
-import Clutter from '@gi-types/clutter';
-import { CustomEventType, imports, global, __shell_private_types } from 'gnome-shell';
+import GObject from '@gi-types/gobject2';
+import Shell from '@gi-types/shell0';
+import Clutter from '@gi-types/clutter8';
+import { imports, global, __shell_private_types, CustomEventType } from 'gnome-shell';
 
 const Main = imports.ui.main;
 
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { OverviewControlsState, ExtSettings } from '../constants';
-
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
@@ -75,7 +74,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
 			ExtSettings.FOLLOW_NATURAL_SCROLL,
-			1 / 1.5,
+			1,
 			{ allowTouch: false },
 		);
 	}
@@ -88,7 +87,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		super.apply();
 	}
 
-	protected _gestureBegin(tracker: SwipeTrackerT, monitor: never): void {
+	protected _gestureBegin(tracker: SwipeTrackerT, monitor: number): void {
 		super._modifySnapPoints(tracker, (shallowTracker) => {
 			this._workspaceAnimation._switchWorkspaceBegin(shallowTracker, monitor);
 			tracker.orientation = shallowTracker.orientation;
@@ -111,7 +110,6 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	}
 
 	destroy(): void {
-		super.destroy();
 		this._swipeTracker.destroy();
 		const swipeTracker = this._workspaceAnimation._swipeTracker;
 		if (swipeTracker._touchpadGesture) {
@@ -122,6 +120,8 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 				),
 			);
 		}
+
+		super.destroy();
 	}
 }
 
@@ -139,7 +139,7 @@ export class GestureExtension implements ISubExtension {
 				disableOldGesture: true,
 				followNaturalScroll: ExtSettings.FOLLOW_NATURAL_SCROLL,
 				modes: Shell.ActionMode.OVERVIEW,
-				gestureSpeed: 1 / 1.5,
+				gestureSpeed: 1,
 				checkAllowedGesture: (event: CustomEventType) => {
 					if (Main.overview._overview._controls._searchController.searchActive) {
 						return false;
@@ -232,8 +232,8 @@ export class GestureExtension implements ISubExtension {
 		swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));
 		swipeTracker.bind_property('enabled', swipeTracker._touchpadGesture, 'enabled', 0);
 		swipeTracker.bind_property(
-			'orientation', 
-			swipeTracker._touchpadGesture, 
+			'orientation',
+			swipeTracker._touchpadGesture,
 			'orientation',
 			GObject.BindingFlags.SYNC_CREATE,
 		);
