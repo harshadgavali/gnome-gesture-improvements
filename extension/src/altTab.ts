@@ -106,7 +106,7 @@ export class AltTabGestureExtension implements ISubExtension {
 		if (this._extState === AltTabExtState.DEFAULT) {
 			this._switcher = new WindowSwitcherPopup();
 			// remove timeout entirely
-			this._switcher._resetNoModsTimeout = function () {
+			this._switcher._resetNoModsTimeout = function() {
 				if (this._noModsTimeoutId) {
 					GLib.source_remove(this._noModsTimeoutId);
 					this._noModsTimeoutId = 0;

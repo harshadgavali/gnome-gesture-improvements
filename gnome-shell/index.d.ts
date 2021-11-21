@@ -22,6 +22,11 @@ declare namespace __shell_private_types {
 		_stageCaptureEvent: number;
 		destroy(): void;
 		_handleEvent(actor: Clutter.Actor | undefined, event: CustomEventType): boolean;
+
+		/** This values are provided by Modified TouchpadGesture */
+		hadHoldGesture?: boolean;
+		time?: number;
+		followNaturalScroll?: boolean;
 	}
 
 	declare interface IMonitorState {
@@ -80,7 +85,7 @@ declare namespace imports {
 			const layoutManager: {
 				uiGroup: Clutter.Actor,
 				panelBox: St.BoxLayout,
-				monitors: __shell_private_types.IMonitorState[],
+				monitors: __shell_private_types.IMonitorState[]
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
 				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
@@ -116,21 +121,21 @@ declare namespace imports {
 				_stateAdjustment: OverviewAdjustment;
 				layoutManager: Clutter.BoxLayout & {
 					_searchEntry: St.Bin
-				};
+				}
 
 				_toggleAppsPage(): void
 
 				_workspacesDisplay: {
 					_swipeTracker: swipeTracker.SwipeTracker
-				};
+				}
 
 				_appDisplay: {
 					_swipeTracker: swipeTracker.SwipeTracker
-				};
+				}
 
 				_searchController: {
 					searchActive: boolean
-				};
+				}
 			}
 		}
 
@@ -155,7 +160,7 @@ declare namespace imports {
 				_endTouchpadGesture(): void;
 				_history: {
 					reset(): void;
-				};
+				}
 			}
 		}
 
@@ -180,7 +185,7 @@ declare namespace imports {
 				_switchWorkspaceBegin(tracker: {
 					orientation: Clutter.Orientation,
 					confirmSwipe: typeof swipeTracker.SwipeTracker.prototype.confirmSwipe
-				}, monitor: number);
+				}, monitor: never);
 
 				_switchWorkspaceUpdate(tracker: swipeTracker.SwipeTracker, progress: number);
 				_switchWorkspaceEnd(tracker: swipeTracker.SwipeTracker, duration: number, progress: number);
@@ -219,7 +224,7 @@ declare namespace imports {
 							adjustment: St.Adjustment
 						}
 					}
-				};
+				}
 
 				_resetNoModsTimeout(): void;
 				_noModsTimeoutId: number;
@@ -231,12 +236,3 @@ declare namespace imports {
 		}
 	}
 }
-
-// types
-export type CustomEventType = Pick<
-	import('@gi-types/clutter8').Event,
-	'type' | 'get_gesture_phase' |
-	'get_touchpad_gesture_finger_count' | 'get_time' |
-	'get_coords' | 'get_gesture_motion_delta_unaccelerated' |
-	'get_gesture_pinch_scale' | 'get_gesture_pinch_angle_delta'
->;

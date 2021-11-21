@@ -436,6 +436,69 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                   </object>
                 </child>
 
+                <!-- Hold & Swipe Gestures -->
+                <child>
+                  <object class="GtkBox">
+                    <property name="margin-bottom">12</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">Hold &amp; Swipe Gestures</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"></attribute>
+                        </attributes>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkFrame">
+                    <property name="margin-bottom">36</property>
+                    <property name="child">
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+
+                        <!-- Move window to workspace Gesture -->
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Move window to previous/next workspace</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSwitch" id="enable-move-window-to-workspace">
+                                    <property name="halign">end</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                      </object>
+                    </property>
+                  </object>
+                </child>
+
                 <!-- Customizations -->
                 <child>
                   <object class="GtkBox">
@@ -569,6 +632,42 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                                     <property name="halign">end</property>
                                     <property name="can-focus">True</property>
                                     <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <!-- Animate panel option -->
+                        <child>
+                          <object class="GtkListBoxRow" id="animate-panel_box-row">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Animate panel</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkComboBoxText" id="animate-panel">
+                                    <items>
+                                      <item translatable="yes" id="0">No animation</item>
+                                      <item translatable="yes" id="2">When moving a window</item>
+                                      <item translatable="yes" id="3">When moving a window or switching workspace</item>
+                                    </items>
                                   </object>
                                 </child>
 
