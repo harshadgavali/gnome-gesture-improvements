@@ -131,6 +131,7 @@ export const TouchpadPinchGesture = registerClass({
 			return Clutter.EVENT_PROPAGATE;
 
 		if ((this._allowedModes !== Shell.ActionMode.ALL) && ((this._allowedModes & Main.actionMode) === 0)) {
+			this._interrupt();
 			this._state = TouchpadState.IGNORED;
 			return Clutter.EVENT_PROPAGATE;
 		}
@@ -199,6 +200,15 @@ export const TouchpadPinchGesture = registerClass({
 
 		this._snapPoints = [];
 		this._initialProgress = 0;
+	}
+
+	_interrupt() {
+		if (this._ackState !== GestureACKState.ACKED)
+			return;
+
+		this._reset();
+		this._ackState = GestureACKState.NONE;
+		this.emit('end', 0, this._initialProgress);
 	}
 
 	private _emitBegin() {
