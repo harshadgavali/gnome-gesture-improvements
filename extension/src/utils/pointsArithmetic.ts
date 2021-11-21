@@ -57,19 +57,13 @@ export function findCornerForWindow<T extends Point>(win: Point, centroid: Point
 		delta: dist_w_m,
 	};
 
-	log('mapped points');
 	win = transform_point(transform_matrix, win);
-	log(`\twin: +${JSON.stringify(win)}`);
-	log(`\tcentroid: +${JSON.stringify(transform_point(transform_matrix, centroid))}`);
 	let mapped_corners = corners.map(c => {
 		const point = transform_point(transform_matrix, c);
 		point.x -= win.x;
 		point.y -= win.y;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		log(`\tposition<${(c as any)['position']}>: ${JSON.stringify(point)}`);
 		return { ...point, corner: c };
 	});
-	log('\n');
 
 	// ignore points which are on negative x axis (opposite direction to centroid->win array);
 	mapped_corners = mapped_corners.filter(c => c.x >= 0);

@@ -126,10 +126,6 @@ class MonitorGroup {
 
 		windowActorsClones.map(actorClone => {
 			const { clone } = actorClone;
-			log(JSON.stringify({
-				title: actorClone.windowActor.meta_window.title,
-				start: { x: clone.x, y: clone.y },
-			}));
 			const cloneCenter: Point = {
 				x: clone.x + Math.round(clone.width / 2),
 				y: clone.y + Math.round(clone.height / 2),
@@ -143,14 +139,6 @@ class MonitorGroup {
 				start: { x: clone.x, y: clone.y },
 				end: { x: destPoint.x, y: destPoint.y },
 			};
-
-			log(JSON.stringify({
-				start: { x: clone.x, y: clone.y },
-				end: destPoint,
-				position: destCorner.position,
-			}));
-			log(JSON.stringify({ cloneCenter, centroid, destCorner }));
-			log('');
 		});
 	}
 
@@ -300,7 +288,6 @@ export class ShowDesktopExtension implements ISubExtension {
 	}
 
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
-		log(JSON.stringify({ _workspaceManagerState: this._workspaceManagerState }));
 		this._extensionState = ExtensionState.ANIMATING;
 
 		Meta.disable_unredirect_for_display(global.display);
@@ -349,7 +336,6 @@ export class ShowDesktopExtension implements ISubExtension {
 	private _resetState(animate = false) {
 		// reset state, aka. undo show desktop
 		this._minimizingWindows.forEach(win => {
-			log(`resetting state: ${win.title}`);
 			if (!this._windows.has(win))
 				return;
 			const onStopped = () => {
