@@ -1,17 +1,16 @@
-import Shell from '@gi-types/shell0';
-import Meta from '@gi-types/meta8';
-import St from '@gi-types/st1';
 import Clutter from '@gi-types/clutter8';
+import Meta from '@gi-types/meta8';
+import Shell from '@gi-types/shell0';
+import St from '@gi-types/st1';
+import { global, imports } from 'gnome-shell';
+import { registerClass } from '../common/utils/gobject';
+import { ExtSettings } from '../constants';
+import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
+import { easeActor, easeAdjustment } from './utils/environment';
 
-import { imports, global } from 'gnome-shell';
 
 const Main = imports.ui.main;
 const Utils = imports.misc.util;
-
-import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
-import { ExtSettings } from '../constants';
-import { registerClass } from '../common/utils/gobject';
-import { easeActor, easeAdjustment } from './utils/environment';
 
 const { SwipeTracker } = imports.ui.swipeTracker;
 

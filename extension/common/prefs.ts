@@ -1,8 +1,8 @@
 import Gio from '@gi-types/gio2';
-import Gtk from '@gi-types/gtk4';
 import GObject from '@gi-types/gobject2';
-import { CanEnableMinimizeGesture } from './utils/prefUtils';
+import Gtk from '@gi-types/gtk4';
 import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
+import { CanEnableMinimizeGesture } from './utils/prefUtils';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 	get_object<T = GObject.Object>(name: AllUIObjectKeys): T;

@@ -1,14 +1,13 @@
 import Clutter from '@gi-types/clutter8';
 import GObject from '@gi-types/gobject2';
-import Shell from '@gi-types/shell0';
 import Meta from '@gi-types/meta8';
+import Shell from '@gi-types/shell0';
 import { CustomEventType, global, imports } from 'gnome-shell';
-
-const Main = imports.ui.main;
-
-import * as DBusUtils from '../utils/dbus';
 import { registerClass } from '../../common/utils/gobject';
 import { TouchpadConstants } from '../../constants';
+import * as DBusUtils from '../utils/dbus';
+
+const Main = imports.ui.main;
 
 const MIN_ANIMATION_DURATION = 100;
 const MAX_ANIMATION_DURATION = 400;
@@ -202,7 +201,7 @@ export const TouchpadPinchGesture = registerClass({
 		this._initialProgress = 0;
 	}
 
-	_interrupt() {
+	private _interrupt() {
 		if (this._ackState !== GestureACKState.ACKED)
 			return;
 

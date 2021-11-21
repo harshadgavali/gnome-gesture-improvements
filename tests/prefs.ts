@@ -3,9 +3,11 @@
 declare const ARGV: string[];
 imports.gi.versions['Gtk'] = '4.0';
 
-import Gtk from '@gi-types/gtk4';
 import Gio from '@gi-types/gio2';
 import GLib from '@gi-types/glib2';
+import { registerClass } from '@gi-types/gobject2';
+import Gtk from '@gi-types/gtk4';
+import { getPrefsWidget } from './common/prefs';
 
 /** Add parent directory of file in searchPath to be able to import files */
 function InsertIntoImportsPath() {
@@ -45,8 +47,6 @@ function GetProgramOptions() {
 	};
 }
 
-import { registerClass } from '@gi-types/gobject2';
-import { getPrefsWidget } from './common/prefs';
 
 const programOptions = GetProgramOptions();
 

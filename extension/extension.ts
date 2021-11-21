@@ -1,15 +1,14 @@
 import GLib from '@gi-types/glib2';
-
-import * as Constants from './constants';
-import { GestureExtension } from './src/gestures';
-import { AltTabGestureExtension } from './src/altTab';
-import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
-import { SnapWindowExtension } from './src/snapWindow';
-import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
 import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/settings';
+import * as Constants from './constants';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
+import { AltTabGestureExtension } from './src/altTab';
+import { GestureExtension } from './src/gestures';
+import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
+import { SnapWindowExtension } from './src/snapWindow';
+import * as DBusUtils from './src/utils/dbus';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 

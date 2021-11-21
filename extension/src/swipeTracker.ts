@@ -1,15 +1,14 @@
 import Clutter from '@gi-types/clutter8';
 import GObject from '@gi-types/gobject2';
-import Shell from '@gi-types/shell0';
 import Meta from '@gi-types/meta8';
-import { imports, global, CustomEventType } from 'gnome-shell';
+import Shell from '@gi-types/shell0';
+import { CustomEventType, global, imports } from 'gnome-shell';
+import { registerClass } from '../common/utils/gobject';
+import { TouchpadConstants } from '../constants';
+import * as DBusUtils from './utils/dbus';
 
 const Main = imports.ui.main;
 const { SwipeTracker } = imports.ui.swipeTracker;
-
-import * as DBusUtils from './utils/dbus';
-import { TouchpadConstants } from '../constants';
-import { registerClass } from '../common/utils/gobject';
 
 // define enum
 enum TouchpadState {
