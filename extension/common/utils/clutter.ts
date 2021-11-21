@@ -1,6 +1,4 @@
-import { EventType, Event } from '@gi-types/clutter8';
-
-export const ClutterEventType = { TOUCHPAD_HOLD: 1234, ...EventType };
+import { Event } from '@gi-types/clutter8';
 
 export type CustomEventType = Pick<
 	Event,

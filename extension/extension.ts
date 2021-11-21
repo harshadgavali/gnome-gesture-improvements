@@ -7,7 +7,7 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import { imports } from 'gnome-shell';
-import { AllSettingsKeys, AnimatePanel, GioSettings, PinchGestureType } from './common/settings';
+import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/settings';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 
@@ -108,12 +108,6 @@ class Extension {
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE = this.settings.get_boolean('default-overview');
 			ExtSettings.ALLOW_MINIMIZE_WINDOW = this.settings.get_boolean('allow-minimize-window');
 			ExtSettings.FOLLOW_NATURAL_SCROLL = this.settings.get_boolean('follow-natural-scroll');
-			ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE = this.settings.get_boolean('enable-move-window-to-workspace');
-
-			if (ExtSettings.ENABLE_MOVE_WINDOW_TO_WORKSPACE)
-				ExtSettings.ANIMATE_PANEL = this.settings.get_enum('animate-panel');
-			else
-				ExtSettings.ANIMATE_PANEL = AnimatePanel.NONE;
 
 			TouchpadConstants.SWIPE_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_SWIPE_MULTIPLIER * this.settings.get_double('touchpad-speed-scale');
 			TouchpadConstants.PINCH_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_PINCH_MULTIPLIER * this.settings.get_double('touchpad-pinch-speed');

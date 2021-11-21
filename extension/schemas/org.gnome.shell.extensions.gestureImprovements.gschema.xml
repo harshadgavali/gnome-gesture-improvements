@@ -44,14 +44,6 @@
       <default>true</default>
       <description>Enable Window manipulation gesture</description>
     </key>
-    <key name='enable-move-window-to-workspace' type='b'>
-      <default>true</default>
-      <description>Enable move window to workspace gesture</description>
-    </key>
-    <key name="animate-panel" enum="org.gnome.shell.extensions.gestureImprovements.animate-panel">
-      <default>'MOVE_WINDOW'</default>
-      <description>When to animate panel</description>
-    </key>
     <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
       <default>'SHOW_DESKTOP'</default>
       <description>Gesture for 3 finger pinch</description>
