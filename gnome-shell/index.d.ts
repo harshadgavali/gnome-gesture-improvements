@@ -77,13 +77,15 @@ declare namespace imports {
 				_swipeTracker: swipeTracker.SwipeTracker;
 			};
 
-			const layoutManager: {
+			const layoutManager: GObject.Object & {
 				uiGroup: Clutter.Actor,
 				panelBox: St.BoxLayout,
 				monitors: __shell_private_types.IMonitorState[],
 				primaryMonitor: __shell_private_types.IMonitorState,
 				currentMonitor: __shell_private_types.IMonitorState,
 				getWorkAreaForMonitor: (index: number) => Meta.Rectangle,
+
+				connect(id: 'monitors-changed', callback: () => void);
 			};
 
 			const wm: {
