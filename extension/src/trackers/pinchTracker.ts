@@ -182,7 +182,7 @@ export const TouchpadPinchGesture = registerClass({
 	}
 
 	/**
-	 * @param currentProgress should be between [0, 2]
+	 * @param currentProgress must be in increasing order
 	 */
 	public confirmPinch(_distance: number, snapPoints: number[], currentProgress: number) {
 		if (this._ackState !== GestureACKState.PENDING_ACK)
@@ -225,7 +225,7 @@ export const TouchpadPinchGesture = registerClass({
 
 		// this._historyTracker.append(time, delta);
 		// delta /= this._pinchDistance;
-		const new_progress = -Math.log2(pinch_scale) * this.PINCH_MULTIPLIER + this._initialProgress;
+		const new_progress = Math.log2(pinch_scale) * this.PINCH_MULTIPLIER + this._initialProgress;
 		const delta = new_progress - this._progress_scale;
 		this._historyTracker.append(time, delta);
 		this._progress_scale = Math.clamp(new_progress, ...this._getBounds());

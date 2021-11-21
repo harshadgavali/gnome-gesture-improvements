@@ -13,8 +13,8 @@ const { lerp } = imports.misc.util;
 
 // declare enum 
 enum WorkspaceManagerState {
-	SHOW_DESKTOP = -1,
 	DEFAULT = 0,
+	SHOW_DESKTOP = 1,
 }
 
 // declare enum
@@ -153,9 +153,9 @@ class MonitorGroup {
 			const { clone, translation } = actorClone;
 			if (translation === undefined)
 				return;
-			clone.x = lerp(translation.start.x, translation.end.x, -progress);
-			clone.y = lerp(translation.start.y, translation.end.y, -progress);
-			clone.opacity = lerp(255, 128, -progress);
+			clone.x = lerp(translation.start.x, translation.end.x, progress);
+			clone.y = lerp(translation.start.y, translation.end.y, progress);
+			clone.opacity = lerp(255, 128, progress);
 		});
 	}
 
@@ -168,9 +168,9 @@ class MonitorGroup {
 			}
 
 			easeActor(clone, {
-				x: lerp(translation.start.x, translation.end.x, -progress),
-				y: lerp(translation.start.y, translation.end.y, -progress),
-				opacity: lerp(255, 128, -progress),
+				x: lerp(translation.start.x, translation.end.x, progress),
+				y: lerp(translation.start.y, translation.end.y, progress),
+				opacity: lerp(255, 128, progress),
 				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 				duration,
 				onStopped: () => {
@@ -311,14 +311,14 @@ export class ShowDesktopExtension implements ISubExtension {
 
 		tracker.confirmPinch(
 			1,
-			[WorkspaceManagerState.SHOW_DESKTOP, WorkspaceManagerState.DEFAULT],
+			[WorkspaceManagerState.DEFAULT, WorkspaceManagerState.SHOW_DESKTOP],
 			this._workspaceManagerState,
 		);
 
 	}
 
 	gestureUpdate(_tracker: unknown, progress: number) {
-		// progress 0 -> NORMAL state, - 1 -> SHOW Desktop
+		// progress 0 -> NORMAL state, 1 -> SHOW Desktop
 		// printStack();
 		for (const monitor of this._monitorGroups)
 			monitor.gestureUpdate(progress);
