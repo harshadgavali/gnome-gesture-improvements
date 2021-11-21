@@ -243,7 +243,7 @@ export class ShowDesktopExtension implements ISubExtension {
 		this._windowUnMinimizedId = global.window_manager.connect('unminimize', this._windowUnMinimized.bind(this));
 
 		this._monitorChangedId = Main.layoutManager.connect('monitors-changed', () => {
-			this._monitorGroups.forEach(m => m.destroy);
+			this._monitorGroups.forEach(m => m.destroy());
 			this._monitorGroups = [];
 			for (const monitor of Main.layoutManager.monitors)
 				this._monitorGroups.push(new MonitorGroup(monitor));
