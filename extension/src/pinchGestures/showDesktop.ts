@@ -1,16 +1,15 @@
 import Clutter from '@gi-types/clutter8';
+import GObject from '@gi-types/gobject2';
 import Meta from '@gi-types/meta8';
 import Shell from '@gi-types/shell0';
-import GObject from '@gi-types/gobject2';
 import { global, imports, __shell_private_types } from 'gnome-shell';
+import { TouchpadPinchGesture } from '../trackers/pinchTracker';
+import { easeActor } from '../utils/environment';
+import { findCentroid, findCornerForWindow, Point } from '../utils/pointsArithmetic';
 
 const Main = imports.ui.main;
 const Layout = imports.ui.layout;
 const { lerp } = imports.misc.util;
-
-import { TouchpadPinchGesture } from '../trackers/pinchTracker';
-import { easeActor } from '../utils/environment';
-import { findCentroid, findCornerForWindow, Point } from '../utils/pointsArithmetic';
 
 // declare enum 
 enum WorkspaceManagerState {
@@ -197,7 +196,7 @@ class MonitorGroup {
 			});
 		});
 
-		if (this._windowActorClones.length ===0)
+		if (this._windowActorClones.length === 0)
 			this._container.hide();
 
 		this._windowActorClones = [];

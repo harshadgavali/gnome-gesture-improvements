@@ -3,12 +3,11 @@ import GLib from '@gi-types/glib2';
 import Shell from '@gi-types/shell0';
 import St from '@gi-types/st1';
 import { imports } from 'gnome-shell';
+import { AltTabConstants, ExtSettings } from '../constants';
+import { TouchpadSwipeGesture } from './swipeTracker';
 
 const Main = imports.ui.main;
 const { WindowSwitcherPopup } = imports.ui.altTab;
-
-import { TouchpadSwipeGesture } from './swipeTracker';
-import { AltTabConstants, ExtSettings } from '../constants';
 
 let dummyWinCount = AltTabConstants.DUMMY_WIN_COUNT;
 

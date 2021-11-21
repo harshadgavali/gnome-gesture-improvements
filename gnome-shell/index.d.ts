@@ -1,9 +1,9 @@
 import Clutter from '@gi-types/clutter8';
-import St from '@gi-types/st1';
 import Gio from '@gi-types/gio2';
-import Shell from '@gi-types/shell0';
-import Meta from '@gi-types/meta8';
 import GObject from '@gi-types/gobject2';
+import Meta from '@gi-types/meta8';
+import Shell from '@gi-types/shell0';
+import St from '@gi-types/st1';
 
 declare const global: import('@gi-types/shell0').Global;
 declare interface ExtensionUtilsMeta {
