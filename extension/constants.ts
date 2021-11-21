@@ -1,6 +1,3 @@
-
-import { AnimatePanel } from './common/settings';
-
 // FIXME: ideally these values matches physical touchpad size. We can get the
 // correct values for gnome-shell specifically, since mutter uses libinput
 // directly, but GTK apps cannot get it, so use an arbitrary value so that
@@ -36,8 +33,6 @@ export const ExtSettings = {
 	DEFAULT_OVERVIEW_GESTURE: false,
 	ALLOW_MINIMIZE_WINDOW: false,
 	FOLLOW_NATURAL_SCROLL: true,
-	ENABLE_MOVE_WINDOW_TO_WORKSPACE: true,
-	ANIMATE_PANEL: AnimatePanel.MOVE_WINDOW,
 };
 
 export const RELOAD_DELAY = 150; // reload extension delay in ms

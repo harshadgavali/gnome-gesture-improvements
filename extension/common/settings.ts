@@ -1,14 +1,6 @@
 import Gio from '@gi-types/gio2';
 
 // define enum
-export enum AnimatePanel {
-    NONE = 0,
-    SWITCH_WORKSPACE = 1,
-    MOVE_WINDOW = 2,
-    SWITCH_WORKSPACE_AND_MOVE_WINDOW = 3,
-}
-
-// define enum
 export enum PinchGestureType {
     NONE = 0,
     SHOW_DESKTOP = 1,
@@ -20,8 +12,7 @@ export type BooleanSettingsKeys =
     'allow-minimize-window' |
     'follow-natural-scroll' |
     'enable-alttab-gesture' |
-    'enable-window-manipulation-gesture' |
-    'enable-move-window-to-workspace'
+    'enable-window-manipulation-gesture'
     ;
 
 export type IntegerSettingsKeys =
@@ -33,7 +24,6 @@ export type DoubleSettingsKeys =
     ;
 
 export type EnumSettingsKeys =
-    'animate-panel' |
     'pinch-3-finger-gesture' |
     'pinch-4-finger-gesture'
     ;
@@ -51,8 +41,7 @@ export type AllUIObjectKeys =
     'touchpad-speed_scale_display-value' |
     'touchpad-pinch-speed_display-value' |
     'allow-minimize-window_box-row' |
-    'alttab-delay_box-row' |
-    'animate-panel_box-row'
+    'alttab-delay_box-row'
     ;
 
 type Enum_Functions<K extends EnumSettingsKeys, T> = {
@@ -61,7 +50,6 @@ type Enum_Functions<K extends EnumSettingsKeys, T> = {
 }
 
 type SettingsEnumFunctions =
-    Enum_Functions<'animate-panel', AnimatePanel> &
     Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType>
     ;
 

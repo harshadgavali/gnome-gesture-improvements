@@ -100,8 +100,6 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
 
-	bind_boolean_value('enable-move-window-to-workspace', settings, builder, { sensitiveRowKeys: ['animate-panel_box-row'] });
-	bind_combo_box('animate-panel', settings, builder);
 	bind_combo_box('pinch-3-finger-gesture', settings, builder);
 	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 
