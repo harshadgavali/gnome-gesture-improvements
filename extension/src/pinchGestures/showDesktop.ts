@@ -212,6 +212,7 @@ export class ShowDesktopExtension implements ISubExtension {
 	private _windowAddedId = 0;
 	private _windowRemovedId = 0;
 	private _windowUnMinimizedId = 0;
+	private _monitorChangedId = 0;
 	private _extensionState = ExtensionState.DEFAULT;
 
 	private _minimizingWindows: Meta.Window[] = [];
@@ -237,10 +238,20 @@ export class ShowDesktopExtension implements ISubExtension {
 		this._workspaceChangedId = global.workspace_manager.connect('active-workspace-changed', this._workspaceChanged.bind(this));
 		this._workspaceChanged();
 		this._windowUnMinimizedId = global.window_manager.connect('unminimize', this._windowUnMinimized.bind(this));
+
+		this._monitorChangedId = Main.layoutManager.connect('monitors-changed', () => {
+			this._monitorGroups.forEach(m => m.destroy);
+			this._monitorGroups = [];
+			for (const monitor of Main.layoutManager.monitors)
+				this._monitorGroups.push(new MonitorGroup(monitor));
+		});
 	}
 
 	destroy(): void {
 		this._pinchTracker?.destroy();
+
+		if (this._monitorChangedId)
+			Main.layoutManager.disconnect(this._monitorChangedId);
 
 		if (this._windowAddedId)
 			this._workspace?.disconnect(this._windowAddedId);
