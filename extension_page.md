@@ -8,7 +8,7 @@ This extension adds following features:
 • Unmaximize/maximize/fullscreen/half-tiling using 3-finger vertical & horizontal gesture
 • Optional minimize a window gesture
 • Override 3-finger gesture with 4-finger for switching workspace
-* Pinch to show desktop
+• Pinch to show desktop
 • Configure speed of gestures
 • Support for X11
    
