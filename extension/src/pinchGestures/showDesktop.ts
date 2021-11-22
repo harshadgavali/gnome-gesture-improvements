@@ -284,6 +284,7 @@ export class ShowDesktopExtension implements ISubExtension {
 				.reverse()
 				.map(actor => actor.meta_window)
 				.filter(win =>
+					win.get_window_type() !== Meta.WindowType.DESKTOP &&
 					this._windows.has(win) &&
 					(win.is_always_on_all_workspaces() || win.get_workspace().index === this._workspace?.index) &&
 					!win.minimized);
