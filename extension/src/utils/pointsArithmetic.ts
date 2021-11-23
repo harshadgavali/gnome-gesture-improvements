@@ -3,6 +3,10 @@ export interface Point {
 	y: number,
 }
 
+export interface WeightedPoint extends Point {
+	weight: number,
+}
+
 interface TransformationMatrix {
 	0: [number, number],
 	1: [number, number],
@@ -25,13 +29,14 @@ function transform_point(matrix: TransformationMatrix, p: Point): Point {
  * @param windows 
  * @returns centroid of points or undefined if array is empty
  */
-export function findCentroid(points: Point[]): Point | undefined {
-	if (points.length === 0)
+export function findCentroid(points: WeightedPoint[]): Point | undefined {
+	const weightSum = points.reduce<number>((res, p) => res + p.weight, 0);
+	if (weightSum === 0)
 		return undefined;
 
 	return {
-		x: points.map(p => p.x).reduce((res, x) => res + x, 0) / points.length,
-		y: points.map(p => p.y).reduce((res, y) => res + y, 0) / points.length,
+		x: points.reduce<number>((res, p) => res + p.x * p.weight, 0) / weightSum,
+		y: points.reduce<number>((res, p) => res + p.y * p.weight, 0) / weightSum,
 	};
 }
 
