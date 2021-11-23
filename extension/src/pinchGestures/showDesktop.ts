@@ -41,6 +41,8 @@ declare type WindowActorClone = {
 		start: Point,
 		end: Point,
 	},
+	apertureDistances?: [number, number, number, number],
+	apertureCorner?: number,
 };
 
 class MonitorGroup {
@@ -122,7 +124,140 @@ class MonitorGroup {
 		}
 	}
 
+	private _calculateDist(p: Point, q: Point) {
+		return Math.abs(p.x - q.x) + Math.abs(p.y - q.y);
+	}
+
+	private _assignCorner(actorClone: WindowActorClone, corner: Corner) {
+		const { clone } = actorClone;
+		const destPoint = this._getDestPoint(clone, corner);
+		actorClone.translation = {
+			start: { x: clone.x, y: clone.y },
+			end: { x: destPoint.x, y: destPoint.y },
+		};
+	}
+
 	private _fillCloneDestPosition(windowActorsClones: WindowActorClone[]) {
+		interface IMetricData {
+			value: number,
+			actorClone: WindowActorClone,
+			corner: Corner,
+		}
+
+		const distanceMetrics: IMetricData[] = [];
+		this._corners.forEach(corner => {
+			windowActorsClones.forEach(actorClone => {
+				distanceMetrics.push({
+					value: this._calculateDist(actorClone.clone, this._getDestPoint(actorClone.clone, corner)),
+					actorClone,
+					corner,
+				});
+			});
+		});
+
+		const minActorsPerCorner = Math.floor(windowActorsClones.length / this._corners.length);
+		let extraActors = windowActorsClones.length - this._corners.length * minActorsPerCorner;
+		const clusterSizes = new Map<CornerPositions, number>();
+		const takenActorClones = new Set<WindowActorClone>();
+		distanceMetrics.sort((a, b) => a.value - b.value);
+		distanceMetrics.forEach(metric => {
+			const size = clusterSizes.get(metric.corner.position) ?? 0;
+			if (takenActorClones.has(metric.actorClone)) return;
+			if (size >= minActorsPerCorner) {
+				if (size > minActorsPerCorner || extraActors <= 0) return;
+				extraActors -= 1;
+			}
+
+			takenActorClones.add(metric.actorClone);
+			clusterSizes.set(metric.corner.position, size + 1);
+
+			this._assignCorner(metric.actorClone, metric.corner);
+		});
+	}
+
+	private _fillCloneDestPosition_kde(windowActorsClones: WindowActorClone[]) {
+		// corner's closest actor
+		type CornerCluster = {
+			postition: CornerPositions,
+			closestClone?: WindowActorClone,
+			assignedClones?: WindowActorClone[],
+		}
+		const cornerClusters = new Map<CornerPositions, CornerCluster>();
+		this._corners.forEach(c => cornerClusters.set(c.position, { postition: c.position }));
+
+		const closestWindows: (undefined | WindowActorClone)[] = [undefined, undefined, undefined, undefined];
+		const screenGeo = this.monitor;
+		let movedWindowsCount = 0;
+		for (let i = 0; i < windowActorsClones.length; ++i) {
+			const actorClone = windowActorsClones[i];
+
+			// calculate the corner distances
+			const geo = actorClone.clone;
+			const dl = geo.x + geo.width - screenGeo.x;
+			const dr = screenGeo.x + screenGeo.width - geo.x;
+			const dt = geo.y + geo.height - screenGeo.y;
+			const db = screenGeo.y + screenGeo.height - geo.y;
+			actorClone.apertureDistances = [dl + dt, dr + dt, dr + db, dl + db];
+			movedWindowsCount += 1;
+
+			// if this window is the closest one to any corner, set it as preferred there
+			let nearest = 0;
+			for (let j = 1; j < 4; ++j) {
+				if (actorClone.apertureDistances[j] < actorClone.apertureDistances[nearest] ||
+					(actorClone.apertureDistances[j] === actorClone.apertureDistances[nearest] && closestWindows[j] === undefined)) {
+					nearest = j;
+				}
+			}
+			if (closestWindows[nearest] === undefined ||
+				closestWindows[nearest]!.apertureDistances![nearest] > actorClone.apertureDistances[nearest])
+				closestWindows[nearest] = actorClone;
+		}
+
+		// second pass, select corners
+
+		// 1st off, move the nearest windows to their nearest corners
+		// this will ensure that if there's only on window in the lower right
+		// it won't be moved out to the upper left
+		const movedWindowsDec = [0, 0, 0, 0];
+		for (let i = 0; i < 4; ++i) {
+			if (closestWindows[i] === undefined)
+				continue;
+			closestWindows[i]!.apertureCorner = i;
+			delete closestWindows[i]!.apertureDistances;
+			movedWindowsDec[i] = 1;
+		}
+
+		// 2nd, distribute the remainders according to their preferences
+		// this doesn't exactly have heapsort performance ;-)
+		movedWindowsCount = Math.floor((movedWindowsCount + 3) / 4);
+		for (let i = 0; i < 4; ++i) {
+			for (let j = 0; j < movedWindowsCount - movedWindowsDec[i]; ++j) {
+				let bestWindow = undefined;
+				for (let k = 0; k < windowActorsClones.length; ++k) {
+					if (windowActorsClones[k].apertureDistances === undefined)
+						continue;
+					if (bestWindow === undefined ||
+						windowActorsClones[k].apertureDistances![i] < bestWindow.apertureDistances![i])
+						bestWindow = windowActorsClones[k];
+				}
+				if (bestWindow === undefined)
+					break;
+				bestWindow.apertureCorner = i;
+				delete bestWindow.apertureDistances;
+			}
+		}
+
+		// fill translation properties
+		for (let i = 0; i < windowActorsClones.length; ++i) {
+			const actorClone = windowActorsClones[i];
+			const cornerIndex = actorClone.apertureCorner ?? 1;
+			const destCorner = this._corners[cornerIndex];
+
+			this._assignCorner(actorClone, destCorner);
+		}
+	}
+
+	private _fillCloneDestPosition_centroid(windowActorsClones: WindowActorClone[]) {
 		const centroid = this._getCloneCentroid(windowActorsClones);
 
 		windowActorsClones.map(actorClone => {
@@ -135,11 +270,7 @@ class MonitorGroup {
 			let destCorner = centroid ? findCornerForWindow(cloneCenter, centroid, this._corners) : undefined;
 			destCorner = destCorner ?? this._bottomMidCorner;
 
-			const destPoint = this._getDestPoint(clone, destCorner);
-			actorClone.translation = {
-				start: { x: clone.x, y: clone.y },
-				end: { x: destPoint.x, y: destPoint.y },
-			};
+			this._assignCorner(actorClone, destCorner);
 		});
 	}
 
