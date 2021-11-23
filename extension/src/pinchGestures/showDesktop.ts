@@ -91,6 +91,8 @@ class MonitorGroup {
 				return {
 					x: actorClone.clone.x + actorClone.clone.width / 2,
 					y: actorClone.clone.y + actorClone.clone.height / 2,
+					weight: actorClone.clone.width * actorClone.clone.height,
+					// weight: 1,
 				};
 			}),
 		);
