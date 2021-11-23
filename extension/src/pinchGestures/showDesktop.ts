@@ -138,6 +138,12 @@ class MonitorGroup {
 	}
 
 	private _fillCloneDestPosition(windowActorsClones: WindowActorClone[]) {
+		if (windowActorsClones.length === 0) return;
+		if (windowActorsClones.length === 1) {
+			this._assignCorner(windowActorsClones[0], this._bottomMidCorner);
+			return;
+		}
+
 		interface IMetricData {
 			value: number,
 			actorClone: WindowActorClone,
