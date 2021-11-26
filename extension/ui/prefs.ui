@@ -577,6 +577,40 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                           </object>
                         </child>
 
+                        <!-- Revert direction of overview navigation gesture -->
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="margin-bottom">12</property>
+                                <property name="spacing">32</property>
+
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">1</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Revert direction of overview navigation gesture</property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="GtkSwitch" id="default-overview-gesture-direction">
+                                    <property name="halign">end</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
                         <!-- Alt Tab delay -->
                         <child>
                           <object class="GtkListBoxRow" id="alttab-delay_box-row">
