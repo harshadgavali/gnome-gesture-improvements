@@ -33,6 +33,7 @@ export class ForwardBackGestureExtension implements ISubExtension {
 	}
 
 	apply(): void {
+		this._touchpadSwipeTracker.orientation = Clutter.Orientation.HORIZONTAL;
 		this._connectHandlers.push(this._touchpadSwipeTracker.connect('begin', this._gestureBegin.bind(this)));
 		this._connectHandlers.push(this._touchpadSwipeTracker.connect('update', this._gestureUpdate.bind(this)));
 		this._connectHandlers.push(this._touchpadSwipeTracker.connect('end', this._gestureEnd.bind(this)));
