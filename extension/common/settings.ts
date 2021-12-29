@@ -54,12 +54,10 @@ type Enum_Functions<K extends EnumSettingsKeys, T> = {
     set_enum(key: K, value: T): void;
 }
 
-type PinchSettingsEnumFunctions =
-    Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType>
-    ;
-
-type SwipeSettingsEnumFunctions =
+type SettingsEnumFunctions =
+    Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType> &
     Enum_Functions<'swipe-3-finger-horizontal-gesture', SwipeGestureType>
+    ;
 
 export type GioSettings =
     Omit<Gio.Settings, KeysThatStartsWith<keyof Gio.Settings, 'get_' | 'set_'>> &
@@ -69,5 +67,5 @@ export type GioSettings =
         get_double(key: DoubleSettingsKeys): number;
         set_double(key: DoubleSettingsKeys, value: number): void;
     } &
-    PinchSettingsEnumFunctions & SwipeSettingsEnumFunctions
+    SettingsEnumFunctions
     ;
