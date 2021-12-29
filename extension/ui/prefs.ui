@@ -186,7 +186,7 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                           </object>
                         </child>
 
-                        <!-- AltTab Gesture -->
+                        <!-- 3 finger horizontal swipe gesture -->
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="child">
@@ -203,15 +203,16 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                                     <property name="valign">center</property>
                                     <property name="hexpand">1</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Window switching</property>
+                                    <property name="label" translatable="yes">3 finger horizontal swipe</property>
                                   </object>
                                 </child>
 
                                 <child>
-                                  <object class="GtkSwitch" id="enable-alttab-gesture">
-                                    <property name="halign">end</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="valign">center</property>
+                                  <object class="GtkComboBoxText" id="swipe-3-finger-horizontal-gesture">
+                                    <items>
+                                      <item translatable="yes" id="0">Switch Windows</item>
+                                      <item translatable="yes" id="1">Forward / Back</item>
+                                    </items>
                                   </object>
                                 </child>
 
