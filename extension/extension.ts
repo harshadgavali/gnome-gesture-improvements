@@ -1,9 +1,10 @@
 import GLib from '@gi-types/glib2';
 import { imports } from 'gnome-shell';
-import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/settings';
+import { AllSettingsKeys, GioSettings, PinchGestureType, SwipeGestureType } from './common/settings';
 import * as Constants from './constants';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { AltTabGestureExtension } from './src/altTab';
+import { ForwardBackGestureExtension } from './src/forwardBack';
 import { GestureExtension } from './src/gestures';
 import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
@@ -72,8 +73,17 @@ class Extension {
 		if (this.settings === undefined)
 			return;
 
-		if (this.settings.get_boolean('enable-alttab-gesture'))
-			this._extensions.push(new AltTabGestureExtension());
+		switch (this.settings.get_enum('swipe-3-finger-horizontal-gesture'))
+		{
+			case SwipeGestureType.FORWARD_BACK:
+				this._extensions.push(new ForwardBackGestureExtension());
+				break;
+			case SwipeGestureType.SWITCH_WINDOWS:
+				this._extensions.push(new AltTabGestureExtension());
+				break;
+			default:
+				break;
+		}
 
 		this._extensions.push(
 			new OverviewRoundTripGestureExtension(),
