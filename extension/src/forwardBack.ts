@@ -1,75 +1,144 @@
 import Clutter from '@gi-types/clutter8';
 import Shell from '@gi-types/shell0';
-import { imports } from 'gnome-shell';
+import Meta from '@gi-types/meta8';
+
+import { imports, global } from 'gnome-shell';
+
 import { ExtSettings } from '../constants';
-import { TouchpadSwipeGesture } from './swipeTracker';
+import { ArrowIconAnimation } from './animations/arrow';
+import { createSwipeTracker } from './swipeTracker';
+import { VirtualKeyboard } from './utils/keyboard';
 
 const Main = imports.ui.main;
+declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
+
+// declare enum
+enum AnimationState {
+	WAITING = 0, // waiting to cross threshold
+	DEFAULT = WAITING,
+	LEFT = -1,
+	RIGHT = 1,
+}
+
+const SnapPointThreshold = 0.1;
 
 export class ForwardBackGestureExtension implements ISubExtension {
 	private _connectHandlers: number[];
-	private _progress = 0;
-	private _touchpadSwipeTracker: typeof TouchpadSwipeGesture.prototype;
-	private _virtualDevice: Clutter.VirtualInputDevice;
+	private _swipeTracker: SwipeTrackerT;
+	private _keyboard: VirtualKeyboard;
+	private _arrowIconAnimation: typeof ArrowIconAnimation.prototype;
+	private _animationState = AnimationState.WAITING;
 
 	constructor() {
-		this._connectHandlers = [];
+		this._keyboard = new VirtualKeyboard();
 
-		this._touchpadSwipeTracker = new TouchpadSwipeGesture(
-			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [4] : [3]),
-			Shell.ActionMode.ALL,
+		this._swipeTracker = createSwipeTracker(
+			global.stage,
+			ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [4] : [3],
+			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
 			false,
-			this._checkAllowedGesture.bind(this),
+			1,
+			{ allowTouch: false },
 		);
 
-		const seat = Clutter.get_default_backend().get_default_seat();
-		this._virtualDevice = seat.create_virtual_device(Clutter.InputDeviceType.KEYBOARD_DEVICE);
+		this._connectHandlers = [
+			this._swipeTracker.connect('begin', this._gestureBegin.bind(this)),
+			this._swipeTracker.connect('update', this._gestureUpdate.bind(this)),
+			this._swipeTracker.connect('end', this._gestureEnd.bind(this)),
+		];
 
-	}
-
-	_checkAllowedGesture(): boolean {
-		return Main.actionMode === Shell.ActionMode.NORMAL;
-	}
-
-	apply(): void {
-		this._touchpadSwipeTracker.orientation = Clutter.Orientation.HORIZONTAL;
-		this._connectHandlers.push(this._touchpadSwipeTracker.connect('begin', this._gestureBegin.bind(this)));
-		this._connectHandlers.push(this._touchpadSwipeTracker.connect('update', this._gestureUpdate.bind(this)));
-		this._connectHandlers.push(this._touchpadSwipeTracker.connect('end', this._gestureEnd.bind(this)));
+		this._arrowIconAnimation = new ArrowIconAnimation();
+		this._arrowIconAnimation.hide();
+		Main.layoutManager.uiGroup.add_child(this._arrowIconAnimation);
 	}
 
 	destroy(): void {
-		this._connectHandlers.forEach(handle => this._touchpadSwipeTracker.disconnect(handle));
-
-		this._touchpadSwipeTracker.destroy();
+		this._connectHandlers.forEach(handle => this._swipeTracker.disconnect(handle));
 		this._connectHandlers = [];
+		this._swipeTracker.destroy();
+		this._arrowIconAnimation.destroy();
 	}
 
-	_gestureBegin(): void {
-		this._progress = 0;
+
+	_gestureBegin(tracker: SwipeTrackerT): void {
+		this._animationState = AnimationState.WAITING;
+		tracker.confirmSwipe(
+			global.screen_width,
+			[AnimationState.LEFT, AnimationState.DEFAULT, AnimationState.RIGHT],
+			AnimationState.DEFAULT,
+			AnimationState.DEFAULT,
+		);
 	}
 
-	_gestureUpdate(_gesture: never, _time: never, delta: number, _distance: number): void {
-		this._progress += delta;
+	_gestureUpdate(_tracker: SwipeTrackerT, progress: number): void {
+		switch (this._animationState) {
+			case AnimationState.WAITING:
+				if (Math.abs(progress - AnimationState.DEFAULT) < SnapPointThreshold) return;
+				this._showArrow(progress);
+				break;
+			case AnimationState.RIGHT:
+				progress = (progress - SnapPointThreshold) / (AnimationState.RIGHT - SnapPointThreshold);
+				this._arrowIconAnimation.gestureUpdate(Math.clamp(progress, 0, 1));
+				break;
+			case AnimationState.LEFT:
+				progress = (progress + SnapPointThreshold) / (AnimationState.LEFT + SnapPointThreshold);
+				this._arrowIconAnimation.gestureUpdate(Math.clamp(progress, 0, 1));
+		}
 	}
 
-	_gestureEnd(): void {
-		if (this._progress > 0)
-			this._sendKeyEvent(Clutter.KEY_Forward);
-		else
-			this._sendKeyEvent(Clutter.KEY_Back);
+	_gestureEnd(_tracker: SwipeTrackerT, duration: number, progress: AnimationState): void {
+		if (this._animationState === AnimationState.WAITING) {
+			if (progress === AnimationState.DEFAULT) return;
+			this._showArrow(progress);
+		}
 
-		this._reset();
+		switch (this._animationState) {
+			case AnimationState.RIGHT:
+				progress = (progress - SnapPointThreshold) / (AnimationState.RIGHT - SnapPointThreshold);
+				progress = Math.clamp(progress, 0, 1);
+				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
+					if (progress !== 0) {
+						// bring left page to right
+						this._keyboard.sendKeys(Clutter.KEY_Alt_L, Clutter.KEY_Left);
+					}
+					this._arrowIconAnimation.hide();
+				});
+				break;
+			case AnimationState.LEFT:
+				progress = (progress + SnapPointThreshold) / (AnimationState.LEFT + SnapPointThreshold);
+				progress = Math.clamp(progress, 0, 1);
+				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
+					if (progress !== 0) {
+						// bring right page to left
+						this._keyboard.sendKeys(Clutter.KEY_Alt_L, Clutter.KEY_Right);
+					}
+					this._arrowIconAnimation.hide();
+				});
+		}
 	}
 
-	private _reset() {
-		this._progress = 0;
+	_showArrow(progress: number) {
+		const [height, width] = [this._arrowIconAnimation.height, this._arrowIconAnimation.width];
+		const workArea = this._getWorkArea();
+		if (progress > AnimationState.DEFAULT) {
+			this._animationState = AnimationState.RIGHT;
+			this._arrowIconAnimation.gestureBegin('arrow1-right-symbolic.svg', true);
+			this._arrowIconAnimation.set_position(workArea.x + width, Math.round((workArea.height - height) / 2));
+		}
+		else {
+			this._animationState = AnimationState.LEFT;
+			this._arrowIconAnimation.gestureBegin('arrow1-left-symbolic.svg', false);
+			this._arrowIconAnimation.set_position(workArea.x + workArea.width - 2 * width, Math.round((workArea.height - height) / 2));
+		}
+
+		this._arrowIconAnimation.show();
 	}
 
-	_sendKeyEvent(...keys: number[]): void {
-		const currentTime = Clutter.get_current_event_time();
-		keys.forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.PRESSED));
-		keys.forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.RELEASED));
+	_getWorkArea() {
+		const window = global.display.get_focus_window() as Meta.Window | null;
+		if (window)
+			return window.get_frame_rect();
+		return Main.layoutManager.getWorkAreaForMonitor(Main.layoutManager.currentMonitor.index);
 	}
 }

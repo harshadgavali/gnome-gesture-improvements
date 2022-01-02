@@ -8,7 +8,7 @@ declare interface IExtension {
 }
 
 declare interface ISubExtension {
-	apply(): void,
+	apply?(): void,
 	destroy(): void;
 }
 

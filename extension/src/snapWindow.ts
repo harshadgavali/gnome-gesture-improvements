@@ -7,6 +7,7 @@ import { registerClass } from '../common/utils/gobject';
 import { ExtSettings } from '../constants';
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 import { easeActor, easeAdjustment } from './utils/environment';
+import { VirtualKeyboard } from './utils/keyboard';
 
 
 const Main = imports.ui.main;
@@ -44,8 +45,8 @@ const TilePreview = registerClass(
 		private _minimizeBox?: Meta.Rectangle;
 		private _leftSnapBox?: Meta.Rectangle;
 		private _rightSnapBox?: Meta.Rectangle;
-		private _virtualDevice: Clutter.VirtualInputDevice;
 		private _fullscreenBox?: Meta.Rectangle;
+		private _keyboard: VirtualKeyboard;
 
 		constructor() {
 			super({
@@ -64,8 +65,7 @@ const TilePreview = registerClass(
 			});
 
 			this._adjustment.connect('notify::value', this._valueChanged.bind(this));
-			const seat = Clutter.get_default_backend().get_default_seat();
-			this._virtualDevice = seat.create_virtual_device(Clutter.InputDeviceType.KEYBOARD_DEVICE);
+			this._keyboard = new VirtualKeyboard();
 		}
 
 		open(window: Meta.Window, currentProgress: GestureMaxUnMaxState): boolean {
@@ -134,10 +134,7 @@ const TilePreview = registerClass(
 					// snap-left,normal,snap-right
 					else {
 						if (state !== GestureTileState.NORMAL) {
-							const currentTime = Clutter.get_current_event_time();
-							const keys = [Clutter.KEY_Super_L, (state === GestureTileState.LEFT_TILE ? Clutter.KEY_Left : Clutter.KEY_Right)];
-							keys.forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.PRESSED));
-							keys.reverse().forEach(key => this._virtualDevice.notify_keyval(currentTime, key, Clutter.KeyState.RELEASED));
+							this._keyboard.sendKeys(Clutter.KEY_Super_L, (state === GestureTileState.LEFT_TILE ? Clutter.KEY_Left : Clutter.KEY_Right));
 						}
 					}
 				}
@@ -354,7 +351,7 @@ export class SnapWindowExtension implements ISubExtension {
 				break;
 			case GestureMaxUnMaxState.MAXIMIZE:
 				snapPoints.push(GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
-				if (!window.is_monitor_sized() && !monitorArea.equal(window.get_buffer_rect()))
+				if (!window.is_monitor_sized() && !monitorArea.equal(window.get_frame_rect()))
 					snapPoints.push(GestureMaxUnMaxState.FULLSCREEN);
 				break;
 			case GestureMaxUnMaxState.FULLSCREEN:

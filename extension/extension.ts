@@ -102,7 +102,7 @@ class Extension {
 		if (showDesktopFingers.length)
 			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
 
-		this._extensions.forEach(extension => extension.apply());
+		this._extensions.forEach(extension => extension.apply?.());
 	}
 
 	_disable() {
