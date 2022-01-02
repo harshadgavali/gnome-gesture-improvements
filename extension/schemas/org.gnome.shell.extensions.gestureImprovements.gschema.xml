@@ -4,6 +4,10 @@
     <value value='0' nick='NONE' />
     <value value='1' nick='SHOW_DESKTOP' />
   </enum>
+  <enum id='org.gnome.shell.extensions.gestureImprovements.swipe-gestures'>
+    <value value='0' nick='SWITCH_WINDOWS' />
+    <value value='1' nick='FORWARD_BACK' />
+  </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://developer.gnome.org/glib/stable/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
@@ -35,10 +39,6 @@
       <default>true</default>
       <description>Default direction for overview navigation</description>
     </key>
-    <key name='enable-alttab-gesture' type='b'>
-      <default>true</default>
-      <description>Enable alttab gesture</description>
-    </key>
     <key name='enable-window-manipulation-gesture' type='b'>
       <default>true</default>
       <description>Enable Window manipulation gesture</description>
@@ -50,6 +50,10 @@
     <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
       <default>'NONE'</default>
       <description>Gesture for 4 finger pinch</description>
+    </key>
+    <key name="swipe-3-finger-horizontal-gesture" enum="org.gnome.shell.extensions.gestureImprovements.swipe-gestures">
+      <default>'SWITCH_WINDOWS'</default>
+      <description>Gesture for 3 finger horizontal swipe</description>
     </key>
   </schema>
 </schemalist>

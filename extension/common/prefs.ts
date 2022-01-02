@@ -1,7 +1,7 @@
 import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
 import Gtk from '@gi-types/gtk4';
-import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
+import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys, SwipeGestureType } from './settings';
 import { CanEnableMinimizeGesture } from './utils/prefUtils';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
@@ -37,7 +37,12 @@ function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, bui
 	});
 }
 
-function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
+interface BindEnumParams {
+	/** list of key of {@link Gtk.Box} object in builder, setting's key is binded to {@link Gtk.Box.sensitive}, if satting's value matches {@link number} */
+	sensitiveRowKeys?: Map<AllUIObjectKeys, number>,
+}
+
+function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: GtkBuilder, params?: BindEnumParams) {
 	const comboBox = builder.get_object<Gtk.ComboBoxText>(key);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const enumKey = key as any;
@@ -45,6 +50,11 @@ function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: G
 
 	comboBox.connect('changed', () => {
 		settings.set_enum(enumKey, parseInt(comboBox.active_id));
+	});
+
+	params?.sensitiveRowKeys?.forEach((enum_value: number, row_key: AllUIObjectKeys) => {
+		const row = builder.get_object<Gtk.ListBoxRow>(row_key);
+		comboBox.bind_property_full('active_id', row, 'sensitive', GObject.BindingFlags.SYNC_CREATE, (_binding, from_value) => [true, parseInt(from_value) === enum_value], (_binding, _to_value) => [true, null]);
 	});
 }
 
@@ -96,7 +106,7 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	bind_boolean_value('follow-natural-scroll', settings, builder);
 	bind_boolean_value('default-overview-gesture-direction', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
 
-	bind_boolean_value('enable-alttab-gesture', settings, builder, { sensitiveRowKeys: ['alttab-delay_box-row'] });
+	bind_combo_box('swipe-3-finger-horizontal-gesture', settings, builder, { sensitiveRowKeys: new Map([['alttab-delay_box-row', SwipeGestureType.SWITCH_WINDOWS]]) });
 	bind_boolean_value('enable-window-manipulation-gesture', settings, builder, { sensitiveRowKeys: ['allow-minimize-window_box-row'] });
 
 	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);

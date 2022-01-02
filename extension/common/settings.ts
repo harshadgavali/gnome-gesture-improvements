@@ -6,12 +6,16 @@ export enum PinchGestureType {
     SHOW_DESKTOP = 1,
 }
 
+export enum SwipeGestureType {
+    SWITCH_WINDOWS = 0,
+    FORWARD_BACK = 1,
+}
+
 export type BooleanSettingsKeys =
     'default-session-workspace' |
     'default-overview' |
     'allow-minimize-window' |
     'follow-natural-scroll' |
-    'enable-alttab-gesture' |
     'enable-window-manipulation-gesture' |
     'default-overview-gesture-direction'
     ;
@@ -26,7 +30,8 @@ export type DoubleSettingsKeys =
 
 export type EnumSettingsKeys =
     'pinch-3-finger-gesture' |
-    'pinch-4-finger-gesture'
+    'pinch-4-finger-gesture' |
+    'swipe-3-finger-horizontal-gesture'
     ;
 
 
@@ -51,7 +56,8 @@ type Enum_Functions<K extends EnumSettingsKeys, T> = {
 }
 
 type SettingsEnumFunctions =
-    Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType>
+    Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType> &
+    Enum_Functions<'swipe-3-finger-horizontal-gesture', SwipeGestureType>
     ;
 
 export type GioSettings =
