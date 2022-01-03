@@ -100,7 +100,7 @@ export class ForwardBackGestureExtension implements ISubExtension {
 				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
 					if (progress !== 0) {
 						// bring left page to right
-						this._keyboard.sendKeys(Clutter.KEY_Alt_L, Clutter.KEY_Left);
+						this._keyboard.sendKeys(Clutter.KEY_Back);
 					}
 					this._arrowIconAnimation.hide();
 				});
@@ -111,7 +111,7 @@ export class ForwardBackGestureExtension implements ISubExtension {
 				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
 					if (progress !== 0) {
 						// bring right page to left
-						this._keyboard.sendKeys(Clutter.KEY_Alt_L, Clutter.KEY_Right);
+						this._keyboard.sendKeys(Clutter.KEY_Forward);
 					}
 					this._arrowIconAnimation.hide();
 				});
