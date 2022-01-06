@@ -388,6 +388,7 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                                     <items>
                                       <item translatable="yes" id="0">None</item>
                                       <item translatable="yes" id="1">Show Desktop</item>
+                                      <item translatable="yes" id="2">Close current Window</item>
                                     </items>
                                   </object>
                                 </child>
@@ -423,6 +424,7 @@ other gesture, if enabled, will be activated using 4-finger gesture.
                                     <items>
                                       <item translatable="yes" id="0">None</item>
                                       <item translatable="yes" id="1">Show Desktop</item>
+                                      <item translatable="yes" id="2">Close current Window</item>
                                     </items>
                                   </object>
                                 </child>

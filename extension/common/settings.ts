@@ -4,6 +4,7 @@ import Gio from '@gi-types/gio2';
 export enum PinchGestureType {
     NONE = 0,
     SHOW_DESKTOP = 1,
+    CLOSE_WINDOW = 2,
 }
 
 export enum SwipeGestureType {
