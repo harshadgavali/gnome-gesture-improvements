@@ -7,6 +7,7 @@ import { AltTabGestureExtension } from './src/altTab';
 import { ForwardBackGestureExtension } from './src/forwardBack';
 import { GestureExtension } from './src/gestures';
 import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
+import { CloseWindowExtension } from './src/pinchGestures/closeWindow';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
@@ -97,6 +98,15 @@ class Extension {
 
 		if (showDesktopFingers.length)
 			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
+
+		// pinch to close window
+		const closeWindowFingers = [
+			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.CLOSE_WINDOW ? 3 : undefined,
+			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.CLOSE_WINDOW ? 4 : undefined,
+		].filter((f): f is number => typeof f === 'number');
+
+		if (closeWindowFingers.length)
+			this._extensions.push(new CloseWindowExtension(closeWindowFingers));
 
 		this._extensions.forEach(extension => extension.apply?.());
 	}

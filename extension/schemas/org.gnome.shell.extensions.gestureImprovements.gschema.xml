@@ -3,6 +3,7 @@
   <enum id='org.gnome.shell.extensions.gestureImprovements.pinch-gestures'>
     <value value='0' nick='NONE' />
     <value value='1' nick='SHOW_DESKTOP' />
+    <value value='2' nick='CLOSE_WINDOW' />
   </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
