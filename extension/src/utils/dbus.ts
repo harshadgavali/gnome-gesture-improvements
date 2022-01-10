@@ -4,6 +4,7 @@ import GObject from '@gi-types/gobject2';
 import { CustomEventType, global, imports } from 'gnome-shell';
 import { registerClass } from '../../common/utils/gobject';
 import { printStack } from '../../common/utils/logging';
+import { ClutterEventType } from './clutter';
 
 const Util = imports.misc.util;
 
@@ -45,6 +46,17 @@ const DBusWrapperGIExtension = registerClass({
 			accumulator: GObject.AccumulatorType.TRUE_HANDLED,
 			return_type: GObject.TYPE_BOOLEAN,
 		},
+		'TouchpadHold': {
+			param_types: [
+				GObject.TYPE_STRING,	// phase
+				GObject.TYPE_INT,		// fingers
+				GObject.TYPE_UINT,		// time
+				GObject.TYPE_BOOLEAN,	// is_cancelled
+			],
+			flags: GObject.SignalFlags.RUN_LAST,
+			accumulator: GObject.AccumulatorType.TRUE_HANDLED,
+			return_type: GObject.TYPE_BOOLEAN,
+		},
 	},
 	Properties: {},
 }, class DBusWrapperGIExtension extends GObject.Object {
@@ -63,6 +75,7 @@ const DBusWrapperGIExtension = registerClass({
 
 		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadSwipe', this._handleDbusSwipeSignal.bind(this)));
 		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadPinch', this._handleDbusPinchSignal.bind(this)));
+		this._proxyConnectSignalIds.push(this._proxy.connectSignal('TouchpadHold', this._handleDbusHoldSignal.bind(this)));
 	}
 
 	dropProxy() {
@@ -86,6 +99,13 @@ const DBusWrapperGIExtension = registerClass({
 		const [sphase, fingers, angle_delta, scale, time] = params[0];
 		this.emit('TouchpadPinch', sphase, fingers, angle_delta, scale, time);
 	}
+	
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	_handleDbusHoldSignal(_proxy: never, _sender: never, params: [any]): void {
+		// (siub)
+		const [sphase, fingers, time, is_cancelled] = params[0];
+		this.emit('TouchpadHold', sphase, fingers, time, is_cancelled);
+	}
 });
 
 type EventOptionalParams = Partial<{
@@ -96,7 +116,7 @@ type EventOptionalParams = Partial<{
 	is_cancelled: boolean,
 }>;
 
-function GenerateEvent(type: Clutter.EventType, sphase: string, fingers: number, time: number, params: EventOptionalParams): CustomEventType {
+function GenerateEvent(type: number, sphase: string, fingers: number, time: number, params: EventOptionalParams): CustomEventType {
 	return {
 		type: () => type,
 		get_gesture_phase: () => {
@@ -131,14 +151,21 @@ export function subscribe(callback: (actor: never | undefined, event: CustomEven
 
 	connectedSignalIds.push(
 		proxy.connect('TouchpadSwipe', (_source, sphase, fingers, dx, dy, time) => {
-			const event = GenerateEvent(Clutter.EventType.TOUCHPAD_SWIPE, sphase, fingers, time, { dx, dy });
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_SWIPE, sphase, fingers, time, { dx, dy });
 			return callback(undefined, event);
 		}),
 	);
 
 	connectedSignalIds.push(
 		proxy.connect('TouchpadPinch', (_source, sphase, fingers, pinch_angle_delta, pinch_scale, time) => {
-			const event = GenerateEvent(Clutter.EventType.TOUCHPAD_PINCH, sphase, fingers, time, { pinch_angle_delta, pinch_scale });
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_PINCH, sphase, fingers, time, { pinch_angle_delta, pinch_scale });
+			return callback(undefined, event);
+		}),
+	);
+
+	connectedSignalIds.push(
+		proxy.connect('TouchpadHold', (_source, sphase, fingers, time, is_cancelled) => {
+			const event = GenerateEvent(ClutterEventType.TOUCHPAD_HOLD, sphase, fingers, time, { is_cancelled });
 			return callback(undefined, event);
 		}),
 	);

@@ -123,13 +123,13 @@ export class ForwardBackGestureExtension implements ISubExtension {
 		const workArea = this._getWorkArea();
 		if (progress > AnimationState.DEFAULT) {
 			this._animationState = AnimationState.RIGHT;
-			this._arrowIconAnimation.gestureBegin('arrow1-right-symbolic.svg', true);
-			this._arrowIconAnimation.set_position(workArea.x + width, Math.round((workArea.height - height) / 2));
+			this._arrowIconAnimation.gestureBegin('arrow1-left-symbolic.svg', true);
+			this._arrowIconAnimation.set_position(workArea.x + width, workArea.y + Math.round((workArea.height - height) / 2));
 		}
 		else {
 			this._animationState = AnimationState.LEFT;
-			this._arrowIconAnimation.gestureBegin('arrow1-left-symbolic.svg', false);
-			this._arrowIconAnimation.set_position(workArea.x + workArea.width - 2 * width, Math.round((workArea.height - height) / 2));
+			this._arrowIconAnimation.gestureBegin('arrow1-right-symbolic.svg', false);
+			this._arrowIconAnimation.set_position(workArea.x + workArea.width - 2 * width, workArea.y + Math.round((workArea.height - height) / 2));
 		}
 
 		this._arrowIconAnimation.show();

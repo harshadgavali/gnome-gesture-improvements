@@ -5,6 +5,7 @@ import Shell from '@gi-types/shell0';
 import { CustomEventType, global, imports } from 'gnome-shell';
 import { registerClass } from '../common/utils/gobject';
 import { TouchpadConstants } from '../constants';
+import { ClutterEventType } from './utils/clutter';
 import * as DBusUtils from './utils/dbus';
 
 const Main = imports.ui.main;
@@ -58,6 +59,12 @@ export const TouchpadSwipeGesture = registerClass({
 	DRAG_THRESHOLD_DISTANCE = TouchpadConstants.DRAG_THRESHOLD_DISTANCE;
 	enabled = true;
 
+	private HOLD_TIME = 150; // ms
+	private DELAY_BETWEEN_HOLD_SWIPE = 100; // ms
+	private _lastHoldBeginTime = 0;
+	private _lastHoldCancelledTime = 0;
+	private _eventBeginTime = 0;
+
 	constructor(
 		nfingers: number[],
 		allowedModes: Shell.ActionMode,
@@ -67,6 +74,7 @@ export const TouchpadSwipeGesture = registerClass({
 		gestureSpeed = 1.0,
 	) {
 		super();
+		
 		this._nfingers = nfingers;
 		this._allowedModes = allowedModes;
 		this.orientation = orientation;
@@ -80,14 +88,18 @@ export const TouchpadSwipeGesture = registerClass({
 		}
 
 		this.SWIPE_MULTIPLIER = TouchpadConstants.SWIPE_MULTIPLIER * (typeof (gestureSpeed) !== 'number' ? 1.0 : gestureSpeed);
+
+		this._resetHoldGesture();
 	}
 
 	_handleEvent(_actor: undefined | Clutter.Actor, event: CustomEventType): boolean {
-		if (event.type() !== Clutter.EventType.TOUCHPAD_SWIPE)
+		const eventType = event.type();
+		if (eventType !== Clutter.EventType.TOUCHPAD_SWIPE && eventType !== ClutterEventType.TOUCHPAD_HOLD)
 			return Clutter.EVENT_PROPAGATE;
 
 		const gesturePhase = event.get_gesture_phase();
 		if (gesturePhase === Clutter.TouchpadGesturePhase.BEGIN) {
+			this._eventBeginTime = event.get_time();
 			this._state = TouchpadState.NONE;
 			this._toggledDirection = false;
 		}
@@ -105,6 +117,11 @@ export const TouchpadSwipeGesture = registerClass({
 
 		if (!this._nfingers.includes(event.get_touchpad_gesture_finger_count())) {
 			this._state = TouchpadState.IGNORED;
+			return Clutter.EVENT_PROPAGATE;
+		}
+
+		if (eventType === ClutterEventType.TOUCHPAD_HOLD) {
+			this._handleHold(event);
 			return Clutter.EVENT_PROPAGATE;
 		}
 
@@ -181,12 +198,39 @@ export const TouchpadSwipeGesture = registerClass({
 				this.emit('end', time, distance);
 				this._state = TouchpadState.NONE;
 				this._toggledDirection = false;
+				this._resetHoldGesture();
 				break;
 		}
 
 		return this._state === TouchpadState.HANDLING
 			? Clutter.EVENT_STOP
 			: Clutter.EVENT_PROPAGATE;
+	}
+
+	private _handleHold(event: CustomEventType) {
+		switch (event.get_gesture_phase()) {
+			case Clutter.TouchpadGesturePhase.BEGIN:
+				this._lastHoldBeginTime = event.get_time();
+				break;
+			case Clutter.TouchpadGesturePhase.CANCEL:
+				this._lastHoldCancelledTime = event.get_time();
+				break;
+			default:
+				this._resetHoldGesture();
+		}
+	}
+
+	private _resetHoldGesture() {
+		this._eventBeginTime = 0;
+		this._lastHoldBeginTime = 0;
+		this._lastHoldCancelledTime = - (this.HOLD_TIME + this.DELAY_BETWEEN_HOLD_SWIPE);
+	}
+
+	hadHoldGesture(): boolean {
+		return (
+			(this._eventBeginTime - this._lastHoldCancelledTime) < this.DELAY_BETWEEN_HOLD_SWIPE &&
+			(this._lastHoldCancelledTime - this._lastHoldBeginTime) > this.HOLD_TIME
+		);
 	}
 
 	switchDirectionTo(direction: Clutter.Orientation): void {
