@@ -150,7 +150,7 @@ const TilePreview = registerClass(
 
 			easeAdjustment(this._adjustment, state, {
 				duration: duration,
-				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				mode: Clutter.AnimationMode.EASE_OUT_EXPO,
 				onStopped: callback,
 			});
 		}
@@ -218,7 +218,7 @@ const TilePreview = registerClass(
 			easeActor(this as St.Widget, {
 				opacity: value,
 				duration: UPDATED_WINDOW_ANIMATION_TIME,
-				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				mode: Clutter.AnimationMode.EASE_OUT_EXPO,
 				onStopped: () => {
 					if (callback)
 						callback();
