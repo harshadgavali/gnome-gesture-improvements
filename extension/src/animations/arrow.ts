@@ -77,7 +77,7 @@ export const ArrowIconAnimation = registerClass(
 			easeActor(this._arrow_icon, {
 				translation_x,
 				duration,
-				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				mode: Clutter.AnimationMode.EASE_OUT_EXPO,
 				onStopped: () => {
 					callback();
 					this._arrow_icon.opacity = 0;
@@ -92,7 +92,7 @@ export const ArrowIconAnimation = registerClass(
 				scale_x: scale,
 				scale_y: scale,
 				duration,
-				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				mode: Clutter.AnimationMode.EASE_OUT_EXPO,
 			});
 		}
 	},
