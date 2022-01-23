@@ -3,7 +3,8 @@
 .close-window-preview {
     background-color: rgba(255, 0, 0, 0.75);
     border-color: red;
-    border-radius: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .gie-circle {
