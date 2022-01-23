@@ -7,18 +7,15 @@ import St from '@gi-types/st1';
 import { global, imports } from 'gnome-shell';
 
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
-import { easeActor } from '../utils/environment';
 import { VirtualKeyboard } from '../utils/keyboard';
 
 const Main = imports.ui.main;
-const Utils = imports.misc.util;
 
 declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
 
 const ClosePreview = registerClass(
 	class ClosePreview extends St.Widget {
 		private _adjustment: St.Adjustment;
-		private _windowBox?: Meta.Rectangle;
 
 		constructor() {
 			super({
@@ -38,57 +35,26 @@ const ClosePreview = registerClass(
 			this._adjustment.connect('notify::value', this._valueChanged.bind(this));
 		}
 
-		open(window: Meta.Window): boolean{
-			this._windowBox = window.get_frame_rect();
+		open(window: Meta.Window): void {
+			const windowBox = window.get_frame_rect();
+			this.set_position(windowBox.x, windowBox.y);
+			this.set_size(windowBox.width, windowBox.height);
 
-			this.opacity = 0;
-			this._adjustment.value = 0;
-			this._valueChanged();
 			this.visible = true;
-			this.easeOpacity(255);
-			return true;
+			this._adjustment.value = 0;
 		}
 
 		finish(): void {
-			this.easeOpacity(0, () => {
-				this.visible = false;
-				this._windowBox = undefined;
-			});
+			this.visible = false;
 		}
 
 		_valueChanged(): void {
 			const progress = this._adjustment.value;
-
-			if (this._windowBox) {
-				const [x, y] = [
-					Utils.lerp(this._windowBox.x, this._windowBox.x + this._windowBox.width / 2, progress),
-					Utils.lerp(this._windowBox.y, this._windowBox.y + this._windowBox.height / 2, progress),
-				];
-
-				const [width, height] = [
-					Utils.lerp(this._windowBox.width, 0, progress),
-					Utils.lerp(this._windowBox.height, 0, progress),
-				];
-
-				this.set_position(x, y);
-				this.set_size(width, height);
-			}
+			this.opacity = progress * 255;
 		}
 
 		_onDestroy(): void {
 			this._adjustment.run_dispose();
-		}
-
-		easeOpacity(value: number, callback?: () => void) {
-			easeActor(this as St.Widget, {
-				opacity: value,
-				duration: 150,
-				mode: Clutter.AnimationMode.EASE,
-				onStopped: () => {
-					if (callback)
-						callback();
-				},
-			});
 		}
 
 		get adjustment(): St.Adjustment {
