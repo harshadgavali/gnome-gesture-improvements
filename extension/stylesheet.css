@@ -1,5 +1,11 @@
 .no-panel-corner #panel .panel-corner { -panel-corner-radius: 0px; }
 
+.close-window-preview {
+    background-color: rgba(255, 0, 0, 0.75);
+    border-color: red;
+    border-radius: 8px;
+}
+
 .gie-circle {
     width: 50px;
     height: 50px;
