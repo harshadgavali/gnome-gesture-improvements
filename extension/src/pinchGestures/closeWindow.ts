@@ -13,6 +13,15 @@ const Main = imports.ui.main;
 
 declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
 
+/**
+ * Define initial progress as 0.5 to allow pinch in and pinch out.
+ */
+const _initialProgress = 0.5;
+/**
+ * Relative progress must finish above this value to execute close action.
+ */
+const _closeThreshold = 0.5;
+
 const ClosePreview = registerClass(
 	class ClosePreview extends St.Widget {
 		private _adjustment: St.Adjustment;
@@ -64,9 +73,6 @@ const ClosePreview = registerClass(
 );
 
 export class CloseWindowExtension implements ISubExtension {
-	// Define initial progress as 0.5 to allow pinch in and pinch out.
-	readonly _initialProgress: number = 0.5;
-	
 	private _keyboard: VirtualKeyboard;
 	private _pinchTracker: Type_TouchpadPinchGesture;
 	private _preview: typeof ClosePreview.prototype;
@@ -110,23 +116,33 @@ export class CloseWindowExtension implements ISubExtension {
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
 		const window = global.display.get_focus_window() as Meta.Window | null;
 		if (window) {
-			tracker.confirmPinch(0, [0, 1], this._initialProgress);
+			tracker.confirmPinch(0, [0, 1], _initialProgress);
 			this._preview.open(window);
 		}
 	}
 
 	gestureUpdate(_tracker: unknown, progress: number): void {
-		// Convert progress to number between 0 (start) and 1 (end).
-		let relativeProgress: number;
-		if (this._initialProgress === 0)
-			relativeProgress = progress;
-		else
-			relativeProgress = Math.abs(this._initialProgress - progress) / this._initialProgress;
-		this._preview.adjustment.value = relativeProgress;
+		this._preview.adjustment.value = this.calculateRelativeProgress(progress);
 	}
 
 	gestureEnd(_tracker: unknown, _duration: number, _progress: number) {
+		// Don't use _progress parameter, as it's value is always 0 or 1 but not a value between.
 		this._preview.finish();
-		this._keyboard.sendKeys(Clutter.KEY_Control_L, Clutter.KEY_w);
+		if (this._preview.adjustment.value >= _closeThreshold)
+			this._keyboard.sendKeys(Clutter.KEY_Control_L, Clutter.KEY_w);
+	}
+
+	/**
+	 * Convert absolute progress from pinch tracker to number between 0 (start) and 1 (end).
+	 * @param progress Progress from pinch tracker as value between 0 and 1.
+	 */
+	calculateRelativeProgress(progress: number) {
+		// Disable compile / lint error in order to allow modification of _initialProgress.
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		if (_initialProgress === 0)
+			return progress;
+		else
+			return Math.abs(_initialProgress - progress) / _initialProgress;
 	}
 }
