@@ -11,16 +11,13 @@ import { VirtualKeyboard } from '../utils/keyboard';
 
 const Main = imports.ui.main;
 
-declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
+enum CloseWindowGestureState {
+	PINCH_IN = -1,
+	DEFAULT = 0,
+	PINCH_OUT = 1
+}
 
-/**
- * Define initial progress as 0.5 to allow pinch in and pinch out.
- */
-const _initialProgress = 0.5;
-/**
- * Relative progress must finish above this value to execute close action.
- */
-const _closeThreshold = 0.5;
+declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
 
 const ClosePreview = registerClass(
 	class ClosePreview extends St.Widget {
@@ -116,33 +113,18 @@ export class CloseWindowExtension implements ISubExtension {
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
 		const window = global.display.get_focus_window() as Meta.Window | null;
 		if (window) {
-			tracker.confirmPinch(0, [0, 1], _initialProgress);
+			tracker.confirmPinch(0, [CloseWindowGestureState.PINCH_IN, CloseWindowGestureState.DEFAULT, CloseWindowGestureState.PINCH_OUT], CloseWindowGestureState.DEFAULT);
 			this._preview.open(window);
 		}
 	}
 
 	gestureUpdate(_tracker: unknown, progress: number): void {
-		this._preview.adjustment.value = this.calculateRelativeProgress(progress);
+		this._preview.adjustment.value = Math.abs(progress);
 	}
 
-	gestureEnd(_tracker: unknown, _duration: number, _progress: number) {
-		// Don't use _progress parameter, as it's value is always 0 or 1 but not a value between.
+	gestureEnd(_tracker: unknown, _duration: number, progress: number) {
 		this._preview.finish();
-		if (this._preview.adjustment.value >= _closeThreshold)
+		if (progress !== CloseWindowGestureState.DEFAULT)
 			this._keyboard.sendKeys(Clutter.KEY_Control_L, Clutter.KEY_w);
-	}
-
-	/**
-	 * Convert absolute progress from pinch tracker to number between 0 (start) and 1 (end).
-	 * @param progress Progress from pinch tracker as value between 0 and 1.
-	 */
-	calculateRelativeProgress(progress: number) {
-		// Disable compile / lint error in order to allow modification of _initialProgress.
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		if (_initialProgress === 0)
-			return progress;
-		else
-			return Math.abs(_initialProgress - progress) / _initialProgress;
 	}
 }
