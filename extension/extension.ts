@@ -103,6 +103,15 @@ class Extension {
 		if (showDesktopFingers.length)
 			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
 
+		// pinch to close document
+		const closeDocumentFingers = [
+			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.CLOSE_DOCUMENT ? 3 : undefined,
+			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.CLOSE_DOCUMENT ? 4 : undefined,
+		].filter((f): f is number => typeof f === 'number');
+
+		if (closeDocumentFingers.length)
+			this._extensions.push(new CloseWindowExtension(closeDocumentFingers, PinchGestureType.CLOSE_DOCUMENT));
+
 		// pinch to close window
 		const closeWindowFingers = [
 			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.CLOSE_WINDOW ? 3 : undefined,
@@ -110,7 +119,7 @@ class Extension {
 		].filter((f): f is number => typeof f === 'number');
 
 		if (closeWindowFingers.length)
-			this._extensions.push(new CloseWindowExtension(closeWindowFingers));
+			this._extensions.push(new CloseWindowExtension(closeWindowFingers, PinchGestureType.CLOSE_WINDOW));
 
 		this._extensions.forEach(extension => extension.apply?.());
 	}
