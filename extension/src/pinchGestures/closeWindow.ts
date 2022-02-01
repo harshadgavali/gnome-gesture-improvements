@@ -6,6 +6,7 @@ import St from '@gi-types/st1';
 
 import { global, imports } from 'gnome-shell';
 
+import { PinchGestureType } from '../../common/settings';
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { VirtualKeyboard } from '../utils/keyboard';
 
@@ -22,6 +23,7 @@ declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
 const ClosePreview = registerClass(
 	class ClosePreview extends St.Widget {
 		private _adjustment: St.Adjustment;
+		private _window?: Meta.Window;
 
 		constructor() {
 			super({
@@ -42,7 +44,8 @@ const ClosePreview = registerClass(
 		}
 
 		open(window: Meta.Window): void {
-			const windowBox = window.get_frame_rect();
+			this._window = window;
+			const windowBox = this._window.get_frame_rect();
 			this.set_position(windowBox.x, windowBox.y);
 			this.set_size(windowBox.width, windowBox.height);
 
@@ -52,6 +55,7 @@ const ClosePreview = registerClass(
 
 		finish(): void {
 			this.visible = false;
+			this._window = undefined;
 		}
 
 		_valueChanged(): void {
@@ -66,16 +70,27 @@ const ClosePreview = registerClass(
 		get adjustment(): St.Adjustment {
 			return this._adjustment;
 		}
+
+		get window(): Meta.Window | undefined {
+			return this._window;
+		}
 	},
 );
 
 export class CloseWindowExtension implements ISubExtension {
+	private _closeType: PinchGestureType;
 	private _keyboard: VirtualKeyboard;
 	private _pinchTracker: Type_TouchpadPinchGesture;
 	private _preview: typeof ClosePreview.prototype;
 	private _uiGroupAddedActorId: number;
 
-	constructor(nfingers: number[]) {
+	constructor(nfingers: number[], closeType: PinchGestureType) {
+		if (closeType !== PinchGestureType.CLOSE_DOCUMENT && closeType !== PinchGestureType.CLOSE_WINDOW) {
+			throw new Error('CloseType must be CLOSE_DOCUMENT or CLOSE_WINDOW.');
+		} else {
+			this._closeType = closeType;
+		}
+
 		this._keyboard = new VirtualKeyboard();
 
 		this._pinchTracker = new TouchpadPinchGesture({
@@ -123,8 +138,18 @@ export class CloseWindowExtension implements ISubExtension {
 	}
 
 	gestureEnd(_tracker: unknown, _duration: number, progress: number) {
+		if (progress !== CloseWindowGestureState.DEFAULT) {
+			switch (this._closeType) {
+				case PinchGestureType.CLOSE_DOCUMENT:
+					this._keyboard.sendKeys(Clutter.KEY_Control_L, Clutter.KEY_w);
+					break;
+				case PinchGestureType.CLOSE_WINDOW:
+					this._preview.window?.delete(Clutter.get_current_event_time());
+					break;
+				default:
+					break;
+			}
+		}
 		this._preview.finish();
-		if (progress !== CloseWindowGestureState.DEFAULT)
-			this._keyboard.sendKeys(Clutter.KEY_Control_L, Clutter.KEY_w);
 	}
 }

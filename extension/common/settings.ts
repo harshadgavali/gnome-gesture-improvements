@@ -5,7 +5,8 @@ import GLib from '@gi-types/glib2';
 export enum PinchGestureType {
     NONE = 0,
     SHOW_DESKTOP = 1,
-    CLOSE_WINDOW = 2,
+    CLOSE_DOCUMENT = 2,
+    CLOSE_WINDOW = 3,
 }
 
 export enum ForwardBackKeyBinds {
