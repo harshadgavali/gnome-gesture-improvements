@@ -10,6 +10,8 @@ import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
+import { VolumeUpDownGesture } from './src/volume';
+import { PlayPauseHoldGesture } from './src/playPause';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
@@ -75,6 +77,8 @@ class Extension {
 
 		this._extensions.push(new AltTabGestureExtension());
 		this._extensions.push(new ForwardBackGestureExtension());
+		this._extensions.push(new VolumeUpDownGesture());
+		this._extensions.push(new PlayPauseHoldGesture());
 
 		// switch (this.settings.get_enum('swipe-3-finger-horizontal-gesture'))
 		// {
