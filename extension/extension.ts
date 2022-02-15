@@ -78,7 +78,6 @@ class Extension {
 		this._extensions.push(new AltTabGestureExtension());
 		this._extensions.push(new ForwardBackGestureExtension());
 		this._extensions.push(new VolumeUpDownGesture());
-		this._extensions.push(new PlayPauseHoldGesture());
 
 		// switch (this.settings.get_enum('swipe-3-finger-horizontal-gesture'))
 		// {
