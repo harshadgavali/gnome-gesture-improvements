@@ -105,6 +105,7 @@ export class AltTabGestureExtension implements ISubExtension {
 		this._progress = 0;
 		if (this._extState === AltTabExtState.DEFAULT) {
 			this._switcher = new WindowSwitcherPopup();
+			this._switcher._switcherList.add_style_class_name('gie-alttab-quick-transition');
 			this._switcher.connect('destroy', () => {
 				this._switcher = undefined;
 				this._reset();
@@ -120,6 +121,8 @@ export class AltTabGestureExtension implements ISubExtension {
 			const nelement = this._switcher._items.length;
 			if (nelement > 0) {
 				this._switcher.show(false, 'switch-windows', 0);
+				this._switcher._popModal();
+
 				if (this._switcher._initialDelayTimeoutId !== 0) {
 					GLib.source_remove(this._switcher._initialDelayTimeoutId);
 					this._switcher._initialDelayTimeoutId = 0;
