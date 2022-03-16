@@ -40,11 +40,11 @@
       <description>Enable Window manipulation gesture</description>
     </key>
     <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'SHOW_DESKTOP'</default>
+      <default>'NONE'</default>
       <description>Gesture for 3 finger pinch</description>
     </key>
     <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'NONE'</default>
+      <default>'SHOW_DESKTOP'</default>
       <description>Gesture for 4 finger pinch</description>
     </key>
   </schema>

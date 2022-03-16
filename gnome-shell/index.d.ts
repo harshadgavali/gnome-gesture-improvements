@@ -19,7 +19,6 @@ declare interface ExtensionUtilsMeta {
 
 declare namespace __shell_private_types {
 	declare class TouchpadGesture extends GObject.Object {
-		_stageCaptureEvent: number;
 		destroy(): void;
 		_handleEvent(actor: Clutter.Actor | undefined, event: CustomEventType): boolean;
 	}
@@ -78,7 +77,7 @@ declare namespace imports {
 			};
 
 			const layoutManager: GObject.Object & {
-				uiGroup: Clutter.Actor,
+				uiGroup: St.Widget,
 				panelBox: St.BoxLayout,
 				monitors: __shell_private_types.IMonitorState[],
 				primaryMonitor: __shell_private_types.IMonitorState,
@@ -214,16 +213,18 @@ declare namespace imports {
 					window: Meta.Window
 				}[];
 
-				_select(n: number): void;
-				_switcherList: {
+				_switcherList: St.Widget & {
 					_scrollView: {
 						hscroll: {
 							adjustment: St.Adjustment
 						}
 					}
 				};
-
+				
+				_select(n: number): void;
 				_resetNoModsTimeout(): void;
+				_popModal(): void;
+
 				_noModsTimeoutId: number;
 				_initialDelayTimeoutId: number;
 				_selectedIndex: number;
