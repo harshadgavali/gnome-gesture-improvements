@@ -1,0 +1,5 @@
+.gie-alttab-quick-transition .switcher-popup,
+.gie-alttab-quick-transition .switcher-list,
+.gie-alttab-quick-transition .item-box {
+    transition-duration: 0ms;
+}

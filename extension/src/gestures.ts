@@ -13,6 +13,7 @@ declare interface ShallowSwipeTrackerT {
 }
 
 declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
+declare type TouchPadSwipeTrackerT = Required<imports.ui.swipeTracker.SwipeTracker>['_touchpadGesture'];
 declare interface ShellSwipeTracker {
 	swipeTracker: SwipeTrackerT,
 	nfingers: number[],
@@ -21,6 +22,20 @@ declare interface ShellSwipeTracker {
 	followNaturalScroll: boolean,
 	gestureSpeed?: number,
 	checkAllowedGesture?: (event: CustomEventType) => boolean
+}
+
+function connectTouchpadEventToTracker(tracker: TouchPadSwipeTrackerT) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	(global.stage as any).connectObject(
+		'captured-event::touchpad',
+		tracker._handleEvent.bind(tracker),
+		tracker,
+	);
+}
+
+function disconnectTouchpadEventFromTracker(tracker: TouchPadSwipeTrackerT) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	(global.stage as any).disconnectObject(tracker);
 }
 
 abstract class SwipeTrackerEndPointsModifer {
@@ -80,8 +95,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 
 	apply(): void {
 		if (this._workspaceAnimation._swipeTracker._touchpadGesture) {
-			global.stage.disconnect(this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent);
-			this._workspaceAnimation._swipeTracker._touchpadGesture._stageCaptureEvent = 0;
+			disconnectTouchpadEventFromTracker(this._workspaceAnimation._swipeTracker._touchpadGesture);
 		}
 		super.apply();
 	}
@@ -112,12 +126,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 		this._swipeTracker.destroy();
 		const swipeTracker = this._workspaceAnimation._swipeTracker;
 		if (swipeTracker._touchpadGesture) {
-			swipeTracker._touchpadGesture._stageCaptureEvent = global.stage.connect(
-				'captured-event::touchpad',
-				swipeTracker._touchpadGesture._handleEvent.bind(
-					swipeTracker._touchpadGesture,
-				),
-			);
+			connectTouchpadEventToTracker(swipeTracker._touchpadGesture);
 		}
 
 		super.destroy();
@@ -201,11 +210,7 @@ export class GestureExtension implements ISubExtension {
 			swipeTracker._touchpadGesture = swipeTracker.__oldTouchpadGesture;
 			swipeTracker.__oldTouchpadGesture = undefined;
 			if (swipeTracker._touchpadGesture && disableOldGesture) {
-				swipeTracker._touchpadGesture._stageCaptureEvent =
-					global.stage.connect(
-						'captured-event::touchpad',
-						swipeTracker._touchpadGesture._handleEvent.bind(swipeTracker._touchpadGesture),
-					);
+				connectTouchpadEventToTracker(swipeTracker._touchpadGesture);
 			}
 		});
 
@@ -217,11 +222,8 @@ export class GestureExtension implements ISubExtension {
 		touchpadSwipeGesture: typeof TouchpadSwipeGesture.prototype | __shell_private_types.TouchpadGesture,
 		disablePrevious: boolean,
 	): void {
-		if (swipeTracker._touchpadGesture) {
-			if (disablePrevious && swipeTracker._touchpadGesture._stageCaptureEvent) {
-				global.stage.disconnect(swipeTracker._touchpadGesture._stageCaptureEvent);
-				swipeTracker._touchpadGesture._stageCaptureEvent = 0;
-			}
+		if (swipeTracker._touchpadGesture && disablePrevious) {
+			disconnectTouchpadEventFromTracker(swipeTracker._touchpadGesture);
 			swipeTracker.__oldTouchpadGesture = swipeTracker._touchpadGesture;
 		}
 

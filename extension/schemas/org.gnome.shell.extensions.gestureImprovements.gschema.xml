@@ -31,6 +31,10 @@
       <default>true</default>
       <description>Whether to follow natural scroll for swipe</description>
     </key>
+    <key name='default-overview-gesture-direction' type='b'>
+      <default>true</default>
+      <description>Default direction for overview navigation</description>
+    </key>
     <key name='enable-alttab-gesture' type='b'>
       <default>true</default>
       <description>Enable alttab gesture</description>
@@ -40,11 +44,11 @@
       <description>Enable Window manipulation gesture</description>
     </key>
     <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'SHOW_DESKTOP'</default>
+      <default>'NONE'</default>
       <description>Gesture for 3 finger pinch</description>
     </key>
     <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'NONE'</default>
+      <default>'SHOW_DESKTOP'</default>
       <description>Gesture for 4 finger pinch</description>
     </key>
   </schema>
