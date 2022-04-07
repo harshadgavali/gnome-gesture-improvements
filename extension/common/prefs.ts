@@ -94,6 +94,7 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	bind_boolean_value('default-session-workspace', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
 	bind_boolean_value('default-overview', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
 	bind_boolean_value('follow-natural-scroll', settings, builder);
+	bind_boolean_value('default-overview-gesture-direction', settings, builder, { flags: Gio.SettingsBindFlags.INVERT_BOOLEAN });
 
 	bind_boolean_value('enable-alttab-gesture', settings, builder, { sensitiveRowKeys: ['alttab-delay_box-row'] });
 	bind_boolean_value('enable-window-manipulation-gesture', settings, builder, { sensitiveRowKeys: ['allow-minimize-window_box-row'] });
@@ -104,14 +105,6 @@ export function getPrefsWidget<T extends Gtk.Box = Gtk.Box>(settings: Gio.Settin
 	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 
 	const main_prefs = builder.get_object<T>('main_prefs');
-	const header_bar = builder.get_object<Gtk.HeaderBar>('header_bar');
-
-	main_prefs.connect('realize', () => {
-		const window = main_prefs.get_root();
-
-		if (window && window instanceof Gtk.Window)
-			window.set_titlebar(header_bar);
-	});
 
 	return main_prefs;
 }

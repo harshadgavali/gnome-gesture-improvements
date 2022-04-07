@@ -5,7 +5,6 @@ import Shell from '@gi-types/shell0';
 import { global, imports, __shell_private_types } from 'gnome-shell';
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { easeActor } from '../utils/environment';
-import { findCentroid, findCornerForWindow, Point } from '../utils/pointsArithmetic';
 
 const Main = imports.ui.main;
 const Layout = imports.ui.layout;
@@ -29,6 +28,11 @@ declare type CornerPositions =
 	| 'top-left' | 'top-mid' | 'top-right'
 	| 'bottom-left' | 'bottom-mid' | 'bottom-right'
 	;
+
+declare type Point = {
+	x: number,
+	y: number,
+}
 
 declare type Corner = Point & {
 	position: CornerPositions;
@@ -85,22 +89,6 @@ class MonitorGroup {
 		this._container.insert_child_below(clone, null);
 	}
 
-	private _getCloneCentroid(windowActorsClones: WindowActorClone[]) {
-		const point = findCentroid(
-			windowActorsClones.map(actorClone => {
-				return {
-					x: actorClone.clone.x + actorClone.clone.width / 2,
-					y: actorClone.clone.y + actorClone.clone.height / 2,
-				};
-			}),
-		);
-		if (point) {
-			point.x = Math.round(point.x);
-			point.y = Math.round(point.y);
-		}
-		return point;
-	}
-
 	private _getDestPoint(clone: Clutter.Clone, destCorner: Corner): Point {
 		const destY = destCorner.y;
 		const cloneRelXCenter = Math.round(clone.width / 2);
@@ -120,24 +108,60 @@ class MonitorGroup {
 		}
 	}
 
+	private _calculateDist(p: Point, q: Point) {
+		return Math.abs(p.x - q.x) + Math.abs(p.y - q.y);
+	}
+
+	private _assignCorner(actorClone: WindowActorClone, corner: Corner) {
+		const { clone } = actorClone;
+		const destPoint = this._getDestPoint(clone, corner);
+		actorClone.translation = {
+			start: { x: clone.x, y: clone.y },
+			end: { x: destPoint.x, y: destPoint.y },
+		};
+	}
+
 	private _fillCloneDestPosition(windowActorsClones: WindowActorClone[]) {
-		const centroid = this._getCloneCentroid(windowActorsClones);
+		if (windowActorsClones.length === 0) return;
+		if (windowActorsClones.length === 1) {
+			this._assignCorner(windowActorsClones[0], this._bottomMidCorner);
+			return;
+		}
 
-		windowActorsClones.map(actorClone => {
-			const { clone } = actorClone;
-			const cloneCenter: Point = {
-				x: clone.x + Math.round(clone.width / 2),
-				y: clone.y + Math.round(clone.height / 2),
-			};
+		interface IMetricData {
+			value: number,
+			actorClone: WindowActorClone,
+			corner: Corner,
+		}
 
-			let destCorner = centroid ? findCornerForWindow(cloneCenter, centroid, this._corners) : undefined;
-			destCorner = destCorner ?? this._bottomMidCorner;
+		const distanceMetrics: IMetricData[] = [];
+		this._corners.forEach(corner => {
+			windowActorsClones.forEach(actorClone => {
+				distanceMetrics.push({
+					value: this._calculateDist(actorClone.clone, this._getDestPoint(actorClone.clone, corner)),
+					actorClone,
+					corner,
+				});
+			});
+		});
 
-			const destPoint = this._getDestPoint(clone, destCorner);
-			actorClone.translation = {
-				start: { x: clone.x, y: clone.y },
-				end: { x: destPoint.x, y: destPoint.y },
-			};
+		const minActorsPerCorner = Math.floor(windowActorsClones.length / this._corners.length);
+		let extraActors = windowActorsClones.length - this._corners.length * minActorsPerCorner;
+		const clusterSizes = new Map<CornerPositions, number>();
+		const takenActorClones = new Set<WindowActorClone>();
+		distanceMetrics.sort((a, b) => a.value - b.value);
+		distanceMetrics.forEach(metric => {
+			const size = clusterSizes.get(metric.corner.position) ?? 0;
+			if (takenActorClones.has(metric.actorClone)) return;
+			if (size >= minActorsPerCorner) {
+				if (size > minActorsPerCorner || extraActors <= 0) return;
+				extraActors -= 1;
+			}
+
+			takenActorClones.add(metric.actorClone);
+			clusterSizes.set(metric.corner.position, size + 1);
+
+			this._assignCorner(metric.actorClone, metric.corner);
 		});
 	}
 

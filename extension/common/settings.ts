@@ -12,7 +12,8 @@ export type BooleanSettingsKeys =
     'allow-minimize-window' |
     'follow-natural-scroll' |
     'enable-alttab-gesture' |
-    'enable-window-manipulation-gesture'
+    'enable-window-manipulation-gesture' |
+    'default-overview-gesture-direction'
     ;
 
 export type IntegerSettingsKeys =
