@@ -8,6 +8,7 @@ import { ExtSettings } from '../constants';
 import { ArrowIconAnimation } from './animations/arrow';
 import { createSwipeTracker } from './swipeTracker';
 import { getVirtualKeyboard, IVirtualKeyboard } from './utils/keyboard';
+import { ForwardBackKeyBinds } from '../common/settings';
 
 const Main = imports.ui.main;
 declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
@@ -20,7 +21,15 @@ enum AnimationState {
 	RIGHT = 1,
 }
 
+// declare enum
+enum SwipeGestureDirection {
+	LeftToRight = 1,
+	RightToLeft = 2,
+}
+
 const SnapPointThreshold = 0.1;
+
+type AppForwardBackKeyBinds = Record<string, [ForwardBackKeyBinds, boolean]>;
 
 export class ForwardBackGestureExtension implements ISubExtension {
 	private _connectHandlers: number[];
@@ -28,8 +37,12 @@ export class ForwardBackGestureExtension implements ISubExtension {
 	private _keyboard: IVirtualKeyboard;
 	private _arrowIconAnimation: typeof ArrowIconAnimation.prototype;
 	private _animationState = AnimationState.WAITING;
+	private _appForwardBackKeyBinds: AppForwardBackKeyBinds;
+	private _windowTracker: Shell.WindowTracker;
 
-	constructor() {
+	constructor(appForwardBackKeyBinds: AppForwardBackKeyBinds) {
+		this._appForwardBackKeyBinds = appForwardBackKeyBinds;
+		this._windowTracker = Shell.WindowTracker.get_default();
 		this._keyboard = getVirtualKeyboard();
 
 		this._swipeTracker = createSwipeTracker(
@@ -100,7 +113,8 @@ export class ForwardBackGestureExtension implements ISubExtension {
 				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
 					if (progress !== 0) {
 						// bring left page to right
-						this._keyboard.sendKeys(Clutter.KEY_Back);
+						const keys = this._getClutterKeyForFocusedApp(SwipeGestureDirection.LeftToRight);
+						this._keyboard.sendKeys(keys);
 					}
 					this._arrowIconAnimation.hide();
 				});
@@ -111,7 +125,8 @@ export class ForwardBackGestureExtension implements ISubExtension {
 				this._arrowIconAnimation.gestureEnd(duration, progress, () => {
 					if (progress !== 0) {
 						// bring right page to left
-						this._keyboard.sendKeys(Clutter.KEY_Forward);
+						const keys = this._getClutterKeyForFocusedApp(SwipeGestureDirection.RightToLeft);
+						this._keyboard.sendKeys(keys);
 					}
 					this._arrowIconAnimation.hide();
 				});
@@ -140,5 +155,32 @@ export class ForwardBackGestureExtension implements ISubExtension {
 		if (window)
 			return window.get_frame_rect();
 		return Main.layoutManager.getWorkAreaForMonitor(Main.layoutManager.currentMonitor.index);
+	}
+
+	/**
+	 * @param gestureDirection direction of swipe gesture left to right or right to left
+	 */
+	_getClutterKeyForFocusedApp(gestureDirection: SwipeGestureDirection) {
+		const focusApp = this._windowTracker.focus_app as Shell.App | null;
+		const keyBind = focusApp ? this._appForwardBackKeyBinds[focusApp.get_id()] : null;
+
+		if (keyBind) {
+			// if keyBind[1] is true => reverse order or keys
+			const returnBackKey = (gestureDirection === SwipeGestureDirection.LeftToRight) !== keyBind[1];
+			switch (keyBind[0]) {
+				case ForwardBackKeyBinds.FORWARD_BACK:
+					return [returnBackKey ? Clutter.KEY_Back : Clutter.KEY_Forward];
+				case ForwardBackKeyBinds.PAGE_UP_DOWN:
+					return [returnBackKey ? Clutter.KEY_Page_Up : Clutter.KEY_Page_Down];
+				case ForwardBackKeyBinds.RIGHT_LEFT:
+					return [returnBackKey ? Clutter.KEY_Left : Clutter.KEY_Right];
+				case ForwardBackKeyBinds.AUDIO_NEXT_PREV:
+					return [returnBackKey ? Clutter.KEY_AudioPrev : Clutter.KEY_AudioNext];
+				case ForwardBackKeyBinds.TAB_NEXT_PREV:
+					return [Clutter.KEY_Control_L, returnBackKey ? Clutter.KEY_Page_Up: Clutter.KEY_Page_Down];
+			}
+		}
+		// default key bind
+		return [gestureDirection === SwipeGestureDirection.LeftToRight ? Clutter.KEY_Back : Clutter.KEY_Forward];
 	}
 }

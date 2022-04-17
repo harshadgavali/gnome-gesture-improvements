@@ -5,7 +5,7 @@
     <value value='1' nick='SHOW_DESKTOP' />
   </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
-    <!-- See also: https://developer.gnome.org/glib/stable/gvariant-format-strings.html -->
+    <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
       <default>1.0</default>
     </key>
@@ -39,6 +39,10 @@
       <default>true</default>
       <description>Enable alttab gesture</description>
     </key>
+    <key name='enable-forward-back-gesture' type='b'>
+      <default>false</default>
+      <description>Enable forward/back keybinding gesture</description>
+    </key>
     <key name='enable-window-manipulation-gesture' type='b'>
       <default>true</default>
       <description>Enable Window manipulation gesture</description>
@@ -50,6 +54,30 @@
     <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
       <default>'SHOW_DESKTOP'</default>
       <description>Gesture for 4 finger pinch</description>
+    </key>
+    <!-- 
+      0 -> Default
+      1 -> Forward/Back
+      2 -> PageUP/PageDown
+      3 -> Right/Left
+      4 -> Audio Next/Prev
+      5 -> Tab Next/Prev
+      boolean value is to indicate whether to reverse keybinds
+    -->
+    <key name="forward-back-application-keyboard-shortcuts" type="a{s(ib)}">
+      <default>
+        {
+          'firefox.desktop': (1, false),
+          'org.chromium.Chromium.desktop': (1, false),
+          'org.gnome.eog.desktop': (3, false),
+          'org.gnome.gThumb.desktop': (2, false),
+          'com.spotify.Client.desktop': (4, false),
+          'code-insiders.desktop': (5, false),
+          'org.gnome.Terminal.desktop': (5, false),
+          'org.gnome.TextEditor.desktop': (5, false)
+        }
+      </default>
+      <description>Application keyboard shortcuts for forward-back gesture</description>
     </key>
   </schema>
 </schemalist>

@@ -12,7 +12,7 @@ endif
 pack:
 	cp metadata.json $(EXTENSIONDIR)
 	cp -r extension/assets/ extension/stylesheet.css extension/ui extension/schemas $(EXTENSIONDIR)
-	glib-compile-schemas ${EXTENSIONDIR}/schemas
+	glib-compile-schemas --strict ${EXTENSIONDIR}/schemas
 	rm -f ${ZIPPATH}
 	cd ${EXTENSIONDIR} && zip -r ${ZIPPATH} .
 
