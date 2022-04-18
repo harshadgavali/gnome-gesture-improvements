@@ -10,7 +10,9 @@ ifdef FLATPAK_ID
 endif
 
 pack:
-	cp metadata.json $(EXTENSIONDIR)
+	node ${BUILDIR}/scripts/updateMetadata.js \
+		--descriptionREADMEFile=extension_page.md \
+		--inFile=metadata.json --outFile=${EXTENSIONDIR}/metadata.json
 	cp -r extension/assets/ extension/stylesheet.css extension/ui extension/schemas $(EXTENSIONDIR)
 	glib-compile-schemas --strict ${EXTENSIONDIR}/schemas
 	rm -f ${ZIPPATH}
