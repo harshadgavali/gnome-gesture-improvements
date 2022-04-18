@@ -168,15 +168,15 @@ export class ForwardBackGestureExtension implements ISubExtension {
 			// if keyBind[1] is true => reverse order or keys
 			const returnBackKey = (gestureDirection === SwipeGestureDirection.LeftToRight) !== keyBind[1];
 			switch (keyBind[0]) {
-				case ForwardBackKeyBinds.FORWARD_BACK:
+				case ForwardBackKeyBinds['Forward/Backward']:
 					return [returnBackKey ? Clutter.KEY_Back : Clutter.KEY_Forward];
-				case ForwardBackKeyBinds.PAGE_UP_DOWN:
+				case ForwardBackKeyBinds['Page Up/Down']:
 					return [returnBackKey ? Clutter.KEY_Page_Up : Clutter.KEY_Page_Down];
-				case ForwardBackKeyBinds.RIGHT_LEFT:
+				case ForwardBackKeyBinds['Right/Left']:
 					return [returnBackKey ? Clutter.KEY_Left : Clutter.KEY_Right];
-				case ForwardBackKeyBinds.AUDIO_NEXT_PREV:
+				case ForwardBackKeyBinds['Audio Next/Prev']:
 					return [returnBackKey ? Clutter.KEY_AudioPrev : Clutter.KEY_AudioNext];
-				case ForwardBackKeyBinds.TAB_NEXT_PREV:
+				case ForwardBackKeyBinds['Tab Next/Prev']:
 					return [Clutter.KEY_Control_L, returnBackKey ? Clutter.KEY_Page_Up: Clutter.KEY_Page_Down];
 			}
 		}

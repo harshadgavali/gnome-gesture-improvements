@@ -11,7 +11,7 @@
     "lint:extension": "eslint extension scripts tests",
     "lint:package": "eslint build --fix",
     "transpile:watch": "tsc --watch",
-    "pretranspile": "cp -r @types/* node_modules/@gi-types/",
+    "postinstall": "cp -r @types/* node_modules/@gi-types/",
     "transpile": "npm run lint:extension && tsc",
     "build": "npm run clean && npm run transpile && node --unhandled-rejections=strict build/scripts/transpile.js && npm run lint:package",
     "clean": "rm -rf build && mkdir build",

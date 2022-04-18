@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+  <requires lib="libadwaita" version="1.0" />
+
+  <object class="GtkStringList" id="pinch_gestures_model">
+    <items>
+      <item translatable="yes">None</item>
+      <item translatable="yes">Show Desktop</item>
+    </items>
+  </object>
+
+  <object class="AdwPreferencesPage" id="gestures_page">
+    <property name="title">Gestures</property>
+    <property name="icon-name">gesture-swipe-right-symbolic</property>
+
+    <!-- Swipe Gestures -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title">Swipe Gestures</property>
+
+        <!-- Use default(4-finger) for session overview navigation -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">4-finger gestures for overview navigation</property>
+            <property name="subtitle">For navigating between desktop, activities and appgrid</property>
+            <child>
+              <object class="GtkSwitch" id="default-overview">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Use default(4-finger) for session workspace switching -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">4-finger gestures for workspace switching</property>
+            <child>
+              <object class="GtkSwitch" id="default-session-workspace">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- AltTab Gesture -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Window switching</property>
+            <child>
+              <object class="GtkSwitch" id="enable-alttab-gesture">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Window manipulation Gesture -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Window manipulation</property>
+            <property name="subtitle">Tile, unmaximize, maximize or fullscreen a window</property>
+            <child>
+              <object class="GtkSwitch" id="enable-window-manipulation-gesture">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Minimize window -->
+        <child>
+          <object class="AdwActionRow" id="allow-minimize-window_box-row">
+            <property name="title" translatable="yes">Minimize window</property>
+            <property name="subtitle">This will disable tiling gesture</property>
+            <property name="sensitive" bind-source="enable-window-manipulation-gesture" bind-property="active" bind-flags="sync-create"></property>
+            <child>
+              <object class="GtkSwitch" id="allow-minimize-window">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+
+    </child>
+
+    <!-- Pinch Gestures -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title">Pinch Gestures</property>
+
+        <!-- 3 finger pinch gesture -->
+        <child>
+          <object class="AdwComboRow" id="pinch-3-finger-gesture">
+            <property name="title" translatable="yes">3 finger pinch</property>
+            <property name="model">pinch_gestures_model</property>
+          </object>
+        </child>
+
+        <!-- 4 finger pinch gesture -->
+        <child>
+          <object class="AdwComboRow" id="pinch-4-finger-gesture">
+            <property name="title" translatable="yes">4 finger pinch</property>
+            <property name="model">pinch_gestures_model</property>
+          </object>
+        </child>
+      </object>
+
+    </child>
+  </object>
+</interface>

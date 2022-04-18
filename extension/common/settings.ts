@@ -8,12 +8,12 @@ export enum PinchGestureType {
 }
 
 export enum ForwardBackKeyBinds {
-    DEFAULT = 0,
-    FORWARD_BACK = 1,
-    PAGE_UP_DOWN = 2,
-    RIGHT_LEFT = 3,
-    AUDIO_NEXT_PREV = 4,
-    TAB_NEXT_PREV = 5,
+    Default = 0,
+    'Forward/Backward' = 1,
+    'Page Up/Down' = 2,
+    'Right/Left' = 3,
+    'Audio Next/Prev' = 4,
+    'Tab Next/Prev' = 5,
 }
 
 export type BooleanSettingsKeys =
@@ -52,12 +52,17 @@ export type AllSettingsKeys =
     MiscSettingsKeys
     ;
 
+export type UIPageObjectIds = 
+    'gestures_page' |
+    'customizations_page'
+    ;
+
 export type AllUIObjectKeys =
+    UIPageObjectIds |
     AllSettingsKeys |
-    'touchpad-speed_scale_display-value' |
+    'touchpad-speed-scale_display-value' |
     'touchpad-pinch-speed_display-value' |
-    'allow-minimize-window_box-row' |
-    'alttab-delay_box-row'
+    'allow-minimize-window_box-row'
     ;
 
 type Enum_Functions<K extends EnumSettingsKeys, T> = {
