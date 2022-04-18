@@ -13,7 +13,7 @@ class VirtualKeyboard {
 	}
 
 	sendKeys(keys: number[]) {
-		log(`sending keys: ${keys}`);
+		// log(`sending keys: ${keys}`);
 
 		// keyEvents are stored in revere order so first event can be just popped
 		const keyEvents: [number, Clutter.KeyState][] = [];

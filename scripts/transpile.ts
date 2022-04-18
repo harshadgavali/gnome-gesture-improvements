@@ -16,6 +16,7 @@ const GIReplacements: Record<string, string> = {
 	'^@gi-types/gio(\\d+)?$': 'Gio',
 	'^@gi-types/shell(\\d+)?$': 'Shell',
 	'^@gi-types/meta(\\d+)?$': 'Meta',
+	'^@gi-types/adw(\\d+)?$': 'Adw',
 };
 
 /**
