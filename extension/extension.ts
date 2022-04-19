@@ -4,11 +4,13 @@ import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/setting
 import * as Constants from './constants';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { AltTabGestureExtension } from './src/altTab';
+import { ForwardBackGestureExtension } from './src/forwardBack';
 import { GestureExtension } from './src/gestures';
 import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
+import * as VKeyboard from './src/utils/keyboard';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
@@ -74,6 +76,10 @@ class Extension {
 
 		if (this.settings.get_boolean('enable-alttab-gesture'))
 			this._extensions.push(new AltTabGestureExtension());
+		else if (this.settings.get_boolean('enable-forward-back-gesture')) {
+			const appForwardBackKeyBinds = this.settings.get_value('forward-back-application-keyboard-shortcuts').deepUnpack();
+			this._extensions.push(new ForwardBackGestureExtension(appForwardBackKeyBinds));
+		}
 
 		this._extensions.push(
 			new OverviewRoundTripGestureExtension(),
@@ -92,10 +98,11 @@ class Extension {
 		if (showDesktopFingers.length)
 			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
 
-		this._extensions.forEach(extension => extension.apply());
+		this._extensions.forEach(extension => extension.apply?.());
 	}
 
 	_disable() {
+		VKeyboard.extensionCleanup();
 		DBusUtils.unsubscribeAll();
 		this._extensions.reverse().forEach(extension => extension.destroy());
 		this._extensions = [];

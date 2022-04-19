@@ -47,7 +47,6 @@
                 "argsIgnorePattern": "^_"
             }
         ],
-        "no-console": "error",
         "no-empty": "error",
         "no-mixed-spaces-and-tabs": "error",
         "comma-dangle": [
@@ -114,10 +113,7 @@
             },
             "files": [
                 "scripts/**/*.ts"
-            ],
-            "rules": {
-                "no-console": "off"
-            }
+            ]
         }
     ]
 }
