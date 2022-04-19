@@ -11,6 +11,11 @@ function getAppIconName(app: Gio.AppInfoPrototype) {
 	return app.get_icon()?.to_string() ?? 'icon-missing';
 }
 
+/** Returns marked escaped text or empty string if text is nullable */
+function markup_escape_text(text?: string | null) {
+	return text ? GLib.markup_escape_text(text, text.length) : '';
+}
+
 /** Dialog window used for selecting application from given list of apps
  *  Emits `app-selected` signal with application id
  */
@@ -49,8 +54,8 @@ const AppChooserDialog = registerClass(
 		/** for given app add row to selectable list */
 		private _addAppRow(app: Gio.AppInfoPrototype) {
 			const row = new Adw.ActionRow({
-				title: app.get_display_name() ?? '',
-				subtitle: app.get_description() ?? '',
+				title: markup_escape_text(app.get_display_name()),
+				subtitle: markup_escape_text(app.get_description()),
 				activatable: true,
 				iconName: getAppIconName(app),
 			});
@@ -90,7 +95,7 @@ const AppGestureSettingsRow = registerClass(
 		 */
 		constructor(app: Gio.AppInfoPrototype, appGestureSettings: AppGestureSettings, model: Gio.ListModel) {
 			super({
-				title: app.get_display_name() ?? '',
+				title: markup_escape_text(app.get_display_name()),
 				iconName: getAppIconName(app),
 			});
 
