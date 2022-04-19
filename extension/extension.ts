@@ -91,31 +91,20 @@ class Extension {
 			this._extensions.push(new SnapWindowExtension());
 
 		// pinch to show desktop
-		const showDesktopFingers = [
-			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.SHOW_DESKTOP ? 3 : undefined,
-			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.SHOW_DESKTOP ? 4 : undefined,
-		].filter((f): f is number => typeof f === 'number');
-
-		if (showDesktopFingers.length)
+		const pinchToFingersMap = this._getPinchGestureTypeAndFingers();
+		const showDesktopFingers = pinchToFingersMap.get(PinchGestureType.SHOW_DESKTOP);
+		if (showDesktopFingers?.length)
 			this._extensions.push(new ShowDesktopExtension(showDesktopFingers));
 
-		// pinch to close document
-		const closeDocumentFingers = [
-			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.CLOSE_DOCUMENT ? 3 : undefined,
-			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.CLOSE_DOCUMENT ? 4 : undefined,
-		].filter((f): f is number => typeof f === 'number');
-
-		if (closeDocumentFingers.length)
-			this._extensions.push(new CloseWindowExtension(closeDocumentFingers, PinchGestureType.CLOSE_DOCUMENT));
-
 		// pinch to close window
-		const closeWindowFingers = [
-			this.settings.get_enum('pinch-3-finger-gesture') === PinchGestureType.CLOSE_WINDOW ? 3 : undefined,
-			this.settings.get_enum('pinch-4-finger-gesture') === PinchGestureType.CLOSE_WINDOW ? 4 : undefined,
-		].filter((f): f is number => typeof f === 'number');
-
-		if (closeWindowFingers.length)
+		const closeWindowFingers = pinchToFingersMap.get(PinchGestureType.CLOSE_WINDOW);
+		if (closeWindowFingers?.length)
 			this._extensions.push(new CloseWindowExtension(closeWindowFingers, PinchGestureType.CLOSE_WINDOW));
+
+		// pinch to close document
+		const closeDocumentFingers = pinchToFingersMap.get(PinchGestureType.CLOSE_DOCUMENT);
+		if (closeDocumentFingers?.length)
+			this._extensions.push(new CloseWindowExtension(closeDocumentFingers, PinchGestureType.CLOSE_DOCUMENT));
 
 		this._extensions.forEach(extension => extension.apply?.());
 	}
@@ -139,6 +128,23 @@ class Extension {
 			TouchpadConstants.PINCH_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_PINCH_MULTIPLIER * this.settings.get_double('touchpad-pinch-speed');
 			AltTabConstants.DELAY_DURATION = this.settings.get_int('alttab-delay');
 		}
+	}
+
+	private _getPinchGestureTypeAndFingers(): Map<PinchGestureType, number[]> {
+		if (!this.settings)	return new Map();
+
+		const pinch3FingerGesture = this.settings.get_enum('pinch-3-finger-gesture');
+		const pinch4FingerGesture = this.settings.get_enum('pinch-4-finger-gesture');
+
+		const gestureToFingersMap = new Map<PinchGestureType, number[]>();
+		if (pinch3FingerGesture === pinch4FingerGesture)
+			gestureToFingersMap.set(pinch3FingerGesture, [3, 4]);
+		else {
+			gestureToFingersMap.set(pinch3FingerGesture, [3]);
+			gestureToFingersMap.set(pinch4FingerGesture, [4]);
+		}
+
+		return gestureToFingersMap;
 	}
 }
 
