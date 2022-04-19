@@ -6,9 +6,13 @@ import Adw from '@gi-types/adw1';
 import { ForwardBackKeyBinds, GioSettings } from './settings';
 import { registerClass } from './utils/gobject';
 
-/** return icon name for give app */
-function getAppIconName(app: Gio.AppInfoPrototype) {
-	return app.get_icon()?.to_string() ?? 'icon-missing';
+/** return icon image for give app */
+function getAppIconImage(app: Gio.AppInfoPrototype) {
+	const iconName =  app.get_icon()?.to_string() ?? 'icon-missing';
+	return new Gtk.Image({
+		gicon: Gio.icon_new_for_string(iconName),
+		iconSize: Gtk.IconSize.LARGE,
+	});
 }
 
 /** Returns marked escaped text or empty string if text is nullable */
@@ -35,7 +39,7 @@ const AppChooserDialog = registerClass(
 			super({
 				modal: true,
 				transientFor: parent,
-				// destroyWithParent: false,
+				destroyWithParent: false,
 			});
 
 			this.set_default_size(
@@ -57,8 +61,8 @@ const AppChooserDialog = registerClass(
 				title: markup_escape_text(app.get_display_name()),
 				subtitle: markup_escape_text(app.get_description()),
 				activatable: true,
-				iconName: getAppIconName(app),
 			});
+			row.add_prefix(getAppIconImage(app));
 			this._group.add(row);
 
 			row.connect('activated', () => {
@@ -94,10 +98,8 @@ const AppGestureSettingsRow = registerClass(
 		 * @param model list of choices of keybings for setting
 		 */
 		constructor(app: Gio.AppInfoPrototype, appGestureSettings: AppGestureSettings, model: Gio.ListModel) {
-			super({
-				title: markup_escape_text(app.get_display_name()),
-				iconName: getAppIconName(app),
-			});
+			super({ title: markup_escape_text(app.get_display_name())});
+			this.add_prefix(getAppIconImage(app));
 
 			const [keyBind, reverse] = appGestureSettings;
 
@@ -180,9 +182,8 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 						label: 'Applications not listed here will have default settings',
 						halign: Gtk.Align.CENTER,
 						hexpand: true,
-						heightRequest: 35,
 					}),
-					cssClasses: ['custom--information-label-row'],
+					cssClasses: ['custom-information-label-row', 'custom-smaller-card'],
 				}),
 			);
 
@@ -224,7 +225,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 			const addButton = new Gtk.Button({
 				iconName: 'list-add-symbolic',
 				cssName: 'card',
-				heightRequest: 35,
+				cssClasses: ['custom-smaller-card'],
 			});
 
 			const addButtonRow = new Adw.PreferencesRow({ child: addButton });
@@ -285,7 +286,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 			const dialog = new Gtk.MessageDialog({
 				transient_for: this._prefsWindow,
 				modal: true,
-				text: `Remove application specific gesture for ${app.get_display_name()}?`,
+				text: `Remove gesture setting for ${app.get_display_name()}?`,
 			});
 
 			dialog.add_button('Cancel', Gtk.ResponseType.CANCEL);
