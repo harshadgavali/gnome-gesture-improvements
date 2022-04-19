@@ -1,6 +1,8 @@
-import Gtk from '@gi-types/gtk4';
+// import Gtk from '@gi-types/gtk4';
+import Adw from '@gi-types/adw1';
+
 import { imports } from 'gnome-shell';
-import { getPrefsWidget } from './common/prefs';
+import { buildPrefsWidget } from './common/prefs';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const ExtMe = ExtensionUtils.getCurrentExtension();
@@ -8,8 +10,8 @@ const ExtMe = ExtensionUtils.getCurrentExtension();
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function init(): void { }
 
-export function buildPrefsWidget(): Gtk.Widget {
-	const UIFilePath = ExtMe.dir.get_child('ui').get_path() + '/prefs.ui';
+export function fillPreferencesWindow(prefsWindow: Adw.PreferencesWindow) {
+	const UIDirPath = ExtMe.dir.get_child('ui').get_path() ?? '';
 	const settings = ExtensionUtils.getSettings();
-	return getPrefsWidget(settings, UIFilePath);
+	buildPrefsWidget(prefsWindow, settings, UIDirPath);
 }

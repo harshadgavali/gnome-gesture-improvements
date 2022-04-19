@@ -41,14 +41,22 @@ On X11, you also need to install [gnome-x11-gesture-daemon](https://github.com/h
 | :------------ | :------ | :------ |
 | Show Desktop  | Desktop | 3/4     |
 
-#### Notes
-* Minimize gesture is available if you have dash-to-dock/panel or similar extension enabled.
+| Application Gestures (Configurable) |
+| :--- |
+| Go back or forward in browser tab |
+| Switch to next or previous image in image viewer |
+| Switch to next or previous audio |
+| Change tabs |
 
-#### For activating tiling gesture
-0. This can't be activated if you enable minimize gesture
+#### For activating tiling gesture (inverted T gesture)
 1. Do a 3-finger vertical downward gesture on a unmaximized window
 2. Wait a few milliseconds
 3. Do a 3-finger horizontal gesture to tile a window to either side
+
+#### Notes
+* Minimize gesture is available if you have dash-to-dock/panel or similar extension enabled.
+* To enable application gesture, window switching gesture needs to be disabled
+* Tiling gesture can't be activated if you enable minimize gesture
 
 
 ## Customization

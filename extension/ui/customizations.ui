@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+  <requires lib="libadwaita" version="1.0" />
+
+  <object class="AdwPreferencesPage" id="customizations_page">
+    <property name="title">Misc</property>
+    <property name="icon-name">emblem-system-symbolic</property>
+    <child>
+
+      <!-- Customizations -->
+      <object class="AdwPreferencesGroup">
+        <!-- <property name="title">Customizations</property> -->
+
+        <!-- Touchpad swipe speed -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Touchpad swipe speed</property>
+
+            <child>
+              <object class="GtkScale" id="touchpad-speed-scale">
+                <!-- <property name="width-request">250</property> -->
+
+                <property name="hexpand">true</property>
+                <property name="draw-value">no</property>
+                <!-- <signal name="value-changed" handler="touchpad_speed_changed" object="touchpadspeed_speed_display_value"/> -->
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">-3.3219280948873626</property>
+                    <property name="upper">3.3219280948873626</property>
+                    <property name="step-increment">0.01</property>
+                  </object>
+                </property>
+                <marks>
+                  <mark value="-1" position="bottom"></mark>
+                  <mark value="0" position="bottom"></mark>
+                  <mark value="1" position="bottom"></mark>
+                </marks>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkEditableLabel" id="touchpad-speed-scale_display-value">
+                <property name="valign">center</property>
+                <property name="max_width_chars">5</property>
+                <property name="editable">False</property>
+                <property name="can-focus">False</property>
+                <property name="text">1.00</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <!-- Follow natural swipe -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Follow natural swipe</property>
+            <property name="subtitle">Similar to natural scrolling. Swipe moves the content, not the view</property>
+            <child>
+              <object class="GtkSwitch" id="follow-natural-scroll">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Revert direction of overview navigation gesture -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Revert direction of overview navigation gesture</property>
+            <child>
+              <object class="GtkSwitch" id="default-overview-gesture-direction">
+                <property name="valign">center</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Window switcher popup delay (ms) -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Window switcher popup delay (ms)</property>
+            <property name="sensitive" bind-source="enable-alttab-gesture" bind-property="active" bind-flags="sync-create"></property>
+            <child>
+              <object class="GtkSpinButton" id="alttab-delay">
+                <property name="valign">center</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">5000</property>
+                    <property name="step-increment">5</property>
+                  </object>
+                </property>
+                <property name="value">150</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Touchpad pinch speed -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Touchpad pinch speed</property>
+
+            <child>
+              <object class="GtkScale" id="touchpad-pinch-speed">
+                <!-- <property name="width-request">250</property> -->
+
+                <property name="hexpand">true</property>
+                <property name="draw-value">no</property>
+                <!-- <signal name="value-changed" handler="touchpad_speed_changed" object="touchpadspeed_speed_display_value"/> -->
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">-3.3219280948873626</property>
+                    <property name="upper">3.3219280948873626</property>
+                    <property name="step-increment">0.01</property>
+                  </object>
+                </property>
+                <marks>
+                  <mark value="-1" position="bottom"></mark>
+                  <mark value="0" position="bottom"></mark>
+                  <mark value="1" position="bottom"></mark>
+                </marks>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkEditableLabel" id="touchpad-pinch-speed_display-value">
+                <property name="valign">center</property>
+                <property name="max_width_chars">5</property>
+                <property name="editable">False</property>
+                <property name="can-focus">False</property>
+                <property name="text">1.00</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+  </object>
+</interface>

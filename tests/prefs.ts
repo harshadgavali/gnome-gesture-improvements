@@ -6,7 +6,8 @@ imports.gi.versions['Gtk'] = '4.0';
 import Gio from '@gi-types/gio2';
 import GLib from '@gi-types/glib2';
 import { registerClass } from '@gi-types/gobject2';
-import Gtk from '@gi-types/gtk4';
+// import Gtk from '@gi-types/gtk4';
+import Adw from '@gi-types/adw1';
 
 /** Add parent directory of file in searchPath to be able to import files */
 function InsertIntoImportsPath() {
@@ -18,7 +19,7 @@ function InsertIntoImportsPath() {
 }
 InsertIntoImportsPath();
 
-import { getPrefsWidget } from './common/prefs';
+import { buildPrefsWidget } from './common/prefs';
 
 /** Read metadata of extension file */
 function GetExtensionObj(): ExtensionMeta {
@@ -41,7 +42,7 @@ function GetProgramOptions() {
 	return {
 		extensionId,
 		/** updated ui file */
-		uiPath: `${currentDir}/extension/ui/prefs.ui`,
+		uiDir: `${currentDir}/extension/ui`,
 		/** using same schema used by extension to ensure, we can test preference */
 		schemaDir: Gio.file_new_for_path(`${GLib.get_home_dir()}/.local/share/gnome-shell/extensions/${extensionId}/schemas`),
 		schema,
@@ -73,22 +74,20 @@ function getSettings() {
 }
 
 const ExampleApp = registerClass(
-	class ExampleApp extends Gtk.Application {
-		appWindow!: Gtk.ApplicationWindow;
+	class ExampleApp extends Adw.Application {
+		prefsWindow!: Adw.PreferencesWindow;
 		settings!: Gio.Settings;
 
 		vfunc_startup() {
 			super.vfunc_startup();
-			this.appWindow = new Gtk.ApplicationWindow({ application: this });
+			this.prefsWindow = new Adw.PreferencesWindow({ application: this });
 			this.settings = getSettings();
-			const box = getPrefsWidget<Gtk.Box>(this.settings, programOptions.uiPath);
-			box.connect('destroy', () => log('Box destroyed'));
-			this.appWindow.set_child(box);
+			buildPrefsWidget(this.prefsWindow, this.settings, programOptions.uiDir);
 		}
 
 		vfunc_activate() {
 			super.vfunc_activate();
-			this.appWindow.present();
+			this.prefsWindow.present();
 		}
 	},
 );
