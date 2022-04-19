@@ -1,6 +1,7 @@
 import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
 import Gtk from '@gi-types/gtk4';
+import Gdk from '@gi-types/gdk4';
 import Adw from '@gi-types/adw1';
 import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
 import { CanEnableMinimizeGesture } from './utils/prefUtils';
@@ -97,11 +98,30 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 }
 
+function loadCssProvider(styleManager: Adw.StyleManager,uiDir: string) {
+	const cssProvider = new Gtk.CssProvider();
+	cssProvider.load_from_path(`${uiDir}/${styleManager.dark ? 'style-dark' : 'style'}.css`);
+	const gtkDefaultDisplay = Gdk.Display.get_default();
+	if (gtkDefaultDisplay) {
+		Gtk.StyleContext.add_provider_for_display(
+			gtkDefaultDisplay,
+			cssProvider,
+			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+		);
+	}
+}
+
 export function buildPrefsWidget(
 	prefsWindow: Adw.PreferencesWindow,
 	settings: Gio.Settings,
 	uiDir: string,
 ) {
+	prefsWindow.set_search_enabled(true);
+
+	const styleManager = Adw.StyleManager.get_default();
+	styleManager.connect('notify::dark', () => loadCssProvider(styleManager, uiDir));
+	loadCssProvider(styleManager ,uiDir);
+
 	const builder = new Gtk.Builder() as GtkBuilder;
 	builder.add_from_file(`${uiDir}/gestures.ui`);
 	builder.add_from_file(`${uiDir}/customizations.ui`);
