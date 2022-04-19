@@ -106,8 +106,8 @@ const AppGestureSettingsRow = registerClass(
 			this.add_row(this._keyBindCombo);
 
 			// reverse switch row
-			this._reverseButton = new Gtk.Switch({ 
-				active: reverse, 
+			this._reverseButton = new Gtk.Switch({
+				active: reverse,
 				valign: Gtk.Align.CENTER,
 			});
 			let actionRow = new Adw.ActionRow({ title: 'Reverse gesture direction' });
@@ -164,11 +164,23 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 			this._prefsWindow = prefsWindow;
 			this._settings = settings;
 			this._appRows = new Map();
-			
+
 			this._cachedSettings = this._settings.get_value('forward-back-application-keyboard-shortcuts').deepUnpack();
 			this._appGestureModel = this._getAppGestureModelForComboBox();
 
 			// build ui widgets
+			this.add(
+				new Adw.PreferencesRow({
+					child: new Gtk.Label({
+						label: 'Applications not listed here will have default settings',
+						halign: Gtk.Align.CENTER,
+						hexpand: true,
+						heightRequest: 35,
+					}),
+					cssClasses: ['custom--information-label-row'],
+				}),
+			);
+
 			this._addAppButtonRow = this._buildAddAppButtonRow();
 			this.add(this._addAppButtonRow);
 
@@ -197,7 +209,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 
 			const appChooserDialog = new AppChooserDialog(selectableApps, this._prefsWindow);
 			appChooserDialog.connect('app-selected', (_source, appId) => this._addAppGestureRow(appId));
-			appChooserDialog.present();		
+			appChooserDialog.present();
 		}
 
 		/**
@@ -207,7 +219,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 			const addButton = new Gtk.Button({
 				iconName: 'list-add-symbolic',
 				cssName: 'card',
-				heightRequest: 40,
+				heightRequest: 35,
 			});
 
 			const addButtonRow = new Adw.PreferencesRow({ child: addButton });
@@ -222,7 +234,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 		 */
 		private _addAppGestureRow(appId: string) {
 			const app = Gio.DesktopAppInfo.new(appId);
-			if (!app)	return;
+			if (!app) return;
 
 			const appRow = new AppGestureSettingsRow(
 				app,
@@ -250,7 +262,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 		 */
 		private _removeAppGestureRow(appId: string) {
 			const appRow = this._appRows.get(appId);
-			if (!appRow)	return;
+			if (!appRow) return;
 
 			this.remove(appRow);
 			this._appRows.delete(appId);
@@ -270,13 +282,13 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 				modal: true,
 				text: `Remove application specific gesture for ${app.get_display_name()}?`,
 			});
-	
+
 			dialog.add_button('Cancel', Gtk.ResponseType.CANCEL);
 			dialog
 				.add_button('Remove', Gtk.ResponseType.ACCEPT)
 				.get_style_context()
 				.add_class('destructive-action');
-	
+
 			dialog.connect('response', (_dlg, response) => {
 				if (response === Gtk.ResponseType.ACCEPT) {
 					this._removeAppGestureRow(appId);
@@ -293,7 +305,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 		*/
 		private _getAppGestureSetting(appId: string): AppGestureSettings {
 			let val = this._cachedSettings[appId];
-			
+
 			if (!val) {
 				// this is case when new app was selected for gesture
 				val = [ForwardBackKeyBinds.Default, false];
@@ -308,11 +320,11 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 			this._cachedSettings[appId] = appGestureSettings;
 			this._updateExtensionSettings();
 		}
-		
+
 		/** Updates extension settings */
 		private _updateExtensionSettings() {
 			const glibVariant = new GLib.Variant('a{s(ib)}', this._cachedSettings);
-			this._settings.set_value('forward-back-application-keyboard-shortcuts', glibVariant);	
+			this._settings.set_value('forward-back-application-keyboard-shortcuts', glibVariant);
 		}
 
 		/** Returns model which contains all possible choices for keybinding setting for app-gesture */

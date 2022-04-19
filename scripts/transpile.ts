@@ -9,6 +9,7 @@ import { hideBin } from 'yargs/helpers';
 // list of gi modules (regex) and their name in imports.gi
 const GIReplacements: Record<string, string> = {
 	'^@gi-types/gtk(\\d+)?$': 'Gtk',
+	'^@gi-types/gdk(\\d+)?$': 'Gdk',
 	'^@gi-types/st(\\d+)?$': 'St',
 	'^@gi-types/clutter(\\d+)?$': 'Clutter',
 	'^@gi-types/gobject(\\d+)?$': 'GObject',
