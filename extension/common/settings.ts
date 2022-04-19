@@ -61,8 +61,7 @@ export type AllUIObjectKeys =
     UIPageObjectIds |
     AllSettingsKeys |
     'touchpad-speed-scale_display-value' |
-    'touchpad-pinch-speed_display-value' |
-    'allow-minimize-window_box-row'
+    'touchpad-pinch-speed_display-value'
     ;
 
 type Enum_Functions<K extends EnumSettingsKeys, T> = {
