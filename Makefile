@@ -26,4 +26,4 @@ build-tests: build/tests/prefs.js
 	@npx eslint build/tests --fix
 
 test-ui: build-tests
-	gjs build/tests/prefs.js
+	gjs -m build/tests/prefs.js

@@ -69,11 +69,15 @@
         {
           'firefox.desktop': (1, false),
           'org.chromium.Chromium.desktop': (1, false),
-          'org.gnome.eog.desktop': (3, false),
           'org.gnome.gThumb.desktop': (2, false),
+          'org.gnome.eog.desktop': (3, false),
+          'org.gnome.Photos.desktop': (3, false),
+          'shotwell.desktop': (3, false),
           'com.spotify.Client.desktop': (4, false),
+          'code.desktop': (5, false),
           'code-insiders.desktop': (5, false),
           'org.gnome.Terminal.desktop': (5, false),
+          'com.gexperts.Tilix.desktop': (5, false),
           'org.gnome.TextEditor.desktop': (5, false)
         }
       </default>
