@@ -1,11 +1,11 @@
-import Clutter from '@gi-types/clutter8';
+import Clutter from '@gi-types/clutter';
 import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
-import Meta from '@gi-types/meta8';
-import Shell from '@gi-types/shell0';
-import St from '@gi-types/st1';
+import Meta from '@gi-types/meta';
+import Shell from '@gi-types/shell';
+import St from '@gi-types/st';
 
-declare const global: import('@gi-types/shell0').Global;
+declare const global: import('@gi-types/shell').Global;
 declare interface ExtensionUtilsMeta {
 	getSettings(schema?: string): Gio.Settings;
 	getCurrentExtension(): {
@@ -237,7 +237,7 @@ declare namespace imports {
 
 // types
 export type CustomEventType = Pick<
-	import('@gi-types/clutter8').Event,
+	import('@gi-types/clutter').Event,
 	'type' | 'get_gesture_phase' |
 	'get_touchpad_gesture_finger_count' | 'get_time' |
 	'get_coords' | 'get_gesture_motion_delta_unaccelerated' |

@@ -222,7 +222,7 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
  *
  * transformation function
  * 1. replaces @gi-types/* modules into imports.gi
- * 	e.g., "import St from '@gi-types/st1';" => "const St = imports.gi.St;"
+ * 	e.g., "import St from '@gi-types/st';" => "const St = imports.gi.St;"
  * 2. Removes "import ... from 'gnome-shell'" statement.
  * 3. replaces local imports with statement compatible with extensions
  * 	e.g., in extension.js (top level)
@@ -236,7 +236,7 @@ const transformImports: ts.TransformerFactory<ts.SourceFile> = context => {
 	 * Actual transformation function
 	 * @param node ImportDeclaration node
 	 * @param getModuleReplacement function which returns object with module expression and "const Me ...." statement is necessary
-	 * 			e.g., getModuleReplacement('@gi-types/clutter8') => {statement: undefined, module: Expression('imports.gi.Clutter')}
+	 * 			e.g., getModuleReplacement('@gi-types/clutter') => {statement: undefined, module: Expression('imports.gi.Clutter')}
 	 * 			e.g., getModuleReplacement('@gi-types/gobject2') => {statement: Expression('const Me = ...'), module: Expression('imports.gi.GObject')}
 	 * @returns returns either	throws when import declaration doesn't fit into above categories
 	 * 							or returns list of variable statements or empty statement
