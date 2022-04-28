@@ -52,9 +52,9 @@ const TilePreview = registerClass(
 			super({
 				reactive: false,
 				style_class: 'tile-preview',
-				style: 'border-radius: 8px',
 				visible: false,
 			});
+			this.add_style_class_name('gie-tile-window-preview');
 			this.connect('destroy', this._onDestroy.bind(this));
 
 			this._adjustment = new St.Adjustment({
