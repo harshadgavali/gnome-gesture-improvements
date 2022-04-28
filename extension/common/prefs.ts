@@ -73,6 +73,7 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 	display_in_log_scale('touchpad-pinch-speed', 'touchpad-pinch-speed_display-value', settings, builder);
 
 	bind_int_value('alttab-delay', settings, builder);
+	bind_int_value('hold-swipe-delay-duration', settings, builder);
 
 	bind_boolean_value('default-session-workspace', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
 	bind_boolean_value('default-overview', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
@@ -123,16 +124,6 @@ export function buildPrefsWidget(
 
 	// application specific gestures
 	const app_gesture_page = getAppKeybindingGesturePrefsPage(prefsWindow, settings);
-	app_gesture_page.bind_property(
-		'sensitive',
-		builder.get_object<Gtk.Switch>('enable-alttab-gesture'),
-		'active',
-		GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.BIDIRECTIONAL,
-	);
-	if (builder.get_object<Gtk.Switch>('enable-alttab-gesture').active) {
-		app_gesture_page.set_sensitive(false);
-	}
-
 	prefsWindow.add(app_gesture_page);
 
 	// customize page

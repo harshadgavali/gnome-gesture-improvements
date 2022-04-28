@@ -140,6 +140,26 @@
           </object>
         </child>
 
+        <!-- Duration between hold and swipe (ms) -->
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Duration between hold and swipe (ms)</property>
+            <child>
+              <object class="GtkSpinButton" id="hold-swipe-delay-duration">
+                <property name="valign">center</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">5000</property>
+                    <property name="step-increment">5</property>
+                  </object>
+                </property>
+                <property name="value">100</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
       </object>
     </child>
 
