@@ -9,7 +9,7 @@ This extension adds following features:
 • Optional minimize a window gesture
 • Override 3-finger gesture with 4-finger for switching workspace
 • Pinch to show desktop
-• Application specific keyboard shortcut based gestures (e.g., navigating browser tabs)
+• Application specific keyboard shortcut based hold-swipe gestures (e.g., navigating browser tabs)
 • Configure speed of gestures
 • Support for X11
    
