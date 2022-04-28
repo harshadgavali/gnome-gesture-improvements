@@ -55,7 +55,7 @@ On X11, you also need to install [gnome-x11-gesture-daemon](https://github.com/h
 
 #### Notes
 * Minimize gesture is available if you have dash-to-dock/panel or similar extension enabled.
-* To enable application gesture, window switching gesture needs to be disabled
+* To activate application gesture, hold for few moments(configurable) before swiping
 * Tiling gesture can't be activated if you enable minimize gesture
 
 
