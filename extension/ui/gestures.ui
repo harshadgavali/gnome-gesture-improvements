@@ -7,6 +7,8 @@
     <items>
       <item translatable="yes">None</item>
       <item translatable="yes">Show Desktop</item>
+      <item translatable="yes">Close Window</item>
+      <item translatable="yes">Invoke Ctrl+W shortcut</item>
     </items>
   </object>
 
@@ -75,7 +77,7 @@
 
         <!-- Minimize window -->
         <child>
-          <object class="AdwActionRow" id="allow-minimize-window_box-row">
+          <object class="AdwActionRow">
             <property name="title" translatable="yes">Minimize window</property>
             <property name="subtitle">This will disable tiling gesture</property>
             <property name="sensitive" bind-source="enable-window-manipulation-gesture" bind-property="active" bind-flags="sync-create"></property>
