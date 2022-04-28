@@ -1,0 +1,22 @@
+{
+    "name": "Shell",
+    "api_version": "0.1",
+    "package_version": "0.1",
+    "imports": {
+        "Atk": "1.0",
+        "Gtk": "3.0",
+        "Gio": "2.0",
+        "GObject": "2.0",
+        "Clutter": "10",
+        "Cogl": "10",
+        "NM": "1.0",
+        "PolkitAgent": "1.0",
+        "St": "1.0",
+        "Gcr": "3",
+        "cairo": "1.0",
+        "GdkPixbuf": "2.0",
+        "Meta": "10",
+        "GLib": "2.0",
+        "Graphene": "1.0"
+    }
+}

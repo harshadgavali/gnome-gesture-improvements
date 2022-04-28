@@ -17,7 +17,14 @@ function getAppIconImage(app: Gio.AppInfoPrototype) {
 
 /** Returns marked escaped text or empty string if text is nullable */
 function markup_escape_text(text?: string | null) {
-	return text ? GLib.markup_escape_text(text, text.length) : '';
+	text = text ?? '';
+	try {
+		return GLib.markup_escape_text(text, text.length);
+	} catch {
+		// TODO: see what exactly is error and fix it
+		// probably errors in different language
+		return text;
+	}
 }
 
 /** Dialog window used for selecting application from given list of apps
@@ -165,7 +172,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 		constructor(prefsWindow: Adw.PreferencesWindow, settings: GioSettings) {
 			super({
 				title: 'Enable application specific gestures',
-				description: 'Window switching gesture needs to be disabled',
+				description: 'Hold and then swipe to activate the gesture',
 			});
 
 			this._prefsWindow = prefsWindow;

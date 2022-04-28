@@ -1,4 +1,4 @@
-import Clutter from '@gi-types/clutter8';
+import Clutter from '@gi-types/clutter';
 import GLib from '@gi-types/glib2';
 
 const DELAY_BETWEEN_KEY_PRESS = 10; // ms

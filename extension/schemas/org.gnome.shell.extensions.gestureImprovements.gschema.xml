@@ -3,6 +3,8 @@
   <enum id='org.gnome.shell.extensions.gestureImprovements.pinch-gestures'>
     <value value='0' nick='NONE' />
     <value value='1' nick='SHOW_DESKTOP' />
+    <value value='2' nick='CLOSE_WINDOW' />
+    <value value='3' nick='CLOSE_DOCUMENT' />
   </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
@@ -14,6 +16,9 @@
     </key>
     <key name="alttab-delay" type="i">
       <default>150</default>
+    </key>
+    <key name="hold-swipe-delay-duration" type="i">
+      <default>100</default>
     </key>
     <key name='default-session-workspace' type='b'>
       <default>false</default>

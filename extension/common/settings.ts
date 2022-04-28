@@ -5,6 +5,8 @@ import GLib from '@gi-types/glib2';
 export enum PinchGestureType {
     NONE = 0,
     SHOW_DESKTOP = 1,
+    CLOSE_WINDOW = 2,
+    CLOSE_DOCUMENT = 3,
 }
 
 export enum ForwardBackKeyBinds {
@@ -28,7 +30,8 @@ export type BooleanSettingsKeys =
     ;
 
 export type IntegerSettingsKeys =
-    'alttab-delay'
+    'alttab-delay' |
+    'hold-swipe-delay-duration'
     ;
 export type DoubleSettingsKeys =
     'touchpad-speed-scale' |
@@ -61,8 +64,7 @@ export type AllUIObjectKeys =
     UIPageObjectIds |
     AllSettingsKeys |
     'touchpad-speed-scale_display-value' |
-    'touchpad-pinch-speed_display-value' |
-    'allow-minimize-window_box-row'
+    'touchpad-pinch-speed_display-value'
     ;
 
 type Enum_Functions<K extends EnumSettingsKeys, T> = {

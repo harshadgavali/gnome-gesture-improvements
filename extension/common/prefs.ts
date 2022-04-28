@@ -4,7 +4,6 @@ import Gtk from '@gi-types/gtk4';
 import Gdk from '@gi-types/gdk4';
 import Adw from '@gi-types/adw1';
 import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
-import { CanEnableMinimizeGesture } from './utils/prefUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getAppKeybindingGesturePrefsPage } from './appGestures';
@@ -63,15 +62,6 @@ function display_in_log_scale(key: DoubleSettingsKeys, label_key: AllUIObjectKey
 	scale.set_value(initialValue);
 }
 
-/** Show button to enable minimize gesture, returns whether button was shown */
-function showEnableMinimizeButton(key: BooleanSettingsKeys, row_key: AllUIObjectKeys, settings: GioSettings, builder: GtkBuilder) {
-	const row = builder.get_object<Gtk.ListBoxRow>(row_key);
-	row.visible = settings.get_boolean(key) || CanEnableMinimizeGesture();
-	if (row.visible)
-		bind_boolean_value(key, settings, builder);
-	return row.visible;
-}
-
 /**
  * Binds preference widgets and settings keys
  * @param builder builder object for preference widgets
@@ -83,6 +73,7 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 	display_in_log_scale('touchpad-pinch-speed', 'touchpad-pinch-speed_display-value', settings, builder);
 
 	bind_int_value('alttab-delay', settings, builder);
+	bind_int_value('hold-swipe-delay-duration', settings, builder);
 
 	bind_boolean_value('default-session-workspace', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
 	bind_boolean_value('default-overview', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
@@ -91,8 +82,7 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 
 	bind_boolean_value('enable-alttab-gesture', settings, builder);
 	bind_boolean_value('enable-window-manipulation-gesture', settings, builder);
-
-	showEnableMinimizeButton('allow-minimize-window', 'allow-minimize-window_box-row', settings, builder);
+	bind_boolean_value('allow-minimize-window', settings, builder);
 
 	bind_combo_box('pinch-3-finger-gesture', settings, builder);
 	bind_combo_box('pinch-4-finger-gesture', settings, builder);
@@ -134,16 +124,6 @@ export function buildPrefsWidget(
 
 	// application specific gestures
 	const app_gesture_page = getAppKeybindingGesturePrefsPage(prefsWindow, settings);
-	app_gesture_page.bind_property(
-		'sensitive',
-		builder.get_object<Gtk.Switch>('enable-alttab-gesture'),
-		'active',
-		GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.BIDIRECTIONAL,
-	);
-	if (builder.get_object<Gtk.Switch>('enable-alttab-gesture').active) {
-		app_gesture_page.set_sensitive(false);
-	}
-
 	prefsWindow.add(app_gesture_page);
 
 	// customize page
