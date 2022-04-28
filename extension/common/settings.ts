@@ -30,7 +30,8 @@ export type BooleanSettingsKeys =
     ;
 
 export type IntegerSettingsKeys =
-    'alttab-delay'
+    'alttab-delay' |
+    'hold-swipe-delay-duration'
     ;
 export type DoubleSettingsKeys =
     'touchpad-speed-scale' |

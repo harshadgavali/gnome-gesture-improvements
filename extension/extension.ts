@@ -77,7 +77,8 @@ class Extension {
 
 		if (this.settings.get_boolean('enable-alttab-gesture'))
 			this._extensions.push(new AltTabGestureExtension());
-		else if (this.settings.get_boolean('enable-forward-back-gesture')) {
+		
+		if (this.settings.get_boolean('enable-forward-back-gesture')) {
 			const appForwardBackKeyBinds = this.settings.get_value('forward-back-application-keyboard-shortcuts').deepUnpack();
 			this._extensions.push(new ForwardBackGestureExtension(appForwardBackKeyBinds));
 		}
@@ -123,10 +124,12 @@ class Extension {
 			ExtSettings.ALLOW_MINIMIZE_WINDOW = this.settings.get_boolean('allow-minimize-window');
 			ExtSettings.FOLLOW_NATURAL_SCROLL = this.settings.get_boolean('follow-natural-scroll');
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE_DIRECTION = this.settings.get_boolean('default-overview-gesture-direction');
+			ExtSettings.APP_GESTURES = this.settings.get_boolean('enable-forward-back-gesture');
 
 			TouchpadConstants.SWIPE_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_SWIPE_MULTIPLIER * this.settings.get_double('touchpad-speed-scale');
 			TouchpadConstants.PINCH_MULTIPLIER = Constants.TouchpadConstants.DEFAULT_PINCH_MULTIPLIER * this.settings.get_double('touchpad-pinch-speed');
 			AltTabConstants.DELAY_DURATION = this.settings.get_int('alttab-delay');
+			TouchpadConstants.HOLD_SWIPE_DELAY_DURATION = this.settings.get_int('hold-swipe-delay-duration');
 		}
 	}
 

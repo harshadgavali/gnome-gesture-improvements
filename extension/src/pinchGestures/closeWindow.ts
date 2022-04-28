@@ -88,7 +88,7 @@ export class CloseWindowExtension implements ISubExtension {
 	private _invokeGestureCompleteAction() {
 		switch (this._closeType) {
 			case PinchGestureType.CLOSE_WINDOW:
-				this._focusWindow?.delete(Clutter.get_current_event_time());
+				this._focusWindow?.delete?.(global.get_current_time());
 				break;
 			case PinchGestureType.CLOSE_DOCUMENT:
 				this._keyboard.sendKeys([Clutter.KEY_Control_L, Clutter.KEY_w]);
