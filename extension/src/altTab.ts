@@ -1,7 +1,7 @@
-import Clutter from '@gi-types/clutter8';
+import Clutter from '@gi-types/clutter';
 import GLib from '@gi-types/glib2';
-import Shell from '@gi-types/shell0';
-import St from '@gi-types/st1';
+import Shell from '@gi-types/shell';
+import St from '@gi-types/st';
 import { imports } from 'gnome-shell';
 import { AltTabConstants, ExtSettings } from '../constants';
 import { TouchpadSwipeGesture } from './swipeTracker';

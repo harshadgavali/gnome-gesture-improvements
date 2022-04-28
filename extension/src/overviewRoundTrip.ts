@@ -1,5 +1,5 @@
-import Clutter from '@gi-types/clutter8';
-import Shell from '@gi-types/shell0';
+import Clutter from '@gi-types/clutter';
+import Shell from '@gi-types/shell';
 import { global, imports } from 'gnome-shell';
 import { ExtSettings, OverviewControlsState } from '../constants';
 import { createSwipeTracker } from './swipeTracker';

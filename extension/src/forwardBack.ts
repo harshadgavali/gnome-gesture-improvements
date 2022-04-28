@@ -1,6 +1,6 @@
-import Clutter from '@gi-types/clutter8';
-import Shell from '@gi-types/shell0';
-import Meta from '@gi-types/meta8';
+import Clutter from '@gi-types/clutter';
+import Shell from '@gi-types/shell';
+import Meta from '@gi-types/meta';
 
 import { imports, global } from 'gnome-shell';
 
