@@ -211,12 +211,12 @@ export const TouchpadPinchGesture = registerClass({
 	}
 
 	private _emitBegin() {
+		if (this._ackState === GestureACKState.ACKED)
+			return;
 		this._historyTracker.reset();
-		if (this._ackState === GestureACKState.NONE) {
-			this._ackState = GestureACKState.PENDING_ACK;
-			this._progress_scale = 1.0;
-			this.emit('begin');
-		}
+		this._ackState = GestureACKState.PENDING_ACK;
+		this._progress_scale = 1.0;
+		this.emit('begin');
 	}
 
 	private _emitUpdate(time: number, pinch_scale: number) {
