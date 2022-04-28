@@ -26,6 +26,9 @@ declare interface ExtensionMeta {
 	'gettext-domain'?: string
 }
 
+// gjs constants 
+declare const TextDecoder = import('util').TextDecoder;
+declare const TextEncoder = import('util').TextEncoder;
 
 // gnome-shell modules
 declare module '@gi-types/clutter' {

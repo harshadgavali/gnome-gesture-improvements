@@ -5,6 +5,7 @@ import GObject from '@gi-types/gobject2';
 import Adw from '@gi-types/adw1';
 import { ForwardBackKeyBinds, GioSettings } from './settings';
 import { registerClass } from './utils/gobject';
+import { printStack } from './utils/logging';
 
 /** return icon image for give app */
 function getAppIconImage(app: Gio.AppInfoPrototype) {
@@ -18,11 +19,14 @@ function getAppIconImage(app: Gio.AppInfoPrototype) {
 /** Returns marked escaped text or empty string if text is nullable */
 function markup_escape_text(text?: string | null) {
 	text = text ?? '';
+	const length = new TextEncoder().encode(text).length;
 	try {
-		return GLib.markup_escape_text(text, text.length);
-	} catch {
+		return GLib.markup_escape_text(text, length);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (e: any) {
 		// TODO: see what exactly is error and fix it
-		// probably errors in different language
+		// probably errors in different language or app name
+		printStack(`Error: '${e?.message ?? e}' while escaping app name for app(${text}) with buffer length(${length})`);
 		return text;
 	}
 }

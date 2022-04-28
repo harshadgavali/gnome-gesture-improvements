@@ -95,7 +95,9 @@
                 "global": "readonly",
                 "imports": "readonly",
                 "console": "readonly",
-                "process": "readonly"
+                "process": "readonly",
+                "TextEncoder": "readonly",
+                "TextDecoder": "readonly"
             },
             "rules": {
                 "no-console": "off",
