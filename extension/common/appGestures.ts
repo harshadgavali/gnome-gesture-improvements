@@ -19,14 +19,13 @@ function getAppIconImage(app: Gio.AppInfoPrototype) {
 /** Returns marked escaped text or empty string if text is nullable */
 function markup_escape_text(text?: string | null) {
 	text = text ?? '';
-	const length = new TextEncoder().encode(text).length;
 	try {
-		return GLib.markup_escape_text(text, length);
+		return GLib.markup_escape_text(text, -1);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (e: any) {
 		// TODO: see what exactly is error and fix it
 		// probably errors in different language or app name
-		printStack(`Error: '${e?.message ?? e}' while escaping app name for app(${text}) with buffer length(${length})`);
+		printStack(`Error: '${e?.message ?? e}' while escaping app name for app(${text}))`);
 		return text;
 	}
 }
@@ -51,11 +50,12 @@ const AppChooserDialog = registerClass(
 				modal: true,
 				transientFor: parent,
 				destroyWithParent: false,
+				title: 'Select application',
 			});
 
 			this.set_default_size(
-				0.5 * parent.defaultWidth,
-				0.6 * parent.defaultHeight,
+				0.7 * parent.defaultWidth,
+				0.7 * parent.defaultHeight,
 			);
 
 			this._group = new Adw.PreferencesGroup();
