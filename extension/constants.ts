@@ -39,3 +39,4 @@ export const ExtSettings = {
 };
 
 export const RELOAD_DELAY = 150; // reload extension delay in ms
+export const WIGET_SHOWING_DURATION = 100; // animation duration for showing widget

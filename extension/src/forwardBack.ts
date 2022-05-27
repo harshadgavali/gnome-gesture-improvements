@@ -120,7 +120,6 @@ export class ForwardBackGestureExtension implements ISubExtension {
 						const keys = this._getClutterKeyForFocusedApp(SwipeGestureDirection.LeftToRight);
 						this._keyboard.sendKeys(keys);
 					}
-					this._arrowIconAnimation.hide();
 				});
 				break;
 			case AnimationState.LEFT:
@@ -132,7 +131,6 @@ export class ForwardBackGestureExtension implements ISubExtension {
 						const keys = this._getClutterKeyForFocusedApp(SwipeGestureDirection.RightToLeft);
 						this._keyboard.sendKeys(keys);
 					}
-					this._arrowIconAnimation.hide();
 				});
 		}
 	}
@@ -150,8 +148,6 @@ export class ForwardBackGestureExtension implements ISubExtension {
 			this._arrowIconAnimation.gestureBegin('arrow1-right-symbolic.svg', false);
 			this._arrowIconAnimation.set_position(workArea.x + workArea.width - 2 * width, workArea.y + Math.round((workArea.height - height) / 2));
 		}
-
-		this._arrowIconAnimation.show();
 	}
 
 	_getWorkArea() {
