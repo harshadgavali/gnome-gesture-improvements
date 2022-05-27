@@ -6,6 +6,7 @@ import St from '@gi-types/st';
 import { global, imports } from 'gnome-shell';
 
 import { PinchGestureType } from '../../common/settings';
+import { WIGET_SHOWING_DURATION } from '../../constants';
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { easeActor } from '../utils/environment';
 import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
@@ -13,7 +14,8 @@ import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
 const Main = imports.ui.main;
 const Util = imports.misc.util;
 
-const START_OPACITY = 0;
+const END_OPACITY = 0;
+const END_SCALE = 0.5;
 
 enum CloseWindowGestureState {
 	PINCH_IN = -1,
@@ -37,7 +39,6 @@ export class CloseWindowExtension implements ISubExtension {
 			reactive: false,
 			style_class: 'gie-close-window-preview',
 			visible: false,
-			opacity: START_OPACITY,
 		});
 		this._preview.set_pivot_point(0.5, 0.5);
 		Main.layoutManager.uiGroup.add_child(this._preview);
@@ -66,13 +67,22 @@ export class CloseWindowExtension implements ISubExtension {
 		const frame = this._focusWindow.get_frame_rect();
 		this._preview.set_position(frame.x, frame.y);
 		this._preview.set_size(frame.width, frame.height);
+		
+		// animate showing widget
+		this._preview.opacity = 0;
 		this._preview.show();
+		easeActor(this._preview, {
+			opacity: 255,
+			mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+			duration: WIGET_SHOWING_DURATION,
+		});
 	}
 
 	gestureUpdate(_tracker: unknown, progress: number): void {
-		progress = progress - CloseWindowGestureState.PINCH_IN;
-		this._preview.set_scale(progress, progress);
-		this._preview.opacity = Util.lerp(START_OPACITY, 255, progress);
+		progress = CloseWindowGestureState.DEFAULT - progress;
+		const scale = Util.lerp(1, END_SCALE, progress);
+		this._preview.set_scale(scale, scale);
+		this._preview.opacity = Util.lerp(255, END_OPACITY, progress);
 	}
 
 	gestureEnd(_tracker: unknown, duration: number, progress: CloseWindowGestureState) {
@@ -97,9 +107,9 @@ export class CloseWindowExtension implements ISubExtension {
 
 	private _animatePreview(gestureCompleted: boolean, duration: number, callback?: () => void) {
 		easeActor(this._preview,  {
-			opacity: gestureCompleted ? 255 : 0,
-			scaleX: gestureCompleted ? 0 : 1,
-			scaleY: gestureCompleted ? 0 : 1,
+			opacity: gestureCompleted ? END_OPACITY : 255,
+			scaleX: gestureCompleted ? END_SCALE : 1,
+			scaleY: gestureCompleted ? END_SCALE : 1,
 			duration,
 			mode: Clutter.AnimationMode.EASE_OUT_QUAD,
 			onStopped: () => {
@@ -112,7 +122,7 @@ export class CloseWindowExtension implements ISubExtension {
 
 	private _gestureAnimationDone() {
 		this._preview.hide();
-		this._preview.opacity = START_OPACITY;
+		this._preview.opacity = 255;
 		this._preview.set_scale(1, 1);
 	}
 }

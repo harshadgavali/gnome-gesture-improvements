@@ -6,6 +6,7 @@ import St from '@gi-types/st';
 import { imports } from 'gnome-shell';
 import { registerClass } from '../../common/utils/gobject';
 import { easeActor } from '../utils/environment';
+import { WIGET_SHOWING_DURATION } from '../../constants';
 
 const ExtMe = imports.misc.extensionUtils.getCurrentExtension();
 const Util = imports.misc.util;
@@ -59,6 +60,16 @@ export const ArrowIconAnimation = registerClass(
 			this._outer_circle.scale_x = this._transition.outer_circle.from;
 			this._outer_circle.scale_y = this._outer_circle.scale_x;
 			this._arrow_icon.opacity = 255;
+			
+			// animating showing widget
+			this.opacity = 0;
+			this.show();
+			easeActor(this as St.Widget, {
+				opacity: 255,
+				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				duration: WIGET_SHOWING_DURATION,
+			});
+
 			this._arrow_icon.set_gicon(Gio.Icon.new_for_string(`${ExtMe.dir.get_uri()}/assets/${icon_name}`));
 		}
 
@@ -73,6 +84,12 @@ export const ArrowIconAnimation = registerClass(
 		gestureEnd(duration: number, progress: number, callback: () => void) {
 			if (this._transition === undefined) return;
 
+			easeActor(this as St.Widget, {
+				opacity: 0,
+				mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+				duration,
+			});
+
 			const translation_x = Util.lerp(this._transition.arrow.from, this._transition.arrow.end, progress);
 			easeActor(this._arrow_icon, {
 				translation_x,
@@ -80,6 +97,7 @@ export const ArrowIconAnimation = registerClass(
 				mode: Clutter.AnimationMode.EASE_OUT_EXPO,
 				onStopped: () => {
 					callback();
+					this.hide();
 					this._arrow_icon.opacity = 0;
 					this._arrow_icon.translation_x = 0;
 					this._outer_circle.scale_x = 1;

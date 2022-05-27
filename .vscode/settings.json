@@ -8,4 +8,5 @@
         "**/Thumbs.db": true,
         "node_modules": true,
     },
+    "typescript.preferences.importModuleSpecifierEnding": "index",
 }
