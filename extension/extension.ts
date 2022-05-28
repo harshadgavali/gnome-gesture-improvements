@@ -84,7 +84,7 @@ class Extension {
 		}
 
 		this._extensions.push(
-			new OverviewRoundTripGestureExtension(),
+			new OverviewRoundTripGestureExtension(this.settings.get_enum('overview-navifation-states')),
 			new GestureExtension(),
 		);
 

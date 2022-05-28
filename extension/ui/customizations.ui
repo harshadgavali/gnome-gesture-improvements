@@ -3,6 +3,14 @@
   <requires lib="gtk" version="4.0" />
   <requires lib="libadwaita" version="1.0" />
 
+  <object class="GtkStringList" id="overview_navigation_states_model">
+    <items>
+      <item translatable="yes">Cyclic</item>
+      <item translatable="yes">GNOME</item>
+      <item translatable="yes">Overview only</item>
+    </items>
+  </object>
+
   <object class="AdwPreferencesPage" id="customizations_page">
     <property name="title">Misc</property>
     <property name="icon-name">emblem-system-symbolic</property>
@@ -76,6 +84,14 @@
                 <property name="active">True</property>
               </object>
             </child>
+          </object>
+        </child>
+
+        <!-- Overview navigation states -->
+        <child>
+          <object class="AdwComboRow" id="overview-navifation-states">
+            <property name="title" translatable="yes">Overview navigation states</property>
+            <property name="model">overview_navigation_states_model</property>
           </object>
         </child>
 
