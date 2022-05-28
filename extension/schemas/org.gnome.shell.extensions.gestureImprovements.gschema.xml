@@ -6,6 +6,12 @@
     <value value='2' nick='CLOSE_WINDOW' />
     <value value='3' nick='CLOSE_DOCUMENT' />
   </enum>
+  <!--  -->
+  <enum id='org.gnome.shell.extensions.gestureImprovements.overview-navigation-states'>
+    <value value='0' nick='CYCLIC' />
+    <value value='1' nick='GNOME' />
+    <value value='2' nick='WINDOW_PICKER_ONLY' />
+  </enum>
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
@@ -58,6 +64,10 @@
     </key>
     <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
       <default>'SHOW_DESKTOP'</default>
+      <description>Gesture for 4 finger pinch</description>
+    </key>
+    <key name="overview-navifation-states" enum="org.gnome.shell.extensions.gestureImprovements.overview-navigation-states">
+      <default>'CYCLIC'</default>
       <description>Gesture for 4 finger pinch</description>
     </key>
     <!-- 
