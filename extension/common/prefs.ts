@@ -37,9 +37,11 @@ function bind_boolean_value(key: BooleanSettingsKeys, settings: GioSettings, bui
  */
 function bind_combo_box(key: EnumSettingsKeys, settings: GioSettings, builder: GtkBuilder) {
 	const comboRow = builder.get_object<Adw.ComboRow>(key);
-	comboRow.set_selected(settings.get_enum(key));
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const enum_key = key as any;
+	comboRow.set_selected(settings.get_enum(enum_key));
 	comboRow.connect('notify::selected', () => {
-		settings.set_enum(key, comboRow.selected);
+		settings.set_enum(enum_key, comboRow.selected);
 	});
 }
 
@@ -86,6 +88,7 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 
 	bind_combo_box('pinch-3-finger-gesture', settings, builder);
 	bind_combo_box('pinch-4-finger-gesture', settings, builder);
+	bind_combo_box('overview-navifation-states', settings, builder);
 }
 
 function loadCssProvider(styleManager: Adw.StyleManager,uiDir: string) {
