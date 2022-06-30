@@ -1,6 +1,7 @@
 import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
 import { global, imports } from 'gnome-shell';
+import { OverviewNavigationState } from '../common/settings';
 import { ExtSettings, OverviewControlsState } from '../constants';
 import { createSwipeTracker } from './swipeTracker';
 
@@ -24,7 +25,10 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _connectors: number[];
 	private _shownEventId = 0;
 	private _hiddenEventId = 0;
-	constructor() {
+	private _navigationStates: OverviewNavigationState;
+
+	constructor(navigationStates: OverviewNavigationState) {
+		this._navigationStates = navigationStates;
 		this._overviewControls = Main.overview._overview._controls;
 		this._stateAdjustment = this._overviewControls._stateAdjustment;
 		this._oldGetStateTransitionParams = this._overviewControls._stateAdjustment.getStateTransitionParams;
@@ -98,12 +102,10 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 
 	_gestureBegin(tracker: typeof SwipeTracker.prototype): void {
 		const _tracker = {
-			confirmSwipe: (distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number) => {
-				snapPoints.unshift(OverviewControlsState.APP_GRID_P);
-				snapPoints.push(OverviewControlsState.HIDDEN_N);
+			confirmSwipe: (distance: number, _snapPoints: number[], currentProgress: number, cancelProgress: number) => {
 				tracker.confirmSwipe(
 					distance,
-					snapPoints,
+					this._getGestureSnapPoints(),
 					currentProgress,
 					cancelProgress,
 				);
@@ -170,5 +172,29 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 		}
 
 		return progress;
+	}
+
+	private _getGestureSnapPoints(): number[] {
+		switch (this._navigationStates) {
+			case OverviewNavigationState.CYCLIC:
+				return [
+					OverviewControlsState.APP_GRID_P,
+					OverviewControlsState.HIDDEN,
+					OverviewControlsState.WINDOW_PICKER,
+					OverviewControlsState.APP_GRID,
+					OverviewControlsState.HIDDEN_N,
+				];
+			case OverviewNavigationState.GNOME:
+				return [
+					OverviewControlsState.HIDDEN,
+					OverviewControlsState.WINDOW_PICKER,
+					OverviewControlsState.APP_GRID,
+				];
+			case OverviewNavigationState.WINDOW_PICKER_ONLY:
+				return [
+					OverviewControlsState.HIDDEN,
+					OverviewControlsState.WINDOW_PICKER,
+				];
+		}
 	}
 }
