@@ -3,9 +3,9 @@ import GObject from '@gi-types/gobject2';
 import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
 import { CustomEventType, global, imports } from 'gnome-shell';
-import { registerClass } from '../common/utils/gobject';
-import { TouchpadConstants } from '../constants';
-import * as DBusUtils from './utils/dbus';
+import { registerClass } from '../../common/utils/gobject';
+import { TouchpadConstants } from '../../constants';
+import * as DBusUtils from '../utils/dbus';
 
 const Main = imports.ui.main;
 const { SwipeTracker } = imports.ui.swipeTracker;

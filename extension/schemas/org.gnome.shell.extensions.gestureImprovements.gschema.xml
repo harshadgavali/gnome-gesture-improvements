@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+  <enum id='org.gnome.shell.extensions.gestureImprovements.horizontal-swipe-gestures'>
+    <value value='0' nick='WINDOW_SWITCHING' />
+    <value value='1' nick='APP_NAVIGATION' />
+    <value value='2' nick='WORKSPACE_SWITCHING' />
+  </enum>
+
+  <enum id='org.gnome.shell.extensions.gestureImprovements.vertical-swipe-gestures'>
+    <value value='0' nick='OVERVIEW_NAVIGATION'>
+    <value value='1' nick='APP_NAVIGATION' />
+    <value value='2' nick='WINDOW_MANIPULATION' />
+  </enum>
+
   <enum id='org.gnome.shell.extensions.gestureImprovements.pinch-gestures'>
     <value value='0' nick='NONE' />
     <value value='1' nick='SHOW_DESKTOP' />
@@ -12,6 +24,7 @@
     <value value='1' nick='GNOME' />
     <value value='2' nick='WINDOW_PICKER_ONLY' />
   </enum>
+  
   <schema id="org.gnome.shell.extensions.gestureImprovements" path="/org/gnome/shell/extensions/gestureImprovements/">
     <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
     <key name="touchpad-speed-scale" type="d">
@@ -26,18 +39,36 @@
     <key name="hold-swipe-delay-duration" type="i">
       <default>100</default>
     </key>
-    <key name='default-session-workspace' type='b'>
-      <default>false</default>
-      <description>If true, use 3-fingers to switch workspace, 4 for windows</description>
+
+    <!-- 3 finger gestures -->
+    <key name="swipe-horizontal-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.horizontal-swipe-gestures">
+      <default>'WINDOW_SWITCHING'</default>
+      <description>Gesture for 3 finger Left/Right Swipe</description>
     </key>
-    <key name='default-overview' type='b'>
-      <default>false</default>
-      <description>If true, use 3-fingers for overview gesture, 4 for snapping/tiling</description>
+    <key name="swipe-vertical-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.vertical-swipe-gestures">
+      <default>'OVERVIEW_NAVIGATION'</default>
+      <description>Gesture for 3 finger Top/Down Swipe</description>
     </key>
-    <key name='allow-minimize-window' type='b'>
-      <default>false</default>
-      <description>If true, when swipe down on non-maximized window minimizes it</description>
+    <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
+      <default>'NONE'</default>
+      <description>Gesture for 3 finger pinch</description>
     </key>
+
+    <!-- 4 finger gestures -->
+    <key name="swipe-horizontal-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.horizontal-swipe-gestures">
+      <default>'WORKSPACE_SWITCHING'</default>
+      <description>Gesture for 4 finger Left/Right Swipe</description>
+    </key>
+    <key name="swipe-vertical-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.vertical-swipe-gestures">
+      <default>'APP_NAVIGATION'</default>
+      <description>Gesture for 4 finger Top/Down Swipe</description>
+    </key>
+    <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
+      <default>'SHOW_DESKTOP'</default>
+      <description>Gesture for 4 finger pinch</description>
+    </key>
+
+
     <key name='follow-natural-scroll' type='b'>
       <default>true</default>
       <description>Whether to follow natural scroll for swipe</description>
@@ -51,20 +82,8 @@
       <description>Enable alttab gesture</description>
     </key>
     <key name='enable-forward-back-gesture' type='b'>
-      <default>false</default>
-      <description>Enable forward/back keybinding gesture</description>
-    </key>
-    <key name='enable-window-manipulation-gesture' type='b'>
       <default>true</default>
-      <description>Enable Window manipulation gesture</description>
-    </key>
-    <key name="pinch-3-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'NONE'</default>
-      <description>Gesture for 3 finger pinch</description>
-    </key>
-    <key name="pinch-4-finger-gesture" enum="org.gnome.shell.extensions.gestureImprovements.pinch-gestures">
-      <default>'SHOW_DESKTOP'</default>
-      <description>Gesture for 4 finger pinch</description>
+      <description>Enable forward/back keybinding gesture</description>
     </key>
     <key name="overview-navifation-states" enum="org.gnome.shell.extensions.gestureImprovements.overview-navigation-states">
       <default>'CYCLIC'</default>

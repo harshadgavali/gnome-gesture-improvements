@@ -3,8 +3,8 @@ import GLib from '@gi-types/glib2';
 import Shell from '@gi-types/shell';
 import St from '@gi-types/st';
 import { imports } from 'gnome-shell';
-import { AltTabConstants, ExtSettings } from '../constants';
-import { TouchpadSwipeGesture } from './swipeTracker';
+import { AltTabConstants, ExtSettings } from '../../constants';
+import { TouchpadSwipeGesture } from '../trackers/swipeTracker';
 
 const Main = imports.ui.main;
 const { WindowSwitcherPopup } = imports.ui.altTab;
@@ -41,11 +41,12 @@ export class AltTabGestureExtension implements ISubExtension {
 	private _progress = 0;
 	private _altTabTimeoutId = 0;
 
-	constructor() {
+	constructor(n_fingers: number[]) {
 		this._connectHandlers = [];
 
 		this._touchpadSwipeTracker = new TouchpadSwipeGesture(
-			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [4] : [3]),
+			// (ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [4] : [3]),
+			n_fingers,
 			Shell.ActionMode.ALL,
 			Clutter.Orientation.HORIZONTAL,
 			false,
