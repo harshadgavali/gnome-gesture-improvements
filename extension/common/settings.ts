@@ -1,7 +1,21 @@
 import Gio from '@gi-types/gio2';
 import GLib from '@gi-types/glib2';
 
-// define enum
+// define enum for Horizontal motion Gesture
+export enum SwipeHorizontalGestureType {
+    WINDOW_SWITCHING = 0,
+    APP_NAVIGATION = 1,
+    WORKSPACE_SWITCHING = 2
+}
+
+// define enum for Vertical motion Gestures
+export enum SwipeVerticalGestureType {
+    OVERVIEW_NAVIGATION = 0,
+    APP_NAVIGATION = 1,
+    WINDOW_MANIPULATION = 2 
+}
+
+// define enum for Pinch Gesture
 export enum PinchGestureType {
     NONE = 0,
     SHOW_DESKTOP = 1,
@@ -26,13 +40,13 @@ export enum ForwardBackKeyBinds {
 }
 
 export type BooleanSettingsKeys =
-    'default-session-workspace' |
-    'default-overview' |
-    'allow-minimize-window' |
+    // 'default-session-workspace' |
+    // 'default-overview' |
+    // 'allow-minimize-window' |
+    // 'enable-window-manipulation-gesture' |
     'follow-natural-scroll' |
     'enable-alttab-gesture' |
     'enable-forward-back-gesture' |
-    'enable-window-manipulation-gesture' |
     'default-overview-gesture-direction'
     ;
 
@@ -46,9 +60,13 @@ export type DoubleSettingsKeys =
     ;
 
 export type EnumSettingsKeys =
+    'swipe-horizontal-3-finger-gesture' |
+    'swipe-vertical-3-finger-gesture' |
     'pinch-3-finger-gesture' |
+    'swipe-horizontal-4-finger-gesture' |
+    'swipe-vertical-4-finger-gesture' |
     'pinch-4-finger-gesture' |
-    'overview-navifation-states'
+    'overview-navigation-states'
     ;
 
 export type MiscSettingsKeys = 
@@ -81,8 +99,10 @@ type Enum_Functions<K extends EnumSettingsKeys, T> = {
 }
 
 type SettingsEnumFunctions =
+    Enum_Functions<'swipe-horizontal-3-finger-gesture' | 'swipe-horizontal-4-finger-gesture', SwipeHorizontalGestureType> &
+    Enum_Functions<'swipe-vertical-3-finger-gesture' | 'swipe-vertical-4-finger-gesture', SwipeVerticalGestureType> &
     Enum_Functions<'pinch-3-finger-gesture' | 'pinch-4-finger-gesture', PinchGestureType> &
-    Enum_Functions<'overview-navifation-states', OverviewNavigationState>
+    Enum_Functions<'overview-navigation-states', OverviewNavigationState>
     ;
 
 type Misc_Functions<K extends MiscSettingsKeys, T extends string> = {

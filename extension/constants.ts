@@ -29,10 +29,21 @@ export const OverviewControlsState = {
 	HIDDEN_N: 3,
 };
 
+// export const ExtSettings = {
+// 	DEFAULT_SESSION_WORKSPACE_GESTURE: false,
+// 	DEFAULT_OVERVIEW_GESTURE: false,
+// 	ALLOW_MINIMIZE_WINDOW: false,
+// 	FOLLOW_NATURAL_SCROLL: true,
+// 	APP_GESTURES: false,
+// 	DEFAULT_OVERVIEW_GESTURE_DIRECTION: true,
+// };
+
 export const ExtSettings = {
-	DEFAULT_SESSION_WORKSPACE_GESTURE: false,
-	DEFAULT_OVERVIEW_GESTURE: false,
+	// DEFAULT_SESSION_WORKSPACE_GESTURE: false,
+	// DEFAULT_OVERVIEW_GESTURE: false,  // TODO: remove
 	ALLOW_MINIMIZE_WINDOW: false,
+	
+
 	FOLLOW_NATURAL_SCROLL: true,
 	APP_GESTURES: false,
 	DEFAULT_OVERVIEW_GESTURE_DIRECTION: true,
