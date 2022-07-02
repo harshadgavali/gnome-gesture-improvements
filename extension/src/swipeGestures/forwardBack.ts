@@ -4,11 +4,11 @@ import Meta from '@gi-types/meta';
 
 import { imports, global } from 'gnome-shell';
 
-import { ExtSettings } from '../constants';
-import { ArrowIconAnimation } from './animations/arrow';
-import { createSwipeTracker } from './swipeTracker';
-import { getVirtualKeyboard, IVirtualKeyboard } from './utils/keyboard';
-import { ForwardBackKeyBinds } from '../common/settings';
+import { ExtSettings } from '../../constants';
+import { ArrowIconAnimation } from '../animations/arrow';
+import { createSwipeTracker } from '../trackers/swipeTracker';
+import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
+import { ForwardBackKeyBinds } from '../../common/settings';
 
 const Main = imports.ui.main;
 declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
@@ -41,20 +41,23 @@ export class ForwardBackGestureExtension implements ISubExtension {
 	private _windowTracker: Shell.WindowTracker;
 	private _focusWindow?: Meta.Window | null;
 
-	constructor(appForwardBackKeyBinds: AppForwardBackKeyBinds) {
+	constructor(appForwardBackKeyBinds: AppForwardBackKeyBinds,
+				n_fingers: number[], 
+				orientation: Clutter.Orientation,
+				natural_scroll_direction: boolean) {
 		this._appForwardBackKeyBinds = appForwardBackKeyBinds;
 		this._windowTracker = Shell.WindowTracker.get_default();
 		this._keyboard = getVirtualKeyboard();
-
 		this._swipeTracker = createSwipeTracker(
 			global.stage,
-			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3],
-			Shell.ActionMode.NORMAL,
-			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? Clutter.Orientation.VERTICAL : Clutter.Orientation.HORIZONTAL,
-			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? true : false,
+			n_fingers,     // n fingers
+			Shell.ActionMode.NORMAL,				
+			orientation,	// direction
+			natural_scroll_direction,  // Natural scroll direction (scroll down in moving up)
 			1,
 			{ allowTouch: false },
 		);
+
 
 		this._connectHandlers = [
 			this._swipeTracker.connect('begin', this._gestureBegin.bind(this)),

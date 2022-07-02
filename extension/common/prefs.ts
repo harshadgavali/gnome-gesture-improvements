@@ -70,6 +70,10 @@ function display_in_log_scale(key: DoubleSettingsKeys, label_key: AllUIObjectKey
  * @param settings setting object of extension
  */
 function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
+	bind_combo_box('swipe-horizontal-3-finger-gesture', settings, builder);
+	bind_combo_box('swipe-vertical-3-finger-gesture', settings, builder);
+	bind_combo_box('pinch-3-finger-gesture', settings, builder);
+	bind_combo_box('pinch-4-finger-gesture', settings, builder);
 
 	display_in_log_scale('touchpad-speed-scale', 'touchpad-speed-scale_display-value', settings, builder);
 	display_in_log_scale('touchpad-pinch-speed', 'touchpad-pinch-speed_display-value', settings, builder);
@@ -77,18 +81,11 @@ function bindPrefsSettings(builder: GtkBuilder, settings: Gio.Settings) {
 	bind_int_value('alttab-delay', settings, builder);
 	bind_int_value('hold-swipe-delay-duration', settings, builder);
 
-	bind_boolean_value('default-session-workspace', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
-	bind_boolean_value('default-overview', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
+
 	bind_boolean_value('follow-natural-scroll', settings, builder);
 	bind_boolean_value('default-overview-gesture-direction', settings, builder, Gio.SettingsBindFlags.INVERT_BOOLEAN);
-
 	bind_boolean_value('enable-alttab-gesture', settings, builder);
-	bind_boolean_value('enable-window-manipulation-gesture', settings, builder);
-	bind_boolean_value('allow-minimize-window', settings, builder);
-
-	bind_combo_box('pinch-3-finger-gesture', settings, builder);
-	bind_combo_box('pinch-4-finger-gesture', settings, builder);
-	bind_combo_box('overview-navifation-states', settings, builder);
+	bind_combo_box('overview-navigation-states', settings, builder);
 }
 
 function loadCssProvider(styleManager: Adw.StyleManager,uiDir: string) {
@@ -102,6 +99,11 @@ function loadCssProvider(styleManager: Adw.StyleManager,uiDir: string) {
 			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
 		);
 	}
+}
+
+// TODO: Bind it with gestures.ts `else` part
+export function showNotification(prefsWindow: Adw.PreferencesWindow, notification: string) {
+	prefsWindow.add_toast(Adw.Toast.new(notification));
 }
 
 export function buildPrefsWidget(

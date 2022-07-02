@@ -1,9 +1,9 @@
 import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
 import { global, imports } from 'gnome-shell';
-import { OverviewNavigationState } from '../common/settings';
-import { ExtSettings, OverviewControlsState } from '../constants';
-import { createSwipeTracker } from './swipeTracker';
+import { OverviewNavigationState } from '../../common/settings';
+import { ExtSettings, OverviewControlsState } from '../../constants';
+import { createSwipeTracker } from '../trackers/swipeTracker';
 
 const Main = imports.ui.main;
 const { SwipeTracker } = imports.ui.swipeTracker;
@@ -26,9 +26,12 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 	private _shownEventId = 0;
 	private _hiddenEventId = 0;
 	private _navigationStates: OverviewNavigationState;
+	private n_fingers: number[]
 
-	constructor(navigationStates: OverviewNavigationState) {
+	constructor(navigationStates: OverviewNavigationState, 
+				n_fingers: number[]) {
 		this._navigationStates = navigationStates;
+		this.n_fingers = n_fingers;
 		this._overviewControls = Main.overview._overview._controls;
 		this._stateAdjustment = this._overviewControls._stateAdjustment;
 		this._oldGetStateTransitionParams = this._overviewControls._stateAdjustment.getStateTransitionParams;
@@ -63,7 +66,8 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 
 		this._swipeTracker = createSwipeTracker(
 			global.stage,
-			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [3] : [4]),
+			// (ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [3] : [4]), 
+			this.n_fingers, 
 			Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
 			Clutter.Orientation.VERTICAL,
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE_DIRECTION,

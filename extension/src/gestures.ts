@@ -3,7 +3,14 @@ import GObject from '@gi-types/gobject2';
 import Shell from '@gi-types/shell';
 import { CustomEventType, global, imports, __shell_private_types } from 'gnome-shell';
 import { ExtSettings, OverviewControlsState } from '../constants';
-import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
+import { createSwipeTracker, TouchpadSwipeGesture } from './trackers/swipeTracker';
+
+import { SnapWindowExtension } from '../src/swipeGestures/snapWindow';
+import { AltTabGestureExtension } from '../src/swipeGestures/altTab';
+import { ForwardBackGestureExtension } from '../src/swipeGestures/forwardBack';
+import { OverviewRoundTripGestureExtension } from '../src/swipeGestures/overviewRoundTrip';
+import { GioSettings } from '../common/settings';
+import { showNotification } from '../common/prefs';
 
 const Main = imports.ui.main;
 
@@ -79,12 +86,13 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 	private _workspaceAnimation: imports.ui.workspaceAnimation.WorkspaceAnimationController;
 	protected _swipeTracker: SwipeTrackerT;
 
-	constructor(wm: typeof imports.ui.main.wm) {
+	constructor(wm: typeof imports.ui.main.wm, n_fingers: number[]) {
 		super();
 		this._workspaceAnimation = wm._workspaceAnimation;
 		this._swipeTracker = createSwipeTracker(
 			global.stage,
-			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [3] : [4]),
+			// (ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [3] : [4]),
+			n_fingers, 
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
 			ExtSettings.FOLLOW_NATURAL_SCROLL,
@@ -138,7 +146,7 @@ export class GestureExtension implements ISubExtension {
 	private _swipeTrackers: ShellSwipeTracker[];
 	private _workspaceAnimationModifier: WorkspaceAnimationModifier;
 
-	constructor() {
+	constructor(n_fingers: number[]) {
 		this._stateAdjustment = Main.overview._overview._controls._stateAdjustment;
 		this._swipeTrackers = [
 			{
@@ -174,7 +182,7 @@ export class GestureExtension implements ISubExtension {
 			},
 		];
 
-		this._workspaceAnimationModifier = new WorkspaceAnimationModifier(Main.wm);
+		this._workspaceAnimationModifier = new WorkspaceAnimationModifier(Main.wm, n_fingers);
 	}
 
 	apply(): void {
@@ -238,5 +246,99 @@ export class GestureExtension implements ISubExtension {
 			'orientation',
 			GObject.BindingFlags.SYNC_CREATE,
 		);
+	}
+}
+
+export class SwipeGestureInfo {
+	orientation: Clutter.Orientation;
+	n_fingers: number[];
+	enum_id: number; 
+
+	constructor(orientation: Clutter.Orientation, 
+				n_fingers: number[],
+				enum_id: number) {
+		this.orientation = orientation;
+		this.n_fingers = n_fingers;
+		this.enum_id = enum_id;
+	}
+}
+
+export class SwipeGestureToExtensionMapper {
+	private settings: GioSettings;
+	private extensionInUse = {
+		"WINDOW_SWITCHING": false,
+		"APP_NAVIGATION": false,
+		"WORKSPACE_SWITCHING": false,
+		"OVERVIEW_NAVIGATION": false,
+		"WINDOW_MANIPULATION": false
+	};
+
+	constructor(settings: GioSettings) {
+		this.settings = settings;
+	}
+
+	get_extension(gesture: SwipeGestureInfo) {
+		if (gesture.orientation === Clutter.Orientation.HORIZONTAL) {
+			switch (gesture.enum_id) {
+				case 0: {
+					if (this.extensionInUse["WORKSPACE_SWITCHING"] === false) {
+						this.extensionInUse["WORKSPACE_SWITCHING"] = true;
+						return new AltTabGestureExtension(gesture.n_fingers);
+					} else {
+						// showNotification(Adw.PreferencesWindow, "Cannot assign to two gestures");
+					}
+				}
+				case 1: {
+					if (this.settings.get_boolean('enable-forward-back-gesture') &&
+						this.extensionInUse["APP_NAVIGATION"] === false) {
+						this.extensionInUse["APP_NAVIGATION"] = true
+						const appForwardBackKeyBinds = this.settings.get_value('forward-back-application-keyboard-shortcuts').deepUnpack();
+						return new ForwardBackGestureExtension(
+							appForwardBackKeyBinds,
+							gesture.n_fingers,
+							gesture.orientation,
+							false
+						);
+					}
+				}
+				case 2: {
+					if (this.extensionInUse["WORKSPACE_SWITCHING"] === false) {
+						this.extensionInUse["WORKSPACE_SWITCHING"] = true;
+						return new GestureExtension(gesture.n_fingers);
+					}
+				}
+			} 
+		} else if (gesture.orientation === Clutter.Orientation.VERTICAL) {
+			switch (gesture.enum_id) {
+				case 0: {
+					if (this.extensionInUse["OVERVIEW_NAVIGATION"] === false) {
+						this.extensionInUse["OVERVIEW_NAVIGATION"] = true
+						return new OverviewRoundTripGestureExtension(
+							this.settings.get_enum('overview-navigation-states'),
+							gesture.n_fingers
+						);
+					}
+				}
+				case 1: {
+					if (this.settings.get_boolean('enable-forward-back-gesture') &&
+						this.extensionInUse["APP_NAVIGATION"] === false) {
+						this.extensionInUse["APP_NAVIGATION"] = true
+						const appForwardBackKeyBinds = this.settings.get_value('forward-back-application-keyboard-shortcuts').deepUnpack();
+						return new ForwardBackGestureExtension(
+							appForwardBackKeyBinds,
+							gesture.n_fingers,
+							gesture.orientation,
+							true
+						);
+					}
+				}
+				case 2: {
+					if (this.extensionInUse["WINDOW_MANIPULATION"] == false){
+						this.extensionInUse["WINDOW_MANIPULATION"] = true;
+						return new SnapWindowExtension(gesture.n_fingers);
+					}
+				}
+			}
+		}
 	}
 }

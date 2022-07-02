@@ -3,11 +3,11 @@ import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
 import St from '@gi-types/st';
 import { global, imports } from 'gnome-shell';
-import { registerClass } from '../common/utils/gobject';
-import { ExtSettings } from '../constants';
-import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
-import { easeActor, easeAdjustment } from './utils/environment';
-import { getVirtualKeyboard, IVirtualKeyboard } from './utils/keyboard';
+import { registerClass } from '../../common/utils/gobject';
+import { ExtSettings } from '../../constants';
+import { createSwipeTracker, TouchpadSwipeGesture } from '../trackers/swipeTracker';
+import { easeActor, easeAdjustment } from '../utils/environment';
+import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
 
 
 const Main = imports.ui.main;
@@ -281,10 +281,11 @@ export class SnapWindowExtension implements ISubExtension {
 	private _allowChangeDirection = false;
 	private _uiGroupAddedActorId: number;
 
-	constructor() {
+	constructor(n_fingers: number[]) {
 		this._swipeTracker = createSwipeTracker(
 			global.stage,
-			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
+			// (ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
+			n_fingers,
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.VERTICAL,
 			true,
