@@ -59,6 +59,10 @@ export class CloseWindowExtension implements ISubExtension {
 	}
 
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
+		// if we are currently in middle of animations, ignore this event
+		if (this._focusWindow)
+			return;
+		
 		this._focusWindow = global.display.get_focus_window() as Meta.Window | null;
 		if (!this._focusWindow)	return;
 
@@ -124,5 +128,7 @@ export class CloseWindowExtension implements ISubExtension {
 		this._preview.hide();
 		this._preview.opacity = 255;
 		this._preview.set_scale(1, 1);
+
+		this._focusWindow = undefined;
 	}
 }
