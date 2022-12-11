@@ -48,10 +48,10 @@ export class ForwardBackGestureExtension implements ISubExtension {
 
 		this._swipeTracker = createSwipeTracker(
 			global.stage,
-			ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [4] : [3],
+			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3],
 			Shell.ActionMode.NORMAL,
-			Clutter.Orientation.HORIZONTAL,
-			false,
+			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? Clutter.Orientation.VERTICAL : Clutter.Orientation.HORIZONTAL,
+			ExtSettings.DEFAULT_OVERVIEW_GESTURE ? true : false,
 			1,
 			{ allowTouch: false },
 		);
