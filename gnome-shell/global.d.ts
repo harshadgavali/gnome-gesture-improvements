@@ -40,9 +40,9 @@ declare module '@gi-types/meta' {
 }
 
 declare module '@gi-types/st' {
-	export * from '@gi-types/st1';
+	export * from '@gi-types/st12';
 }
 
 declare module '@gi-types/shell' {
-	export * from '@gi-types/shell0';
+	export * from '@gi-types/shell12';
 }

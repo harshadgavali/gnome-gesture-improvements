@@ -16,12 +16,12 @@ function generate_bindings {
 
 # generate bindings
 
-generate_bindings "/usr/lib64/mutter-12/:/usr/share/gnome-shell/"
+generate_bindings "/usr/lib64/mutter-12/:/usr/lib64/gnome-shell/"
 generate_bindings   # needs to generate again, cause some conflict adw1 bindings are not generated with above command
 
 # move bindings to @types
 mkdir -p @types/
-for pkg in meta12 clutter12 st1 shell0 adw1; do
+for pkg in meta12 clutter12 st12 shell12 adw1; do
     if [ -d "build/@types/${pkg}" ]; then
         cp -vr "build/@types/${pkg}" @types/
     fi
