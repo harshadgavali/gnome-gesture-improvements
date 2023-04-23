@@ -1,7 +1,7 @@
 /**
  * Adw 1
  *
- * Generated from 1.1.0
+ * Generated from 1.3.1
  */
 
 import * as Gtk from "@gi-types/gtk4";
@@ -9,6 +9,7 @@ import * as GObject from "@gi-types/gobject2";
 import * as Gio from "@gi-types/gio2";
 import * as GLib from "@gi-types/glib2";
 import * as Gdk from "@gi-types/gdk4";
+import * as Pango from "@gi-types/pango1";
 import * as Gsk from "@gi-types/gsk4";
 
 export const DURATION_INFINITE: number;
@@ -144,6 +145,16 @@ export enum NavigationDirection {
     FORWARD = 1,
 }
 
+export namespace ResponseAppearance {
+    export const $gtype: GObject.GType<ResponseAppearance>;
+}
+
+export enum ResponseAppearance {
+    DEFAULT = 0,
+    SUGGESTED = 1,
+    DESTRUCTIVE = 2,
+}
+
 export namespace SqueezerTransitionType {
     export const $gtype: GObject.GType<SqueezerTransitionType>;
 }
@@ -170,6 +181,201 @@ export enum ViewSwitcherPolicy {
     NARROW = 0,
     WIDE = 1,
 }
+
+export namespace TabViewShortcuts {
+    export const $gtype: GObject.GType<TabViewShortcuts>;
+}
+
+export enum TabViewShortcuts {
+    NONE = 0,
+    CONTROL_TAB = 1,
+    CONTROL_SHIFT_TAB = 2,
+    CONTROL_PAGE_UP = 4,
+    CONTROL_PAGE_DOWN = 8,
+    CONTROL_HOME = 16,
+    CONTROL_END = 32,
+    CONTROL_SHIFT_PAGE_UP = 64,
+    CONTROL_SHIFT_PAGE_DOWN = 128,
+    CONTROL_SHIFT_HOME = 256,
+    CONTROL_SHIFT_END = 512,
+    ALT_DIGITS = 1024,
+    ALT_ZERO = 2048,
+    ALL_SHORTCUTS = 4095,
+}
+export module AboutWindow {
+    export interface ConstructorProperties extends Window.ConstructorProperties {
+        [key: string]: any;
+        application_icon: string;
+        applicationIcon: string;
+        application_name: string;
+        applicationName: string;
+        artists: string[];
+        comments: string;
+        copyright: string;
+        debug_info: string;
+        debugInfo: string;
+        debug_info_filename: string;
+        debugInfoFilename: string;
+        designers: string[];
+        developer_name: string;
+        developerName: string;
+        developers: string[];
+        documenters: string[];
+        issue_url: string;
+        issueUrl: string;
+        license: string;
+        license_type: Gtk.License;
+        licenseType: Gtk.License;
+        release_notes: string;
+        releaseNotes: string;
+        release_notes_version: string;
+        releaseNotesVersion: string;
+        support_url: string;
+        supportUrl: string;
+        translator_credits: string;
+        translatorCredits: string;
+        version: string;
+        website: string;
+    }
+}
+export class AboutWindow
+    extends Window
+    implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager
+{
+    static $gtype: GObject.GType<AboutWindow>;
+
+    constructor(properties?: Partial<AboutWindow.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<AboutWindow.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get application_icon(): string;
+    set application_icon(val: string);
+    get applicationIcon(): string;
+    set applicationIcon(val: string);
+    get application_name(): string;
+    set application_name(val: string);
+    get applicationName(): string;
+    set applicationName(val: string);
+    get artists(): string[];
+    set artists(val: string[]);
+    get comments(): string;
+    set comments(val: string);
+    get copyright(): string;
+    set copyright(val: string);
+    get debug_info(): string;
+    set debug_info(val: string);
+    get debugInfo(): string;
+    set debugInfo(val: string);
+    get debug_info_filename(): string;
+    set debug_info_filename(val: string);
+    get debugInfoFilename(): string;
+    set debugInfoFilename(val: string);
+    get designers(): string[];
+    set designers(val: string[]);
+    get developer_name(): string;
+    set developer_name(val: string);
+    get developerName(): string;
+    set developerName(val: string);
+    get developers(): string[];
+    set developers(val: string[]);
+    get documenters(): string[];
+    set documenters(val: string[]);
+    get issue_url(): string;
+    set issue_url(val: string);
+    get issueUrl(): string;
+    set issueUrl(val: string);
+    get license(): string;
+    set license(val: string);
+    get license_type(): Gtk.License;
+    set license_type(val: Gtk.License);
+    get licenseType(): Gtk.License;
+    set licenseType(val: Gtk.License);
+    get release_notes(): string;
+    set release_notes(val: string);
+    get releaseNotes(): string;
+    set releaseNotes(val: string);
+    get release_notes_version(): string;
+    set release_notes_version(val: string);
+    get releaseNotesVersion(): string;
+    set releaseNotesVersion(val: string);
+    get support_url(): string;
+    set support_url(val: string);
+    get supportUrl(): string;
+    set supportUrl(val: string);
+    get translator_credits(): string;
+    set translator_credits(val: string);
+    get translatorCredits(): string;
+    set translatorCredits(val: string);
+    get version(): string;
+    set version(val: string);
+    get website(): string;
+    set website(val: string);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "activate-link", callback: (_source: this, uri: string) => boolean): number;
+    connect_after(signal: "activate-link", callback: (_source: this, uri: string) => boolean): number;
+    emit(signal: "activate-link", uri: string): void;
+
+    // Constructors
+
+    static ["new"](): AboutWindow;
+
+    // Members
+
+    add_acknowledgement_section(name: string | null, people: string[]): void;
+    add_credit_section(name: string | null, people: string[]): void;
+    add_legal_section(
+        title: string,
+        copyright: string | null,
+        license_type: Gtk.License,
+        license?: string | null
+    ): void;
+    add_link(title: string, url: string): void;
+    get_application_icon(): string;
+    get_application_name(): string;
+    get_artists(): string[] | null;
+    get_comments(): string;
+    get_copyright(): string;
+    get_debug_info(): string;
+    get_debug_info_filename(): string;
+    get_designers(): string[] | null;
+    get_developer_name(): string;
+    get_developers(): string[] | null;
+    get_documenters(): string[] | null;
+    get_issue_url(): string;
+    get_license(): string;
+    get_license_type(): Gtk.License;
+    get_release_notes(): string;
+    get_release_notes_version(): string;
+    get_support_url(): string;
+    get_translator_credits(): string;
+    get_version(): string;
+    get_website(): string;
+    set_application_icon(application_icon: string): void;
+    set_application_name(application_name: string): void;
+    set_artists(artists?: string[] | null): void;
+    set_comments(comments: string): void;
+    set_copyright(copyright: string): void;
+    set_debug_info(debug_info: string): void;
+    set_debug_info_filename(filename: string): void;
+    set_designers(designers?: string[] | null): void;
+    set_developer_name(developer_name: string): void;
+    set_developers(developers?: string[] | null): void;
+    set_documenters(documenters?: string[] | null): void;
+    set_issue_url(issue_url: string): void;
+    set_license(license: string): void;
+    set_license_type(license_type: Gtk.License): void;
+    set_release_notes(release_notes: string): void;
+    set_release_notes_version(version: string): void;
+    set_support_url(support_url: string): void;
+    set_translator_credits(translator_credits: string): void;
+    set_version(version: string): void;
+    set_website(website: string): void;
+}
 export module ActionRow {
     export interface ConstructorProperties extends PreferencesRow.ConstructorProperties {
         [key: string]: any;
@@ -180,6 +386,8 @@ export module ActionRow {
         subtitle: string;
         subtitle_lines: number;
         subtitleLines: number;
+        subtitle_selectable: boolean;
+        subtitleSelectable: boolean;
         title_lines: number;
         titleLines: number;
     }
@@ -208,6 +416,10 @@ export class ActionRow
     set subtitle_lines(val: number);
     get subtitleLines(): number;
     set subtitleLines(val: number);
+    get subtitle_selectable(): boolean;
+    set subtitle_selectable(val: boolean);
+    get subtitleSelectable(): boolean;
+    set subtitleSelectable(val: boolean);
     get title_lines(): number;
     set title_lines(val: number);
     get titleLines(): number;
@@ -237,18 +449,22 @@ export class ActionRow
     get_icon_name(): string | null;
     get_subtitle(): string | null;
     get_subtitle_lines(): number;
+    get_subtitle_selectable(): boolean;
     get_title_lines(): number;
     remove(widget: Gtk.Widget): void;
     set_activatable_widget(widget?: Gtk.Widget | null): void;
     set_icon_name(icon_name?: string | null): void;
     set_subtitle(subtitle: string): void;
     set_subtitle_lines(subtitle_lines: number): void;
+    set_subtitle_selectable(subtitle_selectable: boolean): void;
     set_title_lines(title_lines: number): void;
     vfunc_activate(): void;
 }
 export module Animation {
     export interface ConstructorProperties extends GObject.Object.ConstructorProperties {
         [key: string]: any;
+        follow_enable_animations_setting: boolean;
+        followEnableAnimationsSetting: boolean;
         state: AnimationState;
         target: AnimationTarget;
         value: number;
@@ -262,6 +478,10 @@ export abstract class Animation extends GObject.Object {
     _init(properties?: Partial<Animation.ConstructorProperties>, ...args: any[]): void;
 
     // Properties
+    get follow_enable_animations_setting(): boolean;
+    set follow_enable_animations_setting(val: boolean);
+    get followEnableAnimationsSetting(): boolean;
+    set followEnableAnimationsSetting(val: boolean);
     get state(): AnimationState;
     get target(): AnimationTarget;
     set target(val: AnimationTarget);
@@ -279,6 +499,7 @@ export abstract class Animation extends GObject.Object {
 
     // Members
 
+    get_follow_enable_animations_setting(): boolean;
     get_state(): AnimationState;
     get_target(): AnimationTarget;
     get_value(): number;
@@ -287,6 +508,8 @@ export abstract class Animation extends GObject.Object {
     play(): void;
     reset(): void;
     resume(): void;
+    set_follow_enable_animations_setting(setting: boolean): void;
+    set_target(target: AnimationTarget): void;
     skip(): void;
 }
 export module AnimationTarget {
@@ -471,13 +694,144 @@ export class Avatar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    get_buildable_id(): string | null;
+    vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
+    vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_end(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_start(
+        builder: Gtk.Builder,
+        child: GObject.Object | null,
+        tagname: string
+    ): [boolean, Gtk.BuildableParser, any | null];
+    vfunc_get_id(): string;
+    vfunc_get_internal_child<T = GObject.Object>(builder: Gtk.Builder, childname: string): T;
+    vfunc_parser_finished(builder: Gtk.Builder): void;
+    vfunc_set_buildable_property(builder: Gtk.Builder, name: string, value: GObject.Value | any): void;
+    vfunc_set_id(id: string): void;
+}
+export module Banner {
+    export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
+        [key: string]: any;
+        button_label: string;
+        buttonLabel: string;
+        revealed: boolean;
+        title: string;
+        use_markup: boolean;
+        useMarkup: boolean;
+    }
+}
+export class Banner extends Gtk.Widget implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget {
+    static $gtype: GObject.GType<Banner>;
+
+    constructor(properties?: Partial<Banner.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<Banner.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get button_label(): string;
+    set button_label(val: string);
+    get buttonLabel(): string;
+    set buttonLabel(val: string);
+    get revealed(): boolean;
+    set revealed(val: boolean);
+    get title(): string;
+    set title(val: string);
+    get use_markup(): boolean;
+    set use_markup(val: boolean);
+    get useMarkup(): boolean;
+    set useMarkup(val: boolean);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "button-clicked", callback: (_source: this) => void): number;
+    connect_after(signal: "button-clicked", callback: (_source: this) => void): number;
+    emit(signal: "button-clicked"): void;
+
+    // Implemented Properties
+
+    get accessible_role(): Gtk.AccessibleRole;
+    set accessible_role(val: Gtk.AccessibleRole);
+    get accessibleRole(): Gtk.AccessibleRole;
+    set accessibleRole(val: Gtk.AccessibleRole);
+    get action_name(): string;
+    set action_name(val: string);
+    get actionName(): string;
+    set actionName(val: string);
+    get action_target(): GLib.Variant;
+    set action_target(val: GLib.Variant);
+    get actionTarget(): GLib.Variant;
+    set actionTarget(val: GLib.Variant);
+
+    // Constructors
+
+    static ["new"](title: string): Banner;
+
+    // Members
+
+    get_button_label(): string | null;
+    get_revealed(): boolean;
+    get_title(): string;
+    get_use_markup(): boolean;
+    set_button_label(label?: string | null): void;
+    set_revealed(revealed: boolean): void;
+    set_title(title: string): void;
+    set_use_markup(use_markup: boolean): void;
+
+    // Implemented Members
+
+    get_accessible_parent(): Gtk.Accessible | null;
+    get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    reset_property(property: Gtk.AccessibleProperty): void;
+    reset_relation(relation: Gtk.AccessibleRelation): void;
+    reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
+    update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
+    update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
+    update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    get_action_name(): string | null;
+    get_action_target_value(): GLib.Variant | null;
+    set_action_name(action_name?: string | null): void;
+    set_action_target_value(target_value?: GLib.Variant | null): void;
+    set_detailed_action_name(detailed_action_name: string): void;
+    vfunc_get_action_name(): string | null;
+    vfunc_get_action_target_value(): GLib.Variant | null;
+    vfunc_set_action_name(action_name?: string | null): void;
+    vfunc_set_action_target_value(target_value?: GLib.Variant | null): void;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -527,13 +881,27 @@ export class Bin extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gt
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -599,13 +967,27 @@ export class ButtonContent extends Gtk.Widget implements Gtk.Accessible, Gtk.Bui
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -754,13 +1136,27 @@ export class Carousel
     vfunc_get_progress(): number;
     vfunc_get_snap_points(): number[];
     vfunc_get_swipe_area(navigation_direction: NavigationDirection, is_drag: boolean): Gdk.Rectangle;
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -817,13 +1213,27 @@ export class CarouselIndicatorDots
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -880,13 +1290,27 @@ export class CarouselIndicatorLines
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -956,13 +1380,27 @@ export class Clamp extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, 
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1093,13 +1531,27 @@ export class ClampScrollable
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1188,6 +1640,151 @@ export class ComboRow extends ActionRow implements Gtk.Accessible, Gtk.Actionabl
     set_selected(position: number): void;
     set_use_subtitle(use_subtitle: boolean): void;
 }
+export module EntryRow {
+    export interface ConstructorProperties extends PreferencesRow.ConstructorProperties {
+        [key: string]: any;
+        activates_default: boolean;
+        activatesDefault: boolean;
+        attributes: Pango.AttrList;
+        enable_emoji_completion: boolean;
+        enableEmojiCompletion: boolean;
+        input_hints: Gtk.InputHints;
+        inputHints: Gtk.InputHints;
+        input_purpose: Gtk.InputPurpose;
+        inputPurpose: Gtk.InputPurpose;
+        show_apply_button: boolean;
+        showApplyButton: boolean;
+    }
+}
+export class EntryRow
+    extends PreferencesRow
+    implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Editable
+{
+    static $gtype: GObject.GType<EntryRow>;
+
+    constructor(properties?: Partial<EntryRow.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<EntryRow.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get activates_default(): boolean;
+    set activates_default(val: boolean);
+    get activatesDefault(): boolean;
+    set activatesDefault(val: boolean);
+    get attributes(): Pango.AttrList;
+    set attributes(val: Pango.AttrList);
+    get enable_emoji_completion(): boolean;
+    set enable_emoji_completion(val: boolean);
+    get enableEmojiCompletion(): boolean;
+    set enableEmojiCompletion(val: boolean);
+    get input_hints(): Gtk.InputHints;
+    set input_hints(val: Gtk.InputHints);
+    get inputHints(): Gtk.InputHints;
+    set inputHints(val: Gtk.InputHints);
+    get input_purpose(): Gtk.InputPurpose;
+    set input_purpose(val: Gtk.InputPurpose);
+    get inputPurpose(): Gtk.InputPurpose;
+    set inputPurpose(val: Gtk.InputPurpose);
+    get show_apply_button(): boolean;
+    set show_apply_button(val: boolean);
+    get showApplyButton(): boolean;
+    set showApplyButton(val: boolean);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "apply", callback: (_source: this) => void): number;
+    connect_after(signal: "apply", callback: (_source: this) => void): number;
+    emit(signal: "apply"): void;
+    connect(signal: "entry-activated", callback: (_source: this) => void): number;
+    connect_after(signal: "entry-activated", callback: (_source: this) => void): number;
+    emit(signal: "entry-activated"): void;
+
+    // Implemented Properties
+
+    get cursor_position(): number;
+    get cursorPosition(): number;
+    get editable(): boolean;
+    set editable(val: boolean);
+    get enable_undo(): boolean;
+    set enable_undo(val: boolean);
+    get enableUndo(): boolean;
+    set enableUndo(val: boolean);
+    get max_width_chars(): number;
+    set max_width_chars(val: number);
+    get maxWidthChars(): number;
+    set maxWidthChars(val: number);
+    get selection_bound(): number;
+    get selectionBound(): number;
+    get text(): string;
+    set text(val: string);
+    get width_chars(): number;
+    set width_chars(val: number);
+    get widthChars(): number;
+    set widthChars(val: number);
+    get xalign(): number;
+    set xalign(val: number);
+
+    // Constructors
+
+    static ["new"](): EntryRow;
+
+    // Members
+
+    add_prefix(widget: Gtk.Widget): void;
+    add_suffix(widget: Gtk.Widget): void;
+    get_activates_default(): boolean;
+    get_attributes(): Pango.AttrList | null;
+    get_enable_emoji_completion(): boolean;
+    get_input_hints(): Gtk.InputHints;
+    get_input_purpose(): Gtk.InputPurpose;
+    get_show_apply_button(): boolean;
+    grab_focus_without_selecting(): boolean;
+    remove(widget: Gtk.Widget): void;
+    set_activates_default(activates: boolean): void;
+    set_attributes(attributes?: Pango.AttrList | null): void;
+    set_enable_emoji_completion(enable_emoji_completion: boolean): void;
+    set_input_hints(hints: Gtk.InputHints): void;
+    set_input_purpose(purpose: Gtk.InputPurpose): void;
+    set_show_apply_button(show_apply_button: boolean): void;
+
+    // Implemented Members
+
+    delegate_get_accessible_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    delete_selection(): void;
+    delete_text(start_pos: number, end_pos: number): void;
+    finish_delegate(): void;
+    get_alignment(): number;
+    get_chars(start_pos: number, end_pos: number): string;
+    get_delegate(): Gtk.Editable | null;
+    get_editable(): boolean;
+    get_enable_undo(): boolean;
+    get_max_width_chars(): number;
+    get_position(): number;
+    get_selection_bounds(): [boolean, number | null, number | null];
+    get_text(): string;
+    get_width_chars(): number;
+    init_delegate(): void;
+    insert_text(text: string, length: number, position: number): number;
+    select_region(start_pos: number, end_pos: number): void;
+    set_alignment(xalign: number): void;
+    set_editable(is_editable: boolean): void;
+    set_enable_undo(enable_undo: boolean): void;
+    set_max_width_chars(n_chars: number): void;
+    set_position(position: number): void;
+    set_text(text: string): void;
+    set_width_chars(n_chars: number): void;
+    vfunc_changed(): void;
+    vfunc_delete_text(start_pos: number, end_pos: number): void;
+    vfunc_do_delete_text(start_pos: number, end_pos: number): void;
+    vfunc_do_insert_text(text: string, length: number, position: number): number;
+    vfunc_get_delegate(): Gtk.Editable | null;
+    vfunc_get_selection_bounds(): [boolean, number | null, number | null];
+    vfunc_get_text(): string;
+    vfunc_insert_text(text: string, length: number, position: number): number;
+    vfunc_set_selection_bounds(start_pos: number, end_pos: number): void;
+}
 export module EnumListItem {
     export interface ConstructorProperties extends GObject.Object.ConstructorProperties {
         [key: string]: any;
@@ -1264,6 +1861,10 @@ export module ExpanderRow {
         show_enable_switch: boolean;
         showEnableSwitch: boolean;
         subtitle: string;
+        subtitle_lines: number;
+        subtitleLines: number;
+        title_lines: number;
+        titleLines: number;
     }
 }
 export class ExpanderRow
@@ -1292,6 +1893,14 @@ export class ExpanderRow
     set showEnableSwitch(val: boolean);
     get subtitle(): string;
     set subtitle(val: string);
+    get subtitle_lines(): number;
+    set subtitle_lines(val: number);
+    get subtitleLines(): number;
+    set subtitleLines(val: number);
+    get title_lines(): number;
+    set title_lines(val: number);
+    get titleLines(): number;
+    set titleLines(val: number);
 
     // Constructors
 
@@ -1307,12 +1916,16 @@ export class ExpanderRow
     get_icon_name(): string | null;
     get_show_enable_switch(): boolean;
     get_subtitle(): string;
+    get_subtitle_lines(): boolean;
+    get_title_lines(): boolean;
     remove(child: Gtk.Widget): void;
     set_enable_expansion(enable_expansion: boolean): void;
     set_expanded(expanded: boolean): void;
     set_icon_name(icon_name?: string | null): void;
     set_show_enable_switch(show_enable_switch: boolean): void;
     set_subtitle(subtitle: string): void;
+    set_subtitle_lines(subtitle_lines: number): void;
+    set_title_lines(title_lines: number): void;
 }
 export module Flap {
     export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
@@ -1463,13 +2076,27 @@ export class Flap
     vfunc_get_progress(): number;
     vfunc_get_snap_points(): number[];
     vfunc_get_swipe_area(navigation_direction: NavigationDirection, is_drag: boolean): Gdk.Rectangle;
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1559,13 +2186,27 @@ export class HeaderBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildab
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1722,13 +2363,27 @@ export class Leaflet
     vfunc_get_progress(): number;
     vfunc_get_snap_points(): number[];
     vfunc_get_swipe_area(navigation_direction: NavigationDirection, is_drag: boolean): Gdk.Rectangle;
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1775,6 +2430,194 @@ export class LeafletPage extends GObject.Object {
     set_name(name?: string | null): void;
     set_navigatable(navigatable: boolean): void;
 }
+export module MessageDialog {
+    export interface ConstructorProperties extends Gtk.Window.ConstructorProperties {
+        [key: string]: any;
+        body: string;
+        body_use_markup: boolean;
+        bodyUseMarkup: boolean;
+        close_response: string;
+        closeResponse: string;
+        default_response: string;
+        defaultResponse: string;
+        extra_child: Gtk.Widget;
+        extraChild: Gtk.Widget;
+        heading: string;
+        heading_use_markup: boolean;
+        headingUseMarkup: boolean;
+    }
+}
+export class MessageDialog
+    extends Gtk.Window
+    implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager
+{
+    static $gtype: GObject.GType<MessageDialog>;
+
+    constructor(properties?: Partial<MessageDialog.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<MessageDialog.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get body(): string;
+    set body(val: string);
+    get body_use_markup(): boolean;
+    set body_use_markup(val: boolean);
+    get bodyUseMarkup(): boolean;
+    set bodyUseMarkup(val: boolean);
+    get close_response(): string;
+    set close_response(val: string);
+    get closeResponse(): string;
+    set closeResponse(val: string);
+    get default_response(): string;
+    set default_response(val: string);
+    get defaultResponse(): string;
+    set defaultResponse(val: string);
+    get extra_child(): Gtk.Widget;
+    set extra_child(val: Gtk.Widget);
+    get extraChild(): Gtk.Widget;
+    set extraChild(val: Gtk.Widget);
+    get heading(): string;
+    set heading(val: string);
+    get heading_use_markup(): boolean;
+    set heading_use_markup(val: boolean);
+    get headingUseMarkup(): boolean;
+    set headingUseMarkup(val: boolean);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "response", callback: (_source: this, response: string) => void): number;
+    connect_after(signal: "response", callback: (_source: this, response: string) => void): number;
+    emit(signal: "response", response: string): void;
+
+    // Constructors
+
+    static ["new"](parent?: Gtk.Window | null, heading?: string | null, body?: string | null): MessageDialog;
+    // Conflicted with Gtk.Window.new
+    static ["new"](...args: never[]): any;
+
+    // Members
+
+    add_response(id: string, label: string): void;
+    choose(cancellable?: Gio.Cancellable | null): void;
+    choose_finish(result: Gio.AsyncResult): string;
+    get_body(): string;
+    get_body_use_markup(): boolean;
+    get_close_response(): string;
+    get_default_response(): string | null;
+    get_extra_child(): Gtk.Widget | null;
+    get_heading(): string | null;
+    get_heading_use_markup(): boolean;
+    get_response_appearance(response: string): ResponseAppearance;
+    get_response_enabled(response: string): boolean;
+    get_response_label(response: string): string;
+    has_response(response: string): boolean;
+    response(response: string): void;
+    set_body(body: string): void;
+    set_body_use_markup(use_markup: boolean): void;
+    set_close_response(response: string): void;
+    set_default_response(response?: string | null): void;
+    set_extra_child(child?: Gtk.Widget | null): void;
+    set_heading(heading?: string | null): void;
+    set_heading_use_markup(use_markup: boolean): void;
+    set_response_appearance(response: string, appearance: ResponseAppearance): void;
+    set_response_enabled(response: string, enabled: boolean): void;
+    set_response_label(response: string, label: string): void;
+    vfunc_response(response: string): void;
+
+    // Implemented Members
+
+    get_renderer(): Gsk.Renderer;
+    get_surface(): Gdk.Surface;
+    get_surface_transform(): [number, number];
+    realize(): void;
+    unrealize(): void;
+    get_display(): Gdk.Display;
+    get_focus(): Gtk.Widget | null;
+    set_focus(focus?: Gtk.Widget | null): void;
+    vfunc_add_controller(controller: Gtk.ShortcutController): void;
+    vfunc_remove_controller(controller: Gtk.ShortcutController): void;
+}
+export module PasswordEntryRow {
+    export interface ConstructorProperties extends EntryRow.ConstructorProperties {
+        [key: string]: any;
+    }
+}
+export class PasswordEntryRow
+    extends EntryRow
+    implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Editable
+{
+    static $gtype: GObject.GType<PasswordEntryRow>;
+
+    constructor(properties?: Partial<PasswordEntryRow.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<PasswordEntryRow.ConstructorProperties>, ...args: any[]): void;
+
+    // Implemented Properties
+
+    get cursor_position(): number;
+    get cursorPosition(): number;
+    get editable(): boolean;
+    set editable(val: boolean);
+    get enable_undo(): boolean;
+    set enable_undo(val: boolean);
+    get enableUndo(): boolean;
+    set enableUndo(val: boolean);
+    get max_width_chars(): number;
+    set max_width_chars(val: number);
+    get maxWidthChars(): number;
+    set maxWidthChars(val: number);
+    get selection_bound(): number;
+    get selectionBound(): number;
+    get text(): string;
+    set text(val: string);
+    get width_chars(): number;
+    set width_chars(val: number);
+    get widthChars(): number;
+    set widthChars(val: number);
+    get xalign(): number;
+    set xalign(val: number);
+
+    // Constructors
+
+    static ["new"](): PasswordEntryRow;
+
+    // Implemented Members
+
+    delegate_get_accessible_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    delete_selection(): void;
+    delete_text(start_pos: number, end_pos: number): void;
+    finish_delegate(): void;
+    get_alignment(): number;
+    get_chars(start_pos: number, end_pos: number): string;
+    get_delegate(): Gtk.Editable | null;
+    get_editable(): boolean;
+    get_enable_undo(): boolean;
+    get_max_width_chars(): number;
+    get_position(): number;
+    get_selection_bounds(): [boolean, number | null, number | null];
+    get_text(): string;
+    get_width_chars(): number;
+    init_delegate(): void;
+    insert_text(text: string, length: number, position: number): number;
+    select_region(start_pos: number, end_pos: number): void;
+    set_alignment(xalign: number): void;
+    set_editable(is_editable: boolean): void;
+    set_enable_undo(enable_undo: boolean): void;
+    set_max_width_chars(n_chars: number): void;
+    set_position(position: number): void;
+    set_text(text: string): void;
+    set_width_chars(n_chars: number): void;
+    vfunc_changed(): void;
+    vfunc_delete_text(start_pos: number, end_pos: number): void;
+    vfunc_do_delete_text(start_pos: number, end_pos: number): void;
+    vfunc_do_insert_text(text: string, length: number, position: number): number;
+    vfunc_get_delegate(): Gtk.Editable | null;
+    vfunc_get_selection_bounds(): [boolean, number | null, number | null];
+    vfunc_get_text(): string;
+    vfunc_insert_text(text: string, length: number, position: number): number;
+    vfunc_set_selection_bounds(start_pos: number, end_pos: number): void;
+}
 export module PreferencesGroup {
     export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
         [key: string]: any;
@@ -1819,18 +2662,32 @@ export class PreferencesGroup extends Gtk.Widget implements Gtk.Accessible, Gtk.
     get_title(): string;
     remove(child: Gtk.Widget): void;
     set_description(description?: string | null): void;
-    set_header_suffix(child: Gtk.Widget): void;
+    set_header_suffix(suffix?: Gtk.Widget | null): void;
     set_title(title: string): void;
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1898,6 +2755,7 @@ export class PreferencesPage extends Gtk.Widget implements Gtk.Accessible, Gtk.B
     get_title(): string;
     get_use_underline(): boolean;
     remove(group: PreferencesGroup): void;
+    scroll_to_top(): void;
     set_icon_name(icon_name?: string | null): void;
     set_name(name?: string | null): void;
     // Conflicted with Gtk.Widget.set_name
@@ -1907,13 +2765,27 @@ export class PreferencesPage extends Gtk.Widget implements Gtk.Accessible, Gtk.B
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -1935,6 +2807,8 @@ export module PreferencesRow {
         title: string;
         title_selectable: boolean;
         titleSelectable: boolean;
+        use_markup: boolean;
+        useMarkup: boolean;
         use_underline: boolean;
         useUnderline: boolean;
     }
@@ -1955,6 +2829,10 @@ export class PreferencesRow
     set title_selectable(val: boolean);
     get titleSelectable(): boolean;
     set titleSelectable(val: boolean);
+    get use_markup(): boolean;
+    set use_markup(val: boolean);
+    get useMarkup(): boolean;
+    set useMarkup(val: boolean);
     get use_underline(): boolean;
     set use_underline(val: boolean);
     get useUnderline(): boolean;
@@ -1979,9 +2857,11 @@ export class PreferencesRow
 
     get_title(): string;
     get_title_selectable(): boolean;
+    get_use_markup(): boolean;
     get_use_underline(): boolean;
     set_title(title: string): void;
     set_title_selectable(title_selectable: boolean): void;
+    set_use_markup(use_markup: boolean): void;
     set_use_underline(use_underline: boolean): void;
 
     // Implemented Members
@@ -2056,11 +2936,40 @@ export class PreferencesWindow
     set_visible_page(page: PreferencesPage): void;
     set_visible_page_name(name: string): void;
 }
+export module PropertyAnimationTarget {
+    export interface ConstructorProperties extends AnimationTarget.ConstructorProperties {
+        [key: string]: any;
+        object: GObject.Object;
+        pspec: GObject.ParamSpec;
+    }
+}
+export class PropertyAnimationTarget extends AnimationTarget {
+    static $gtype: GObject.GType<PropertyAnimationTarget>;
+
+    constructor(properties?: Partial<PropertyAnimationTarget.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<PropertyAnimationTarget.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get object(): GObject.Object;
+    get pspec(): GObject.ParamSpec;
+
+    // Constructors
+
+    static ["new"](object: GObject.Object, property_name: string): PropertyAnimationTarget;
+    static new_for_pspec(object: GObject.Object, pspec: GObject.ParamSpec): PropertyAnimationTarget;
+
+    // Members
+
+    get_object<T = GObject.Object>(): T;
+    get_pspec(): GObject.ParamSpec;
+}
 export module SplitButton {
     export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
         [key: string]: any;
         child: Gtk.Widget;
         direction: Gtk.ArrowType;
+        dropdown_tooltip: string;
+        dropdownTooltip: string;
         icon_name: string;
         iconName: string;
         label: string;
@@ -2085,6 +2994,10 @@ export class SplitButton
     set child(val: Gtk.Widget);
     get direction(): Gtk.ArrowType;
     set direction(val: Gtk.ArrowType);
+    get dropdown_tooltip(): string;
+    set dropdown_tooltip(val: string);
+    get dropdownTooltip(): string;
+    set dropdownTooltip(val: string);
     get icon_name(): string;
     set icon_name(val: string);
     get iconName(): string;
@@ -2139,6 +3052,7 @@ export class SplitButton
     get_direction(): Gtk.ArrowType;
     // Conflicted with Gtk.Widget.get_direction
     get_direction(...args: never[]): any;
+    get_dropdown_tooltip(): string;
     get_icon_name(): string | null;
     get_label(): string | null;
     get_menu_model(): Gio.MenuModel | null;
@@ -2150,6 +3064,7 @@ export class SplitButton
     set_direction(direction: Gtk.ArrowType): void;
     // Conflicted with Gtk.Widget.set_direction
     set_direction(...args: never[]): any;
+    set_dropdown_tooltip(tooltip: string): void;
     set_icon_name(icon_name: string): void;
     set_label(label: string): void;
     set_menu_model(menu_model?: Gio.MenuModel | null): void;
@@ -2158,13 +3073,27 @@ export class SplitButton
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_action_name(): string | null;
     get_action_target_value(): GLib.Variant | null;
     set_action_name(action_name?: string | null): void;
@@ -2250,6 +3179,8 @@ export class SpringAnimation extends Animation {
 
     // Members
 
+    calculate_value(time: number): number;
+    calculate_velocity(time: number): number;
     get_clamp(): boolean;
     get_epsilon(): number;
     get_estimated_duration(): number;
@@ -2370,13 +3301,27 @@ export class Squeezer
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -2475,13 +3420,27 @@ export class StatusPage extends Gtk.Widget implements Gtk.Accessible, Gtk.Builda
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -2625,6 +3584,8 @@ export module TabBar {
         endActionWidget: Gtk.Widget;
         expand_tabs: boolean;
         expandTabs: boolean;
+        extra_drag_preload: boolean;
+        extraDragPreload: boolean;
         inverted: boolean;
         is_overflowing: boolean;
         isOverflowing: boolean;
@@ -2652,6 +3613,10 @@ export class TabBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
     set expand_tabs(val: boolean);
     get expandTabs(): boolean;
     set expandTabs(val: boolean);
+    get extra_drag_preload(): boolean;
+    set extra_drag_preload(val: boolean);
+    get extraDragPreload(): boolean;
+    set extraDragPreload(val: boolean);
     get inverted(): boolean;
     set inverted(val: boolean);
     get is_overflowing(): boolean;
@@ -2679,6 +3644,15 @@ export class TabBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
         callback: (_source: this, page: TabPage, value: GObject.Value) => boolean
     ): number;
     emit(signal: "extra-drag-drop", page: TabPage, value: GObject.Value | any): void;
+    connect(
+        signal: "extra-drag-value",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => Gdk.DragAction
+    ): number;
+    connect_after(
+        signal: "extra-drag-value",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => Gdk.DragAction
+    ): number;
+    emit(signal: "extra-drag-value", page: TabPage, value: GObject.Value | any): void;
 
     // Implemented Properties
 
@@ -2696,6 +3670,7 @@ export class TabBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
     get_autohide(): boolean;
     get_end_action_widget(): Gtk.Widget | null;
     get_expand_tabs(): boolean;
+    get_extra_drag_preload(): boolean;
     get_inverted(): boolean;
     get_is_overflowing(): boolean;
     get_start_action_widget(): Gtk.Widget | null;
@@ -2704,6 +3679,7 @@ export class TabBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
     set_autohide(autohide: boolean): void;
     set_end_action_widget(widget?: Gtk.Widget | null): void;
     set_expand_tabs(expand_tabs: boolean): void;
+    set_extra_drag_preload(preload: boolean): void;
     set_inverted(inverted: boolean): void;
     set_start_action_widget(widget?: Gtk.Widget | null): void;
     set_view(view?: TabView | null): void;
@@ -2711,13 +3687,295 @@ export class TabBar extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable,
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    get_buildable_id(): string | null;
+    vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
+    vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_end(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_start(
+        builder: Gtk.Builder,
+        child: GObject.Object | null,
+        tagname: string
+    ): [boolean, Gtk.BuildableParser, any | null];
+    vfunc_get_id(): string;
+    vfunc_get_internal_child<T = GObject.Object>(builder: Gtk.Builder, childname: string): T;
+    vfunc_parser_finished(builder: Gtk.Builder): void;
+    vfunc_set_buildable_property(builder: Gtk.Builder, name: string, value: GObject.Value | any): void;
+    vfunc_set_id(id: string): void;
+}
+export module TabButton {
+    export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
+        [key: string]: any;
+        view: TabView;
+    }
+}
+export class TabButton
+    extends Gtk.Widget
+    implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget
+{
+    static $gtype: GObject.GType<TabButton>;
+
+    constructor(properties?: Partial<TabButton.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<TabButton.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get view(): TabView;
+    set view(val: TabView);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "activate", callback: (_source: this) => void): number;
+    connect_after(signal: "activate", callback: (_source: this) => void): number;
+    emit(signal: "activate"): void;
+    connect(signal: "clicked", callback: (_source: this) => void): number;
+    connect_after(signal: "clicked", callback: (_source: this) => void): number;
+    emit(signal: "clicked"): void;
+
+    // Implemented Properties
+
+    get accessible_role(): Gtk.AccessibleRole;
+    set accessible_role(val: Gtk.AccessibleRole);
+    get accessibleRole(): Gtk.AccessibleRole;
+    set accessibleRole(val: Gtk.AccessibleRole);
+    get action_name(): string;
+    set action_name(val: string);
+    get actionName(): string;
+    set actionName(val: string);
+    get action_target(): GLib.Variant;
+    set action_target(val: GLib.Variant);
+    get actionTarget(): GLib.Variant;
+    set actionTarget(val: GLib.Variant);
+
+    // Constructors
+
+    static ["new"](): TabButton;
+
+    // Members
+
+    get_view(): TabView | null;
+    set_view(view?: TabView | null): void;
+
+    // Implemented Members
+
+    get_accessible_parent(): Gtk.Accessible | null;
+    get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    reset_property(property: Gtk.AccessibleProperty): void;
+    reset_relation(relation: Gtk.AccessibleRelation): void;
+    reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
+    update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
+    update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
+    update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    get_action_name(): string | null;
+    get_action_target_value(): GLib.Variant | null;
+    set_action_name(action_name?: string | null): void;
+    set_action_target_value(target_value?: GLib.Variant | null): void;
+    set_detailed_action_name(detailed_action_name: string): void;
+    vfunc_get_action_name(): string | null;
+    vfunc_get_action_target_value(): GLib.Variant | null;
+    vfunc_set_action_name(action_name?: string | null): void;
+    vfunc_set_action_target_value(target_value?: GLib.Variant | null): void;
+    get_buildable_id(): string | null;
+    vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
+    vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_end(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
+    vfunc_custom_tag_start(
+        builder: Gtk.Builder,
+        child: GObject.Object | null,
+        tagname: string
+    ): [boolean, Gtk.BuildableParser, any | null];
+    vfunc_get_id(): string;
+    vfunc_get_internal_child<T = GObject.Object>(builder: Gtk.Builder, childname: string): T;
+    vfunc_parser_finished(builder: Gtk.Builder): void;
+    vfunc_set_buildable_property(builder: Gtk.Builder, name: string, value: GObject.Value | any): void;
+    vfunc_set_id(id: string): void;
+}
+export module TabOverview {
+    export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
+        [key: string]: any;
+        child: Gtk.Widget;
+        enable_new_tab: boolean;
+        enableNewTab: boolean;
+        enable_search: boolean;
+        enableSearch: boolean;
+        extra_drag_preload: boolean;
+        extraDragPreload: boolean;
+        inverted: boolean;
+        open: boolean;
+        search_active: boolean;
+        searchActive: boolean;
+        secondary_menu: Gio.MenuModel;
+        secondaryMenu: Gio.MenuModel;
+        show_end_title_buttons: boolean;
+        showEndTitleButtons: boolean;
+        show_start_title_buttons: boolean;
+        showStartTitleButtons: boolean;
+        view: TabView;
+    }
+}
+export class TabOverview extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget {
+    static $gtype: GObject.GType<TabOverview>;
+
+    constructor(properties?: Partial<TabOverview.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<TabOverview.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get child(): Gtk.Widget;
+    set child(val: Gtk.Widget);
+    get enable_new_tab(): boolean;
+    set enable_new_tab(val: boolean);
+    get enableNewTab(): boolean;
+    set enableNewTab(val: boolean);
+    get enable_search(): boolean;
+    set enable_search(val: boolean);
+    get enableSearch(): boolean;
+    set enableSearch(val: boolean);
+    get extra_drag_preload(): boolean;
+    set extra_drag_preload(val: boolean);
+    get extraDragPreload(): boolean;
+    set extraDragPreload(val: boolean);
+    get inverted(): boolean;
+    set inverted(val: boolean);
+    get open(): boolean;
+    set open(val: boolean);
+    get search_active(): boolean;
+    get searchActive(): boolean;
+    get secondary_menu(): Gio.MenuModel;
+    set secondary_menu(val: Gio.MenuModel);
+    get secondaryMenu(): Gio.MenuModel;
+    set secondaryMenu(val: Gio.MenuModel);
+    get show_end_title_buttons(): boolean;
+    set show_end_title_buttons(val: boolean);
+    get showEndTitleButtons(): boolean;
+    set showEndTitleButtons(val: boolean);
+    get show_start_title_buttons(): boolean;
+    set show_start_title_buttons(val: boolean);
+    get showStartTitleButtons(): boolean;
+    set showStartTitleButtons(val: boolean);
+    get view(): TabView;
+    set view(val: TabView);
+
+    // Signals
+
+    connect(id: string, callback: (...args: any[]) => any): number;
+    connect_after(id: string, callback: (...args: any[]) => any): number;
+    emit(id: string, ...args: any[]): void;
+    connect(signal: "create-tab", callback: (_source: this) => TabPage): number;
+    connect_after(signal: "create-tab", callback: (_source: this) => TabPage): number;
+    emit(signal: "create-tab"): void;
+    connect(
+        signal: "extra-drag-drop",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => boolean
+    ): number;
+    connect_after(
+        signal: "extra-drag-drop",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => boolean
+    ): number;
+    emit(signal: "extra-drag-drop", page: TabPage, value: GObject.Value | any): void;
+    connect(
+        signal: "extra-drag-value",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => Gdk.DragAction
+    ): number;
+    connect_after(
+        signal: "extra-drag-value",
+        callback: (_source: this, page: TabPage, value: GObject.Value) => Gdk.DragAction
+    ): number;
+    emit(signal: "extra-drag-value", page: TabPage, value: GObject.Value | any): void;
+
+    // Implemented Properties
+
+    get accessible_role(): Gtk.AccessibleRole;
+    set accessible_role(val: Gtk.AccessibleRole);
+    get accessibleRole(): Gtk.AccessibleRole;
+    set accessibleRole(val: Gtk.AccessibleRole);
+
+    // Constructors
+
+    static ["new"](): TabOverview;
+
+    // Members
+
+    get_child(): Gtk.Widget | null;
+    get_enable_new_tab(): boolean;
+    get_enable_search(): boolean;
+    get_extra_drag_preload(): boolean;
+    get_inverted(): boolean;
+    get_open(): boolean;
+    get_search_active(): boolean;
+    get_secondary_menu(): Gio.MenuModel | null;
+    get_show_end_title_buttons(): boolean;
+    get_show_start_title_buttons(): boolean;
+    get_view(): TabView | null;
+    set_child(child?: Gtk.Widget | null): void;
+    set_enable_new_tab(enable_new_tab: boolean): void;
+    set_enable_search(enable_search: boolean): void;
+    set_extra_drag_preload(preload: boolean): void;
+    set_inverted(inverted: boolean): void;
+    set_open(open: boolean): void;
+    set_secondary_menu(secondary_menu?: Gio.MenuModel | null): void;
+    set_show_end_title_buttons(show_end_title_buttons: boolean): void;
+    set_show_start_title_buttons(show_start_title_buttons: boolean): void;
+    set_view(view?: TabView | null): void;
+    setup_extra_drop_target(actions: Gdk.DragAction, types?: GObject.GType[] | null): void;
+
+    // Implemented Members
+
+    get_accessible_parent(): Gtk.Accessible | null;
+    get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    reset_property(property: Gtk.AccessibleProperty): void;
+    reset_relation(relation: Gtk.AccessibleRelation): void;
+    reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
+    update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
+    update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
+    update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -2742,16 +4000,25 @@ export module TabPage {
         indicatorActivatable: boolean;
         indicator_icon: Gio.Icon;
         indicatorIcon: Gio.Icon;
+        indicator_tooltip: string;
+        indicatorTooltip: string;
+        keyword: string;
+        live_thumbnail: boolean;
+        liveThumbnail: boolean;
         loading: boolean;
         needs_attention: boolean;
         needsAttention: boolean;
         pinned: boolean;
         selected: boolean;
+        thumbnail_xalign: number;
+        thumbnailXalign: number;
+        thumbnail_yalign: number;
+        thumbnailYalign: number;
         title: string;
         tooltip: string;
     }
 }
-export class TabPage extends GObject.Object {
+export class TabPage extends GObject.Object implements Gtk.Accessible {
     static $gtype: GObject.GType<TabPage>;
 
     constructor(properties?: Partial<TabPage.ConstructorProperties>, ...args: any[]);
@@ -2769,6 +4036,16 @@ export class TabPage extends GObject.Object {
     set indicator_icon(val: Gio.Icon);
     get indicatorIcon(): Gio.Icon;
     set indicatorIcon(val: Gio.Icon);
+    get indicator_tooltip(): string;
+    set indicator_tooltip(val: string);
+    get indicatorTooltip(): string;
+    set indicatorTooltip(val: string);
+    get keyword(): string;
+    set keyword(val: string);
+    get live_thumbnail(): boolean;
+    set live_thumbnail(val: boolean);
+    get liveThumbnail(): boolean;
+    set liveThumbnail(val: boolean);
     get loading(): boolean;
     set loading(val: boolean);
     get needs_attention(): boolean;
@@ -2777,10 +4054,25 @@ export class TabPage extends GObject.Object {
     set needsAttention(val: boolean);
     get pinned(): boolean;
     get selected(): boolean;
+    get thumbnail_xalign(): number;
+    set thumbnail_xalign(val: number);
+    get thumbnailXalign(): number;
+    set thumbnailXalign(val: number);
+    get thumbnail_yalign(): number;
+    set thumbnail_yalign(val: number);
+    get thumbnailYalign(): number;
+    set thumbnailYalign(val: number);
     get title(): string;
     set title(val: string);
     get tooltip(): string;
     set tooltip(val: string);
+
+    // Implemented Properties
+
+    get accessible_role(): Gtk.AccessibleRole;
+    set accessible_role(val: Gtk.AccessibleRole);
+    get accessibleRole(): Gtk.AccessibleRole;
+    set accessibleRole(val: Gtk.AccessibleRole);
 
     // Members
 
@@ -2788,20 +4080,55 @@ export class TabPage extends GObject.Object {
     get_icon(): Gio.Icon | null;
     get_indicator_activatable(): boolean;
     get_indicator_icon(): Gio.Icon | null;
+    get_indicator_tooltip(): string;
+    get_keyword(): string | null;
+    get_live_thumbnail(): boolean;
     get_loading(): boolean;
     get_needs_attention(): boolean;
     get_parent(): TabPage | null;
     get_pinned(): boolean;
     get_selected(): boolean;
+    get_thumbnail_xalign(): number;
+    get_thumbnail_yalign(): number;
     get_title(): string;
     get_tooltip(): string | null;
+    invalidate_thumbnail(): void;
     set_icon(icon?: Gio.Icon | null): void;
     set_indicator_activatable(activatable: boolean): void;
     set_indicator_icon(indicator_icon?: Gio.Icon | null): void;
+    set_indicator_tooltip(tooltip: string): void;
+    set_keyword(keyword: string): void;
+    set_live_thumbnail(live_thumbnail: boolean): void;
     set_loading(loading: boolean): void;
     set_needs_attention(needs_attention: boolean): void;
+    set_thumbnail_xalign(xalign: number): void;
+    set_thumbnail_yalign(yalign: number): void;
     set_title(title: string): void;
     set_tooltip(tooltip: string): void;
+
+    // Implemented Members
+
+    get_accessible_parent(): Gtk.Accessible | null;
+    get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    reset_property(property: Gtk.AccessibleProperty): void;
+    reset_relation(relation: Gtk.AccessibleRelation): void;
+    reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
+    update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
+    update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
+    update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
 }
 export module TabView {
     export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
@@ -2819,6 +4146,7 @@ export module TabView {
         pages: Gtk.SelectionModel;
         selected_page: TabPage;
         selectedPage: TabPage;
+        shortcuts: TabViewShortcuts;
     }
 }
 export class TabView extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget {
@@ -2847,6 +4175,8 @@ export class TabView extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable
     set selected_page(val: TabPage);
     get selectedPage(): TabPage;
     set selectedPage(val: TabPage);
+    get shortcuts(): TabViewShortcuts;
+    set shortcuts(val: TabViewShortcuts);
 
     // Signals
 
@@ -2889,6 +4219,7 @@ export class TabView extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable
     // Members
 
     add_page(child: Gtk.Widget, parent?: TabPage | null): TabPage;
+    add_shortcuts(shortcuts: TabViewShortcuts): void;
     append(child: Gtk.Widget): TabPage;
     append_pinned(child: Gtk.Widget): TabPage;
     close_other_pages(page: TabPage): void;
@@ -2906,10 +4237,13 @@ export class TabView extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable
     get_page_position(page: TabPage): number;
     get_pages(): Gtk.SelectionModel;
     get_selected_page(): TabPage | null;
+    get_shortcuts(): TabViewShortcuts;
     insert(child: Gtk.Widget, position: number): TabPage;
     insert_pinned(child: Gtk.Widget, position: number): TabPage;
+    invalidate_thumbnails(): void;
     prepend(child: Gtk.Widget): TabPage;
     prepend_pinned(child: Gtk.Widget): TabPage;
+    remove_shortcuts(shortcuts: TabViewShortcuts): void;
     reorder_backward(page: TabPage): boolean;
     reorder_first(page: TabPage): boolean;
     reorder_forward(page: TabPage): boolean;
@@ -2921,17 +4255,32 @@ export class TabView extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildable
     set_menu_model(menu_model?: Gio.MenuModel | null): void;
     set_page_pinned(page: TabPage, pinned: boolean): void;
     set_selected_page(selected_page: TabPage): void;
+    set_shortcuts(shortcuts: TabViewShortcuts): void;
     transfer_page(page: TabPage, other_view: TabView, position: number): void;
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3026,6 +4375,8 @@ export module Toast {
         actionTarget: GLib.Variant;
         button_label: string;
         buttonLabel: string;
+        custom_title: Gtk.Widget;
+        customTitle: Gtk.Widget;
         priority: ToastPriority;
         timeout: number;
         title: string;
@@ -3050,6 +4401,10 @@ export class Toast extends GObject.Object {
     set button_label(val: string);
     get buttonLabel(): string;
     set buttonLabel(val: string);
+    get custom_title(): Gtk.Widget;
+    set custom_title(val: Gtk.Widget);
+    get customTitle(): Gtk.Widget;
+    set customTitle(val: Gtk.Widget);
     get priority(): ToastPriority;
     set priority(val: ToastPriority);
     get timeout(): number;
@@ -3062,6 +4417,9 @@ export class Toast extends GObject.Object {
     connect(id: string, callback: (...args: any[]) => any): number;
     connect_after(id: string, callback: (...args: any[]) => any): number;
     emit(id: string, ...args: any[]): void;
+    connect(signal: "button-clicked", callback: (_source: this) => void): number;
+    connect_after(signal: "button-clicked", callback: (_source: this) => void): number;
+    emit(signal: "button-clicked"): void;
     connect(signal: "dismissed", callback: (_source: this) => void): number;
     connect_after(signal: "dismissed", callback: (_source: this) => void): number;
     emit(signal: "dismissed"): void;
@@ -3076,12 +4434,14 @@ export class Toast extends GObject.Object {
     get_action_name(): string | null;
     get_action_target_value(): GLib.Variant | null;
     get_button_label(): string | null;
+    get_custom_title(): Gtk.Widget | null;
     get_priority(): ToastPriority;
     get_timeout(): number;
-    get_title(): string;
+    get_title(): string | null;
     set_action_name(action_name?: string | null): void;
     set_action_target_value(action_target?: GLib.Variant | null): void;
     set_button_label(button_label?: string | null): void;
+    set_custom_title(widget?: Gtk.Widget | null): void;
     set_detailed_action_name(detailed_action_name?: string | null): void;
     set_priority(priority: ToastPriority): void;
     set_timeout(timeout: number): void;
@@ -3122,13 +4482,27 @@ export class ToastOverlay extends Gtk.Widget implements Gtk.Accessible, Gtk.Buil
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3193,6 +4567,7 @@ export class ViewStack extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildab
     add(child: Gtk.Widget): ViewStackPage;
     add_named(child: Gtk.Widget, name?: string | null): ViewStackPage;
     add_titled(child: Gtk.Widget, name: string | null, title: string): ViewStackPage;
+    add_titled_with_icon(child: Gtk.Widget, name: string | null, title: string, icon_name: string): ViewStackPage;
     get_child_by_name(name: string): Gtk.Widget | null;
     get_hhomogeneous(): boolean;
     get_page(child: Gtk.Widget): ViewStackPage;
@@ -3208,13 +4583,27 @@ export class ViewStack extends Gtk.Widget implements Gtk.Accessible, Gtk.Buildab
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3247,7 +4636,7 @@ export module ViewStackPage {
         visible: boolean;
     }
 }
-export class ViewStackPage extends GObject.Object {
+export class ViewStackPage extends GObject.Object implements Gtk.Accessible {
     static $gtype: GObject.GType<ViewStackPage>;
 
     constructor(properties?: Partial<ViewStackPage.ConstructorProperties>, ...args: any[]);
@@ -3278,6 +4667,13 @@ export class ViewStackPage extends GObject.Object {
     get visible(): boolean;
     set visible(val: boolean);
 
+    // Implemented Properties
+
+    get accessible_role(): Gtk.AccessibleRole;
+    set accessible_role(val: Gtk.AccessibleRole);
+    get accessibleRole(): Gtk.AccessibleRole;
+    set accessibleRole(val: Gtk.AccessibleRole);
+
     // Members
 
     get_badge_number(): number;
@@ -3295,6 +4691,30 @@ export class ViewStackPage extends GObject.Object {
     set_title(title?: string | null): void;
     set_use_underline(use_underline: boolean): void;
     set_visible(visible: boolean): void;
+
+    // Implemented Members
+
+    get_accessible_parent(): Gtk.Accessible | null;
+    get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
+    reset_property(property: Gtk.AccessibleProperty): void;
+    reset_relation(relation: Gtk.AccessibleRelation): void;
+    reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
+    update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
+    update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
+    update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
 }
 export module ViewSwitcher {
     export interface ConstructorProperties extends Gtk.Widget.ConstructorProperties {
@@ -3335,13 +4755,27 @@ export class ViewSwitcher extends Gtk.Widget implements Gtk.Accessible, Gtk.Buil
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3396,13 +4830,27 @@ export class ViewSwitcherBar extends Gtk.Widget implements Gtk.Accessible, Gtk.B
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3475,13 +4923,27 @@ export class ViewSwitcherTitle extends Gtk.Widget implements Gtk.Accessible, Gtk
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;
@@ -3577,13 +5039,27 @@ export class WindowTitle extends Gtk.Widget implements Gtk.Accessible, Gtk.Build
 
     // Implemented Members
 
+    get_accessible_parent(): Gtk.Accessible | null;
     get_accessible_role(): Gtk.AccessibleRole;
+    get_at_context(): Gtk.ATContext;
+    get_bounds(): [boolean, number, number, number, number];
+    get_first_accessible_child(): Gtk.Accessible | null;
+    get_next_accessible_sibling(): Gtk.Accessible | null;
+    get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     reset_property(property: Gtk.AccessibleProperty): void;
     reset_relation(relation: Gtk.AccessibleRelation): void;
     reset_state(state: Gtk.AccessibleState): void;
+    set_accessible_parent(parent?: Gtk.Accessible | null, next_sibling?: Gtk.Accessible | null): void;
+    update_next_accessible_sibling(new_sibling?: Gtk.Accessible | null): void;
     update_property(properties: Gtk.AccessibleProperty[], values: GObject.Value[]): void;
     update_relation(relations: Gtk.AccessibleRelation[], values: GObject.Value[]): void;
     update_state(states: Gtk.AccessibleState[], values: GObject.Value[]): void;
+    vfunc_get_accessible_parent(): Gtk.Accessible | null;
+    vfunc_get_at_context(): Gtk.ATContext | null;
+    vfunc_get_bounds(): [boolean, number, number, number, number];
+    vfunc_get_first_accessible_child(): Gtk.Accessible | null;
+    vfunc_get_next_accessible_sibling(): Gtk.Accessible | null;
+    vfunc_get_platform_state(state: Gtk.AccessiblePlatformState): boolean;
     get_buildable_id(): string | null;
     vfunc_add_child(builder: Gtk.Builder, child: GObject.Object, type?: string | null): void;
     vfunc_custom_finished(builder: Gtk.Builder, child: GObject.Object | null, tagname: string, data?: any | null): void;

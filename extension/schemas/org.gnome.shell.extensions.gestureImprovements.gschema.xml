@@ -82,8 +82,10 @@
     <key name="forward-back-application-keyboard-shortcuts" type="a{s(ib)}">
       <default>
         {
-          'firefox.desktop': (1, false),
-          'org.chromium.Chromium.desktop': (1, false),
+          'firefox.desktop': (5, false),
+          'org.chromium.Chromium.desktop': (5, false),
+          'microsoft-edge.desktop': (5, false),
+          'google-chrome.desktop': (5, false),
           'org.gnome.gThumb.desktop': (2, false),
           'org.gnome.eog.desktop': (3, false),
           'org.gnome.Photos.desktop': (3, false),

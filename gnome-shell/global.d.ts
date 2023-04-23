@@ -32,17 +32,17 @@ declare const TextEncoder = import('util').TextEncoder;
 
 // gnome-shell modules
 declare module '@gi-types/clutter' {
-	export * from '@gi-types/clutter10';
+	export * from '@gi-types/clutter12';
 }
 
 declare module '@gi-types/meta' {
-	export * from '@gi-types/meta10';
+	export * from '@gi-types/meta12';
 }
 
 declare module '@gi-types/st' {
-	export * from '@gi-types/st1';
+	export * from '@gi-types/st12';
 }
 
 declare module '@gi-types/shell' {
-	export * from '@gi-types/shell0';
+	export * from '@gi-types/shell12';
 }
