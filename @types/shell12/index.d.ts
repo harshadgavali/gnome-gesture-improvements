@@ -1,22 +1,21 @@
 /**
- * Shell 0.1
+ * Shell 12
  *
- * Generated from 0.1
+ * Generated from 12.0
  */
 
-import * as Atk from "@gi-types/atk1";
-import * as Gtk from "@gi-types/gtk3";
 import * as Gio from "@gi-types/gio2";
+import * as Atk from "@gi-types/atk1";
 import * as GObject from "@gi-types/gobject2";
-import * as Clutter from "@gi-types/clutter10";
-import * as Cogl from "@gi-types/cogl10";
+import * as Clutter from "@gi-types/clutter12";
+import * as Cogl from "@gi-types/cogl12";
 import * as NM from "@gi-types/nm1";
 import * as PolkitAgent from "@gi-types/polkitagent1";
-import * as St from "@gi-types/st1";
-import * as Gcr from "@gi-types/gcr3";
+import * as St from "@gi-types/st12";
+import * as Gcr from "@gi-types/gcr4";
 import * as cairo from "@gi-types/cairo1";
 import * as GdkPixbuf from "@gi-types/gdkpixbuf2";
-import * as Meta from "@gi-types/meta10";
+import * as Meta from "@gi-types/meta12";
 import * as GLib from "@gi-types/glib2";
 import * as Graphene from "@gi-types/graphene1";
 
@@ -299,21 +298,6 @@ export class BlurEffect extends Clutter.Effect {
     set_mode(mode: BlurMode): void;
     set_sigma(sigma: number): void;
 }
-export module EmbeddedWindow {
-    export interface ConstructorProperties extends Gtk.Window.ConstructorProperties {
-        [key: string]: any;
-    }
-}
-export class EmbeddedWindow extends Gtk.Window implements Atk.ImplementorIface, Gtk.Buildable {
-    static $gtype: GObject.GType<EmbeddedWindow>;
-
-    constructor(properties?: Partial<EmbeddedWindow.ConstructorProperties>, ...args: any[]);
-    _init(properties?: Partial<EmbeddedWindow.ConstructorProperties>, ...args: any[]): void;
-
-    // Constructors
-
-    static ["new"](): EmbeddedWindow;
-}
 export module GLSLEffect {
     export interface ConstructorProperties extends Clutter.OffscreenEffect.ConstructorProperties {
         [key: string]: any;
@@ -337,11 +321,14 @@ export module Global {
     export interface ConstructorProperties extends GObject.Object.ConstructorProperties {
         [key: string]: any;
         backend: Meta.Backend;
+        compositor: Meta.Compositor;
         context: Meta.Context;
         datadir: string;
         display: Meta.Display;
         focus_manager: St.FocusManager;
         focusManager: St.FocusManager;
+        force_animations: boolean;
+        forceAnimations: boolean;
         frame_finish_timestamp: boolean;
         frameFinishTimestamp: boolean;
         frame_timestamps: boolean;
@@ -376,11 +363,16 @@ export class Global extends GObject.Object {
 
     // Properties
     get backend(): Meta.Backend;
+    get compositor(): Meta.Compositor;
     get context(): Meta.Context;
     get datadir(): string;
     get display(): Meta.Display;
     get focus_manager(): St.FocusManager;
     get focusManager(): St.FocusManager;
+    get force_animations(): boolean;
+    set force_animations(val: boolean);
+    get forceAnimations(): boolean;
+    set forceAnimations(val: boolean);
     get frame_finish_timestamp(): boolean;
     set frame_finish_timestamp(val: boolean);
     get frameFinishTimestamp(): boolean;
@@ -421,12 +413,16 @@ export class Global extends GObject.Object {
     connect(signal: "notify-error", callback: (_source: this, object: string, p0: string) => void): number;
     connect_after(signal: "notify-error", callback: (_source: this, object: string, p0: string) => void): number;
     emit(signal: "notify-error", object: string, p0: string): void;
+    connect(signal: "shutdown", callback: (_source: this) => void): number;
+    connect_after(signal: "shutdown", callback: (_source: this) => void): number;
+    emit(signal: "shutdown"): void;
 
     // Members
 
     begin_work(): void;
     create_app_launch_context(timestamp: number, workspace: number): Gio.AppLaunchContext;
     end_work(): void;
+    get_context(): Meta.Context;
     get_current_time(): number;
     get_display(): Meta.Display;
     get_persistent_state(property_type: string, property_name: string): GLib.Variant;
@@ -437,6 +433,7 @@ export class Global extends GObject.Object {
     get_stage(): Clutter.Stage;
     get_switcheroo_control(): Gio.DBusProxy;
     get_window_actors(): Meta.WindowActor[];
+    get_workspace_manager(): Meta.WorkspaceManager;
     notify_error(msg: string, details: string): void;
     reexec_self(): void;
     run_at_leisure(func: LeisureFunction): void;
@@ -444,51 +441,6 @@ export class Global extends GObject.Object {
     set_runtime_state(property_name: string, variant?: GLib.Variant | null): void;
     set_stage_input_region(rectangles: Meta.Rectangle[]): void;
     static get(): Global;
-}
-export module GtkEmbed {
-    export interface ConstructorProperties<A extends Clutter.Actor = Clutter.Actor>
-        extends Clutter.Clone.ConstructorProperties<A> {
-        [key: string]: any;
-        window: EmbeddedWindow;
-    }
-}
-export class GtkEmbed<A extends Clutter.Actor = Clutter.Actor>
-    extends Clutter.Clone<A>
-    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container<A>, Clutter.Scriptable
-{
-    static $gtype: GObject.GType<GtkEmbed>;
-
-    constructor(properties?: Partial<GtkEmbed.ConstructorProperties<A>>, ...args: any[]);
-    _init(properties?: Partial<GtkEmbed.ConstructorProperties<A>>, ...args: any[]): void;
-
-    // Properties
-    get window(): EmbeddedWindow;
-
-    // Constructors
-
-    static ["new"](window: EmbeddedWindow): GtkEmbed;
-    // Conflicted with Clutter.Clone.new
-    static ["new"](...args: never[]): any;
-
-    // Implemented Members
-
-    add_actor(actor: A): void;
-    child_get_property(child: A, property: string, value: GObject.Value | any): void;
-    child_notify(child: A, pspec: GObject.ParamSpec): void;
-    child_set_property(child: A, property: string, value: GObject.Value | any): void;
-    create_child_meta(actor: A): void;
-    destroy_child_meta(actor: A): void;
-    find_child_by_name(child_name: string): A;
-    get_child_meta(actor: A): Clutter.ChildMeta;
-    remove_actor(actor: A): void;
-    vfunc_actor_added(actor: A): void;
-    vfunc_actor_removed(actor: A): void;
-    vfunc_add(actor: A): void;
-    vfunc_child_notify(child: A, pspec: GObject.ParamSpec): void;
-    vfunc_create_child_meta(actor: A): void;
-    vfunc_destroy_child_meta(actor: A): void;
-    vfunc_get_child_meta(actor: A): Clutter.ChildMeta;
-    vfunc_remove(actor: A): void;
 }
 export module InvertLightnessEffect {
     export interface ConstructorProperties extends Clutter.OffscreenEffect.ConstructorProperties {
@@ -890,78 +842,35 @@ export class SecureTextBuffer extends Clutter.TextBuffer {
     static ["new"](): SecureTextBuffer;
 }
 export module SquareBin {
-    export interface ConstructorProperties<A extends Clutter.Actor = Clutter.Actor>
-        extends St.Bin.ConstructorProperties<A> {
+    export interface ConstructorProperties extends St.Bin.ConstructorProperties {
         [key: string]: any;
     }
 }
-export class SquareBin<A extends Clutter.Actor = Clutter.Actor>
-    extends St.Bin<A>
-    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container<A>, Clutter.Scriptable
+export class SquareBin
+    extends St.Bin
+    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container, Clutter.Scriptable
 {
     static $gtype: GObject.GType<SquareBin>;
 
-    constructor(properties?: Partial<SquareBin.ConstructorProperties<A>>, ...args: any[]);
-    _init(properties?: Partial<SquareBin.ConstructorProperties<A>>, ...args: any[]): void;
-
-    // Implemented Members
-
-    add_actor(actor: A): void;
-    child_get_property(child: A, property: string, value: GObject.Value | any): void;
-    child_notify(child: A, pspec: GObject.ParamSpec): void;
-    child_set_property(child: A, property: string, value: GObject.Value | any): void;
-    create_child_meta(actor: A): void;
-    destroy_child_meta(actor: A): void;
-    find_child_by_name(child_name: string): A;
-    get_child_meta(actor: A): Clutter.ChildMeta;
-    remove_actor(actor: A): void;
-    vfunc_actor_added(actor: A): void;
-    vfunc_actor_removed(actor: A): void;
-    vfunc_add(actor: A): void;
-    vfunc_child_notify(child: A, pspec: GObject.ParamSpec): void;
-    vfunc_create_child_meta(actor: A): void;
-    vfunc_destroy_child_meta(actor: A): void;
-    vfunc_get_child_meta(actor: A): Clutter.ChildMeta;
-    vfunc_remove(actor: A): void;
+    constructor(properties?: Partial<SquareBin.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<SquareBin.ConstructorProperties>, ...args: any[]): void;
 }
 export module Stack {
-    export interface ConstructorProperties<A extends Clutter.Actor = Clutter.Actor>
-        extends St.Widget.ConstructorProperties {
+    export interface ConstructorProperties extends St.Widget.ConstructorProperties {
         [key: string]: any;
     }
 }
-export class Stack<A extends Clutter.Actor = Clutter.Actor>
+export class Stack
     extends St.Widget
-    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container<A>, Clutter.Scriptable
+    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container, Clutter.Scriptable
 {
     static $gtype: GObject.GType<Stack>;
 
-    constructor(properties?: Partial<Stack.ConstructorProperties<A>>, ...args: any[]);
-    _init(properties?: Partial<Stack.ConstructorProperties<A>>, ...args: any[]): void;
-
-    // Implemented Members
-
-    add_actor(actor: A): void;
-    child_get_property(child: A, property: string, value: GObject.Value | any): void;
-    child_notify(child: A, pspec: GObject.ParamSpec): void;
-    child_set_property(child: A, property: string, value: GObject.Value | any): void;
-    create_child_meta(actor: A): void;
-    destroy_child_meta(actor: A): void;
-    find_child_by_name(child_name: string): A;
-    get_child_meta(actor: A): Clutter.ChildMeta;
-    remove_actor(actor: A): void;
-    vfunc_actor_added(actor: A): void;
-    vfunc_actor_removed(actor: A): void;
-    vfunc_add(actor: A): void;
-    vfunc_child_notify(child: A, pspec: GObject.ParamSpec): void;
-    vfunc_create_child_meta(actor: A): void;
-    vfunc_destroy_child_meta(actor: A): void;
-    vfunc_get_child_meta(actor: A): Clutter.ChildMeta;
-    vfunc_remove(actor: A): void;
+    constructor(properties?: Partial<Stack.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<Stack.ConstructorProperties>, ...args: any[]): void;
 }
 export module TrayIcon {
-    export interface ConstructorProperties<A extends Clutter.Actor = Clutter.Actor>
-        extends GtkEmbed.ConstructorProperties<A> {
+    export interface ConstructorProperties extends Clutter.Clone.ConstructorProperties {
         [key: string]: any;
         pid: number;
         title: string;
@@ -969,14 +878,14 @@ export module TrayIcon {
         wmClass: string;
     }
 }
-export class TrayIcon<A extends Clutter.Actor = Clutter.Actor>
-    extends GtkEmbed<A>
-    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container<A>, Clutter.Scriptable
+export class TrayIcon
+    extends Clutter.Clone
+    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container, Clutter.Scriptable
 {
     static $gtype: GObject.GType<TrayIcon>;
 
-    constructor(properties?: Partial<TrayIcon.ConstructorProperties<A>>, ...args: any[]);
-    _init(properties?: Partial<TrayIcon.ConstructorProperties<A>>, ...args: any[]): void;
+    constructor(properties?: Partial<TrayIcon.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<TrayIcon.ConstructorProperties>, ...args: any[]): void;
 
     // Properties
     get pid(): number;
@@ -984,35 +893,9 @@ export class TrayIcon<A extends Clutter.Actor = Clutter.Actor>
     get wm_class(): string;
     get wmClass(): string;
 
-    // Constructors
-
-    static ["new"](window: EmbeddedWindow): TrayIcon;
-    // Conflicted with Clutter.Clone.new
-    static ["new"](...args: never[]): any;
-
     // Members
 
     click(event: Clutter.Event): void;
-
-    // Implemented Members
-
-    add_actor(actor: A): void;
-    child_get_property(child: A, property: string, value: GObject.Value | any): void;
-    child_notify(child: A, pspec: GObject.ParamSpec): void;
-    child_set_property(child: A, property: string, value: GObject.Value | any): void;
-    create_child_meta(actor: A): void;
-    destroy_child_meta(actor: A): void;
-    find_child_by_name(child_name: string): A;
-    get_child_meta(actor: A): Clutter.ChildMeta;
-    remove_actor(actor: A): void;
-    vfunc_actor_added(actor: A): void;
-    vfunc_actor_removed(actor: A): void;
-    vfunc_add(actor: A): void;
-    vfunc_child_notify(child: A, pspec: GObject.ParamSpec): void;
-    vfunc_create_child_meta(actor: A): void;
-    vfunc_destroy_child_meta(actor: A): void;
-    vfunc_get_child_meta(actor: A): Clutter.ChildMeta;
-    vfunc_remove(actor: A): void;
 }
 export module TrayManager {
     export interface ConstructorProperties extends GObject.Object.ConstructorProperties {
@@ -1183,47 +1066,26 @@ export class WM extends GObject.Object {
     completed_unminimize(actor: Meta.WindowActor): void;
 }
 export module WindowPreview {
-    export interface ConstructorProperties<A extends Clutter.Actor = Clutter.Actor>
-        extends St.Widget.ConstructorProperties {
+    export interface ConstructorProperties extends St.Widget.ConstructorProperties {
         [key: string]: any;
         window_container: Clutter.Actor;
         windowContainer: Clutter.Actor;
     }
 }
-export class WindowPreview<A extends Clutter.Actor = Clutter.Actor>
+export class WindowPreview
     extends St.Widget
-    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container<A>, Clutter.Scriptable
+    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container, Clutter.Scriptable
 {
     static $gtype: GObject.GType<WindowPreview>;
 
-    constructor(properties?: Partial<WindowPreview.ConstructorProperties<A>>, ...args: any[]);
-    _init(properties?: Partial<WindowPreview.ConstructorProperties<A>>, ...args: any[]): void;
+    constructor(properties?: Partial<WindowPreview.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<WindowPreview.ConstructorProperties>, ...args: any[]): void;
 
     // Properties
     get window_container(): Clutter.Actor;
     set window_container(val: Clutter.Actor);
     get windowContainer(): Clutter.Actor;
     set windowContainer(val: Clutter.Actor);
-
-    // Implemented Members
-
-    add_actor(actor: A): void;
-    child_get_property(child: A, property: string, value: GObject.Value | any): void;
-    child_notify(child: A, pspec: GObject.ParamSpec): void;
-    child_set_property(child: A, property: string, value: GObject.Value | any): void;
-    create_child_meta(actor: A): void;
-    destroy_child_meta(actor: A): void;
-    find_child_by_name(child_name: string): A;
-    get_child_meta(actor: A): Clutter.ChildMeta;
-    remove_actor(actor: A): void;
-    vfunc_actor_added(actor: A): void;
-    vfunc_actor_removed(actor: A): void;
-    vfunc_add(actor: A): void;
-    vfunc_child_notify(child: A, pspec: GObject.ParamSpec): void;
-    vfunc_create_child_meta(actor: A): void;
-    vfunc_destroy_child_meta(actor: A): void;
-    vfunc_get_child_meta(actor: A): Clutter.ChildMeta;
-    vfunc_remove(actor: A): void;
 }
 export module WindowPreviewLayout {
     export interface ConstructorProperties extends Clutter.LayoutManager.ConstructorProperties {
@@ -1244,7 +1106,7 @@ export class WindowPreviewLayout extends Clutter.LayoutManager {
 
     // Members
 
-    add_window(window: Meta.Window): Clutter.Actor;
+    add_window(window: Meta.Window): Clutter.Actor | null;
     get_windows(): Meta.Window[];
     remove_window(window: Meta.Window): void;
 }
@@ -1289,6 +1151,32 @@ export class WindowTracker extends GObject.Object {
     get_startup_sequences(): Meta.StartupSequence[];
     get_window_app(metawin: Meta.Window): App;
     static get_default(): WindowTracker;
+}
+export module WorkspaceBackground {
+    export interface ConstructorProperties extends St.Widget.ConstructorProperties {
+        [key: string]: any;
+        monitor_index: number;
+        monitorIndex: number;
+        state_adjustment_value: number;
+        stateAdjustmentValue: number;
+    }
+}
+export class WorkspaceBackground
+    extends St.Widget
+    implements Atk.ImplementorIface, Clutter.Animatable, Clutter.Container, Clutter.Scriptable
+{
+    static $gtype: GObject.GType<WorkspaceBackground>;
+
+    constructor(properties?: Partial<WorkspaceBackground.ConstructorProperties>, ...args: any[]);
+    _init(properties?: Partial<WorkspaceBackground.ConstructorProperties>, ...args: any[]): void;
+
+    // Properties
+    get monitor_index(): number;
+    get monitorIndex(): number;
+    get state_adjustment_value(): number;
+    set state_adjustment_value(val: number);
+    get stateAdjustmentValue(): number;
+    set stateAdjustmentValue(val: number);
 }
 
 export class MemoryInfo {

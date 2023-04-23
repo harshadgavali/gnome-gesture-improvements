@@ -35,30 +35,35 @@ export type RegisteredPrototype<
 	Props extends { [key: string]: GObject.ParamSpec },
 	Interfaces extends any[],
 	Sigs extends { [key: string]: GObjectSignalDefinition }
-	> = {
-		/// This is one of modification done by this file
-		connect<K extends keyof Sigs>(
-			key: K,
-			callback: (
-				_source: RegisteredPrototype<P, Props, Interfaces, Sigs>,
-				...args: CallBackTypeTuple<Sigs[K]['param_types']>
-			) => void,
-		): number,
-	} & GObject.RegisteredPrototype<P, Props, Interfaces>;
+> = {
+	/// This is one of modification done by this file
+	connect<K extends keyof Sigs>(
+		key: K,
+		callback: (
+			_source: RegisteredPrototype<P, Props, Interfaces, Sigs>,
+			...args: CallBackTypeTuple<Sigs[K]['param_types']>
+		) => void,
+	): number,
+} & GObject.RegisteredPrototype<P, Props, Interfaces>;
 
 export type RegisteredClass<
 	T extends ConstructorType,
 	Props extends { [key: string]: GObject.ParamSpec },
 	Interfaces extends { $gtype: GObject.GType<any> }[],
 	Sigs extends { [key: string]: GObjectSignalDefinition }
-	> = T extends { prototype: infer P }
-	? {
-		$gtype: GObject.GType<RegisteredClass<T, Props, IFaces<Interfaces>, Sigs>>;
-		prototype: RegisteredPrototype<P, Props, IFaces<Interfaces>, Sigs>;
-		/// use constructor parameter instead of '_init' parameters
-		new(...args: ConstructorParameters<T>): RegisteredPrototype<P, Props, IFaces<Interfaces>, Sigs>;
-	}
-	: never;
+> = T extends { prototype: infer P }
+	?
+		P extends {}
+		?
+		{
+			$gtype: GObject.GType<RegisteredClass<T, Props, IFaces<Interfaces>, Sigs>>;
+			prototype: RegisteredPrototype<P, Props, IFaces<Interfaces>, Sigs>;
+			/// use constructor parameter instead of '_init' parameters
+			new(...args: ConstructorParameters<T>): RegisteredPrototype<P, Props, IFaces<Interfaces>, Sigs>;
+		}
+		: never
+	: never
+	;
 
 export function registerClass<T extends ConstructorType>(klass: T): RegisteredClass<T, {}, [], {}>;
 export function registerClass<
