@@ -1,4 +1,3 @@
-import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
 
 import { imports } from 'gnome-shell';
