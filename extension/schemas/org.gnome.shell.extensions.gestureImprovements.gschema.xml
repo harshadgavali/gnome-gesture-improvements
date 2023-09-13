@@ -5,6 +5,7 @@
     <value value='1' nick='SHOW_DESKTOP' />
     <value value='2' nick='CLOSE_WINDOW' />
     <value value='3' nick='CLOSE_DOCUMENT' />
+    <value value='4' nick='SHOW_NOTIFICATION_LIST' />
   </enum>
   <!--  -->
   <enum id='org.gnome.shell.extensions.gestureImprovements.overview-navigation-states'>

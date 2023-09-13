@@ -8,6 +8,7 @@ import { ForwardBackGestureExtension } from './src/forwardBack';
 import { GestureExtension } from './src/gestures';
 import { OverviewRoundTripGestureExtension } from './src/overviewRoundTrip';
 import { CloseWindowExtension } from './src/pinchGestures/closeWindow';
+import { ShowNotificationListExtension } from './src/pinchGestures/showNotificationList';
 import { ShowDesktopExtension } from './src/pinchGestures/showDesktop';
 import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
@@ -106,6 +107,11 @@ class Extension {
 		const closeDocumentFingers = pinchToFingersMap.get(PinchGestureType.CLOSE_DOCUMENT);
 		if (closeDocumentFingers?.length)
 			this._extensions.push(new CloseWindowExtension(closeDocumentFingers, PinchGestureType.CLOSE_DOCUMENT));
+
+		// pinch to show notification list
+		const showNotificationListFingers = pinchToFingersMap.get(PinchGestureType.SHOW_NOTIFICATION_LIST);
+		if (showNotificationListFingers?.length)
+			this._extensions.push(new ShowNotificationListExtension(showNotificationListFingers));
 
 		this._extensions.forEach(extension => extension.apply?.());
 	}
