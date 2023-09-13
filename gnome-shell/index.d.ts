@@ -50,6 +50,7 @@ declare namespace imports {
 
 			const panel: {
 				addToStatusArea(role: string, indicator: Clutter.Actor, position?: number, box?: string): void,
+				toggleCalendar(): void,
 			} & Clutter.Actor;
 
 			const overview: {
@@ -94,10 +95,6 @@ declare namespace imports {
 
 			const osdWindowManager: {
 				hideAll(): void;
-			};
-
-      const panel: {
-				toggleCalendar(): void;
 			};
 		}
 
