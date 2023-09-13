@@ -1,6 +1,5 @@
 import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
-import St from '@gi-types/st';
 
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
@@ -36,7 +35,7 @@ export class ShowNotificationListExtension implements ISubExtension {
 		tracker.confirmPinch(0, [ShowNotificationListGestureState.PINCH_IN, ShowNotificationListGestureState.DEFAULT], ShowNotificationListGestureState.DEFAULT);
 	}
 
-	gestureEnd(_tracker: unknown, duration: number, progress: ShowNotificationListGestureState) {
+	gestureEnd(_tracker: unknown, _duration: number, progress: ShowNotificationListGestureState) {
 		switch (progress) {
 			case ShowNotificationListGestureState.DEFAULT:
 				break;
