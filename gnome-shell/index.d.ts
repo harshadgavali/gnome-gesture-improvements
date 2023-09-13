@@ -95,6 +95,10 @@ declare namespace imports {
 			const osdWindowManager: {
 				hideAll(): void;
 			};
+
+      const panel: {
+				toggleCalendar(): void;
+			};
 		}
 
 		namespace overviewControls {

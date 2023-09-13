@@ -1,8 +1,12 @@
 import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
 
+import { imports } from 'gnome-shell';
+
+
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
-import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
+
+const Main = imports.ui.main;
 
 enum ShowNotificationListGestureState {
 	PINCH_IN = -1,
@@ -12,12 +16,9 @@ enum ShowNotificationListGestureState {
 declare type Type_TouchpadPinchGesture = typeof TouchpadPinchGesture.prototype;
 
 export class ShowNotificationListExtension implements ISubExtension {
-	private _keyboard: IVirtualKeyboard;
 	private _pinchTracker: Type_TouchpadPinchGesture;
 
 	constructor(nfingers: number[]) {
-		this._keyboard = getVirtualKeyboard();
-
 		this._pinchTracker = new TouchpadPinchGesture({
 			nfingers: nfingers,
 			allowedModes: Shell.ActionMode.NORMAL,
@@ -45,6 +46,6 @@ export class ShowNotificationListExtension implements ISubExtension {
 	}
 
 	private _invokeGestureCompleteAction() {
-		this._keyboard.sendKeys([Clutter.KEY_Control_L, Clutter.KEY_m]);
+		Main.panel.toggleCalendar();
 	}
 }
