@@ -29,6 +29,7 @@ export type BooleanSettingsKeys =
     'default-session-workspace' |
     'default-overview' |
     'allow-minimize-window' |
+    'allow-fullscreen-window' |
     'follow-natural-scroll' |
     'enable-alttab-gesture' |
     'enable-forward-back-gesture' |

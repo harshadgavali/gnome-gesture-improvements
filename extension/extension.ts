@@ -122,6 +122,7 @@ class Extension {
 			ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE = this.settings.get_boolean('default-session-workspace');
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE = this.settings.get_boolean('default-overview');
 			ExtSettings.ALLOW_MINIMIZE_WINDOW = this.settings.get_boolean('allow-minimize-window');
+			ExtSettings.ALLOW_FULLSCREEN_WINDOW = this.settings.get_boolean('allow-fullscreen-window');
 			ExtSettings.FOLLOW_NATURAL_SCROLL = this.settings.get_boolean('follow-natural-scroll');
 			ExtSettings.DEFAULT_OVERVIEW_GESTURE_DIRECTION = this.settings.get_boolean('default-overview-gesture-direction');
 			ExtSettings.APP_GESTURES = this.settings.get_boolean('enable-forward-back-gesture');

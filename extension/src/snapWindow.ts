@@ -352,7 +352,7 @@ export class SnapWindowExtension implements ISubExtension {
 				break;
 			case GestureMaxUnMaxState.MAXIMIZE:
 				snapPoints.push(GestureMaxUnMaxState.UNMAXIMIZE, GestureMaxUnMaxState.MAXIMIZE);
-				if (!window.is_monitor_sized() && !monitorArea.equal(window.get_buffer_rect()))
+				if (ExtSettings.ALLOW_FULLSCREEN_WINDOW && !window.is_monitor_sized() && !monitorArea.equal(window.get_buffer_rect()))
 					snapPoints.push(GestureMaxUnMaxState.FULLSCREEN);
 				break;
 			case GestureMaxUnMaxState.FULLSCREEN:

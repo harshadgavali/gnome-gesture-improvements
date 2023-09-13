@@ -38,6 +38,10 @@
       <default>false</default>
       <description>If true, when swipe down on non-maximized window minimizes it</description>
     </key>
+    <key name='allow-fullscreen-window' type='b'>
+      <default>true</default>
+      <description>If true, when swipe up on maximized window fullscreens it</description>
+    </key>
     <key name='follow-natural-scroll' type='b'>
       <default>true</default>
       <description>Whether to follow natural scroll for swipe</description>
