@@ -9,5 +9,5 @@
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
 	"url": "https://github.com/harshadgavali/gnome-gesture-improvements",
 	"uuid": "gestureImprovements@gestures",
-	"version": 24.1
+	"version": 25.1
 }
