@@ -1,11 +1,11 @@
 import Clutter from '@gi-types/clutter';
 import Gio from '@gi-types/gio2';
 import GObject from '@gi-types/gobject2';
-import { CustomEventType, global, imports } from 'gnome-shell';
+import { CustomEventType, global } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
+import * as Util from 'resource:///org/gnome/Shell/Extensions/js/extensions/misc/util';
 import { registerClass } from '../../common/utils/gobject';
 import { printStack } from '../../common/utils/logging';
 
-const Util = imports.misc.util;
 
 const X11GestureDaemonXml = `<node>
 	<interface name="org.gestureImprovements.gestures">

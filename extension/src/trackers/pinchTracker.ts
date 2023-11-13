@@ -2,12 +2,12 @@ import Clutter from '@gi-types/clutter';
 import GObject from '@gi-types/gobject2';
 import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
-import { CustomEventType, global, imports } from 'gnome-shell';
+import { CustomEventType, global } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
+import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
 import { registerClass } from '../../common/utils/gobject';
 import { TouchpadConstants } from '../../constants';
 import * as DBusUtils from '../utils/dbus';
 
-const Main = imports.ui.main;
 
 const MIN_ANIMATION_DURATION = 100;
 const MAX_ANIMATION_DURATION = 400;

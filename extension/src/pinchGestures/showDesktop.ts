@@ -2,13 +2,14 @@ import Clutter from '@gi-types/clutter';
 import GObject from '@gi-types/gobject2';
 import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
-import { global, imports, __shell_private_types } from 'gnome-shell';
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
+import { global, __shell_private_types } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
+import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
+import * as Layout from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/layout';
+import { lerp } from 'resource:///org/gnome/Shell/Extensions/js/extensions/misc/util';
 import { TouchpadPinchGesture } from '../trackers/pinchTracker';
 import { easeActor } from '../utils/environment';
 
-const Main = imports.ui.main;
-const Layout = imports.ui.layout;
-const { lerp } = imports.misc.util;
 
 // declare enum 
 enum WorkspaceManagerState {

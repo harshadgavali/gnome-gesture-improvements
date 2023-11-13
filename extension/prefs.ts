@@ -1,17 +1,26 @@
 // import Gtk from '@gi-types/gtk4';
 import Adw from '@gi-types/adw1';
+import Gio from '@gi-types/gio2';
 
-import { imports } from 'gnome-shell';
+// import { imports } from 'gnome-shell';
 import { buildPrefsWidget } from './common/prefs';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const ExtMe = ExtensionUtils.getCurrentExtension();
+import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function init(): void { }
+interface TracksSettings {
+  /**
+   * The settings object backing the settings window.
+   */
+  _settings?: Gio.Settings;
+}
 
-export function fillPreferencesWindow(prefsWindow: Adw.PreferencesWindow) {
-	const UIDirPath = ExtMe.dir.get_child('ui').get_path() ?? '';
-	const settings = ExtensionUtils.getSettings();
-	buildPrefsWidget(prefsWindow, settings, UIDirPath);
+// const ExtensionUtils = imports.misc.extensionUtils;
+// const ExtMe = ExtensionUtils.getCurrentExtension();
+
+export default class GNOMEGestureImprovementsPreferences extends ExtensionPreferences {
+	override fillPreferencesWindow(prefsWindow: Adw.PreferencesWindow & TracksSettings) {
+		const UIDirPath = this.metadata.dir.get_child('ui').get_path() ?? '';
+		const settings = this.getSettings();
+		buildPrefsWidget(prefsWindow, settings, UIDirPath);
+	}
 }

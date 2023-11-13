@@ -1,19 +1,22 @@
 import Clutter from '@gi-types/clutter';
 import GObject from '@gi-types/gobject2';
 import Shell from '@gi-types/shell';
-import { CustomEventType, global, imports, __shell_private_types } from 'gnome-shell';
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
+import { CustomEventType, global, __shell_private_types, SwipeTracker } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
+import { OverviewAdjustment } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/overviewControlsManager';
+import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
+import { WorkspaceAnimationController } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/workspaceAnimation';
 import { ExtSettings, OverviewControlsState } from '../constants';
 import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
 
-const Main = imports.ui.main;
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
 	confirmSwipe(distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number): void;
 }
 
-declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
-declare type TouchPadSwipeTrackerT = Required<imports.ui.swipeTracker.SwipeTracker>['_touchpadGesture'];
+declare type SwipeTrackerT = SwipeTracker;
+declare type TouchPadSwipeTrackerT = Required<SwipeTracker>['_touchpadGesture'];
 declare interface ShellSwipeTracker {
 	swipeTracker: SwipeTrackerT,
 	nfingers: number[],
@@ -76,10 +79,10 @@ abstract class SwipeTrackerEndPointsModifer {
 }
 
 class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
-	private _workspaceAnimation: imports.ui.workspaceAnimation.WorkspaceAnimationController;
+	private _workspaceAnimation: WorkspaceAnimationController;
 	protected _swipeTracker: SwipeTrackerT;
 
-	constructor(wm: typeof imports.ui.main.wm) {
+	constructor(wm: typeof Main.wm) {
 		super();
 		this._workspaceAnimation = wm._workspaceAnimation;
 		this._swipeTracker = createSwipeTracker(
@@ -134,7 +137,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 }
 
 export class GestureExtension implements ISubExtension {
-	private _stateAdjustment: imports.ui.overviewControls.OverviewAdjustment;
+	private _stateAdjustment: OverviewAdjustment;
 	private _swipeTrackers: ShellSwipeTracker[];
 	private _workspaceAnimationModifier: WorkspaceAnimationModifier;
 

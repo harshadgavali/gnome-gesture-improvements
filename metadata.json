@@ -2,12 +2,10 @@
 	"description": "Improve touchpad gestures for Wayland/X11",
 	"name": "Gesture Improvements",
 	"shell-version": [
-		"42",
-		"43",
-		"44"
+		"45"
 	],
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
 	"url": "https://github.com/harshadgavali/gnome-gesture-improvements",
 	"uuid": "gestureImprovements@gestures",
-	"version": 25.0
+	"version": 26.0
 }
