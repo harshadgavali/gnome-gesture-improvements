@@ -2,6 +2,7 @@ import Clutter from '@gi-types/clutter';
 import GLib from '@gi-types/glib2';
 import Shell from '@gi-types/shell';
 import St from '@gi-types/st';
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
 import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
 import { WindowSwitcherPopup } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/altTab';
 import { __shell_private_types } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';

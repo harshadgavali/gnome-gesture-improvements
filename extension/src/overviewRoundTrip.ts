@@ -1,5 +1,6 @@
 import Clutter from '@gi-types/clutter';
 import Shell from '@gi-types/shell';
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
 import { SwipeTracker, global } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
 import { OverviewControlsManager, OverviewAdjustment } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/overviewControlsManager';
 import * as Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';

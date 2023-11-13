@@ -2,6 +2,7 @@ import GLib from '@gi-types/glib2';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension';
 import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/settings';
 import * as Constants from './constants';
+import { ISubExtension, IExtension } from 'resource:///org/gnome/shell/extensions/global';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
 import { AltTabGestureExtension } from './src/altTab';
 import { ForwardBackGestureExtension } from './src/forwardBack';
@@ -15,7 +16,7 @@ import * as VKeyboard from './src/utils/keyboard';
 
 const extensionObject = Extension.lookupByUUID('gestureImprovements@gestures');
 
-class GNOMEGestureImprovementsExtension extends Extension {
+export default class GNOMEGestureImprovementsExtension extends Extension {
 	private _extensions: ISubExtension[];
 	settings?: GioSettings;
 	private _settingChangedId = 0;

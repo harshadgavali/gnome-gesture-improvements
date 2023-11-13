@@ -2,6 +2,7 @@ import Clutter from '@gi-types/clutter';
 import GObject from '@gi-types/gobject2';
 import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
 import { global, __shell_private_types } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
 import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
 import * as Layout from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/layout';

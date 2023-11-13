@@ -3,6 +3,7 @@ import Meta from '@gi-types/meta';
 import Shell from '@gi-types/shell';
 import St from '@gi-types/st';
 
+import { ISubExtension } from 'resource:///org/gnome/shell/extensions/global';
 import Main from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/main';
 import { global } from 'resource:///org/gnome/Shell/Extensions/js/extensions/ui/swipeTracker';
 import * as Util from 'resource:///org/gnome/Shell/Extensions/js/extensions/misc/util';
