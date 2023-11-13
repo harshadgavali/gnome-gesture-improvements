@@ -3,13 +3,13 @@ import Gio from '@gi-types/gio2';
 import Clutter from '@gi-types/clutter';
 import St from '@gi-types/st';
 
-import { imports } from 'gnome-shell';
+import * as Util from 'resource:///org/gnome/Shell/Extensions/js/extensions/misc/util';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import { registerClass } from '../../common/utils/gobject';
 import { easeActor } from '../utils/environment';
 import { WIGET_SHOWING_DURATION } from '../../constants';
 
-const ExtMe = imports.misc.extensionUtils.getCurrentExtension();
-const Util = imports.misc.util;
+const extensionObject = Extension.lookupByUUID('gestureImprovements@gestures');
 
 declare type IconList = 'arrow1-right-symbolic.svg' | 'arrow1-left-symbolic.svg';
 
@@ -70,7 +70,7 @@ export const ArrowIconAnimation = registerClass(
 				duration: WIGET_SHOWING_DURATION,
 			});
 
-			this._arrow_icon.set_gicon(Gio.Icon.new_for_string(`${ExtMe.dir.get_uri()}/assets/${icon_name}`));
+			this._arrow_icon.set_gicon(Gio.Icon.new_for_string(`${extensionObject.metadata.dir.get_uri()}/assets/${icon_name}`));
 		}
 
 		gestureUpdate(progress: number) {

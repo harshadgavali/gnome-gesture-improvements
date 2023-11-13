@@ -1,5 +1,5 @@
 import GLib from '@gi-types/glib2';
-import { imports } from 'gnome-shell';
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension';
 import { AllSettingsKeys, GioSettings, PinchGestureType } from './common/settings';
 import * as Constants from './constants';
 import { AltTabConstants, ExtSettings, TouchpadConstants } from './constants';
@@ -13,9 +13,9 @@ import { SnapWindowExtension } from './src/snapWindow';
 import * as DBusUtils from './src/utils/dbus';
 import * as VKeyboard from './src/utils/keyboard';
 
-const ExtensionUtils = imports.misc.extensionUtils;
+const extensionObject = Extension.lookupByUUID('gestureImprovements@gestures');
 
-class Extension {
+class GNOMEGestureImprovementsExtension extends Extension {
 	private _extensions: ISubExtension[];
 	settings?: GioSettings;
 	private _settingChangedId = 0;
@@ -23,6 +23,7 @@ class Extension {
 	private _addReloadDelayFor: AllSettingsKeys[];
 
 	constructor() {
+		super(extensionObject.metadata);
 		this._extensions = [];
 		this._addReloadDelayFor = [
 			'touchpad-speed-scale',
@@ -32,7 +33,7 @@ class Extension {
 	}
 
 	enable() {
-		this.settings = ExtensionUtils.getSettings();
+		this.settings = this.getSettings();
 		this._settingChangedId = this.settings.connect('changed', this.reload.bind(this));
 		this._enable();
 	}
@@ -152,5 +153,5 @@ class Extension {
 }
 
 export function init(): IExtension {
-	return new Extension();
+	return new GNOMEGestureImprovementsExtension();
 }

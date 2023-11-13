@@ -12,18 +12,22 @@
             "node"
         ],
         "lib": [
-            "ES2019"
+            "ES2022"
         ],
         "allowSyntheticDefaultImports": true,
         "rootDir": "./",
         "outDir": "./build",
-        "target": "ES6",
+        "target": "ESNext",
+        "module": "ES2022",
         "moduleResolution": "Node",
         "skipLibCheck": true,
         "paths": {
-          "gnome-shell": [
-            "./gnome-shell"
-          ]
+        //   "gnome-shell": ["./gnome-shell"],
+            
+          // Our own types.  First as they are seen in GNOME shell extensions,
+          // and then how they're seen by prefs.js.
+          "resource:///org/gnome/shell/*": ["./@types/gnome-shell/*"],
+          "resource:///org/gnome/Shell/Extensions/js/*": ["./@types/gnome-shell/*"]
         },
     },
     "include": [

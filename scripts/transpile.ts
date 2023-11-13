@@ -128,7 +128,6 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 		variables.push(node.name?.text || '');
 		return moveComments(
 			context.factory.createFunctionDeclaration(
-				node.decorators,
 				node.modifiers.filter(m => m.kind !== ts.SyntaxKind.ExportKeyword),
 				node.asteriskToken,
 				node.name,
@@ -153,7 +152,6 @@ const transformExports: ts.TransformerFactory<ts.SourceFile> = context => {
 				context,
 				node.name?.text || '',
 				context.factory.createClassExpression(
-					node.decorators,
 					node.modifiers.filter(m => m.kind !== ts.SyntaxKind.ExportKeyword),
 					node.name,
 					node.typeParameters,
@@ -439,7 +437,6 @@ const transformGObjectClasses: ts.TransformerFactory<ts.SourceFile> = context =>
 
 			return moveComments(
 				context.factory.createMethodDeclaration(
-					constructorNode.decorators,
 					constructorNode.modifiers,
 					constructorNode.asteriskToken,
 					'_init',
@@ -561,7 +558,7 @@ function transpileFiles() {
 		console.log(`transpiling file: ${file}`);
 
 		const text = fs.readFileSync(file).toString();
-		let sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2018, true, ts.ScriptKind.JS);
+		let sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
 		sourceFile = ts.transform(sourceFile, [transformExports, transformImports, transformGObjectClasses]).transformed[0];
 		fs.writeFileSync(file, printer.printFile(sourceFile));
 	});
