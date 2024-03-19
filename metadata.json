@@ -4,10 +4,11 @@
 	"shell-version": [
 		"42",
 		"43",
-		"44"
+		"44",
+		"45"
 	],
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
 	"url": "https://github.com/harshadgavali/gnome-gesture-improvements",
 	"uuid": "gestureImprovements@gestures",
-	"version": 25.0
+	"version": 25.1
 }
