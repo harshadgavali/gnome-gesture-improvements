@@ -4,7 +4,9 @@
 	"shell-version": [
 		"42",
 		"43",
-		"44"
+		"44",
+		"45",
+		"46"
 	],
 	"settings-schema": "org.gnome.shell.extensions.gestureImprovements",
 	"url": "https://github.com/harshadgavali/gnome-gesture-improvements",
