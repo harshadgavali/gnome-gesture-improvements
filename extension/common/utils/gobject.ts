@@ -9,7 +9,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import GObject from '@gi-types/gobject2';
+import GObject from 'gi://GObject';
 const OGRegisterClass = GObject.registerClass;
 
 type ConstructorType = new (...args: any[]) => any;
@@ -44,7 +44,46 @@ export type RegisteredPrototype<
 			...args: CallBackTypeTuple<Sigs[K]['param_types']>
 		) => void,
 	): number,
-} & GObject.RegisteredPrototype<P, Props, Interfaces>;
+	
+} & Properties<P, SnakeToCamel<Props> & SnakeToUnderscore<Props>> & UnionToIntersection<Interfaces[number]> & P;
+
+export type Property<K extends GObject.ParamSpec> = K extends GObject.ParamSpec<infer T> ? T : any;
+
+export type Properties<Prototype extends {}, Properties extends { [key: string]: GObject.ParamSpec }> = Omit<
+    {
+        [key in keyof Properties | keyof Prototype]: key extends keyof Prototype
+            ? never
+            : key extends keyof Properties
+            ? Property<Properties[key]>
+            : never;
+    },
+    keyof Prototype
+>;
+
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
+
+type SnakeToUnderscoreCase<S extends string> = S extends `${infer T}-${infer U}`
+    ? `${T}_${SnakeToUnderscoreCase<U>}`
+    : S extends `${infer T}`
+    ? `${T}`
+    : never;
+
+type SnakeToCamelCase<S extends string> = S extends `${infer T}-${infer U}`
+    ? `${Lowercase<T>}${SnakeToPascalCase<U>}`
+    : S extends `${infer T}`
+    ? `${Lowercase<T>}`
+    : SnakeToPascalCase<S>;
+
+type SnakeToPascalCase<S extends string> = string extends S
+    ? string
+    : S extends `${infer T}-${infer U}`
+    ? `${Capitalize<Lowercase<T>>}${SnakeToPascalCase<U>}`
+    : S extends `${infer T}`
+    ? `${Capitalize<Lowercase<T>>}`
+    : never;
+
+type SnakeToCamel<T> = { [P in keyof T as P extends string ? SnakeToCamelCase<P> : P]: T[P] };
+type SnakeToUnderscore<T> = { [P in keyof T as P extends string ? SnakeToUnderscoreCase<P> : P]: T[P] };
 
 export type RegisteredClass<
 	T extends ConstructorType,

@@ -1,14 +1,12 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject2';
-import Meta from '@gi-types/meta';
-import Shell from '@gi-types/shell';
-import { CustomEventType, global, imports } from 'gnome-shell';
-import { registerClass } from '../common/utils/gobject';
-import { TouchpadConstants } from '../constants';
-import * as DBusUtils from './utils/dbus';
-
-const Main = imports.ui.main;
-const { SwipeTracker } = imports.ui.swipeTracker;
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import { registerClass } from '../common/utils/gobject.js';
+import { TouchpadConstants } from '../constants.js';
+import * as DBusUtils from './utils/dbus.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { SwipeTracker, _SwipeTrackerOptionalParams, CustomEventType } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
 
 // define enum
 enum TouchpadState {
@@ -17,6 +15,14 @@ enum TouchpadState {
 	HANDLING = 2,
 	IGNORED = 3,
 }
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+declare namespace OrientationExtension {
+	const $gtype: GObject.GType<Clutter.Orientation>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const Orientation: (typeof OrientationExtension & typeof Clutter.Orientation) = Clutter.Orientation as any;
 
 export const TouchpadSwipeGesture = registerClass({
 	Properties: {
@@ -32,7 +38,7 @@ export const TouchpadSwipeGesture = registerClass({
 			'orientation',
 			'orientation',
 			GObject.ParamFlags.READWRITE,
-			Clutter.Orientation,
+			Orientation,
 			Clutter.Orientation.HORIZONTAL,
 		),
 	},
@@ -77,7 +83,7 @@ export const TouchpadSwipeGesture = registerClass({
 		this._checkAllowedGesture = checkAllowedGesture;
 		this._followNaturalScroll = followNaturalScroll;
 		if (Meta.is_wayland_compositor()) {
-			this._stageCaptureEvent = global.stage.connect('captured-event::touchpad', this._handleEvent.bind(this));
+			this._stageCaptureEvent = (global as Shell.Global).stage.connect('captured-event::touchpad', this._handleEvent.bind(this));
 		} else {
 			DBusUtils.subscribe(this._handleEvent.bind(this));
 		}
@@ -241,17 +247,11 @@ export const TouchpadSwipeGesture = registerClass({
 
 	destroy() {
 		if (this._stageCaptureEvent) {
-			global.stage.disconnect(this._stageCaptureEvent);
+			(global as Shell.Global).stage.disconnect(this._stageCaptureEvent);
 			this._stageCaptureEvent = 0;
 		}
 	}
 });
-
-declare type _SwipeTrackerOptionalParams = {
-	allowTouch?: boolean,
-	allowDrag?: boolean,
-	allowScroll?: boolean,
-}
 
 export function createSwipeTracker(
 	actor: Clutter.Actor,
@@ -279,7 +279,7 @@ export function createSwipeTracker(
 
 	// remove touch gestures
 	if (!allowTouch && swipeTracker._touchGesture) {
-		global.stage.remove_action(swipeTracker._touchGesture);
+		(global as Shell.Global).stage.remove_action(swipeTracker._touchGesture);
 		delete swipeTracker._touchGesture;
 	}
 

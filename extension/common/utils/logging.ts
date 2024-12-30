@@ -3,9 +3,9 @@ export function printStack(message?: unknown) {
 	let prefix = '';
 	if (stack) {
 		const lines = stack.split('\n')[1].split('@');
-		log(`[DEBUG]:: in function ${lines[0]} at ${lines[2]}`);
+		console.log(`[DEBUG]:: in function ${lines[0]} at ${lines[2]}`);
 		prefix = '\t';
 	}
 	if (message !== undefined)
-		log(`${prefix}${JSON.stringify(message)}`);
+		console.log(`${prefix}${JSON.stringify(message)}`);
 }

@@ -1,5 +1,5 @@
-import Clutter from '@gi-types/clutter';
-import GLib from '@gi-types/glib2';
+import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
 
 const DELAY_BETWEEN_KEY_PRESS = 10; // ms
 const timeoutIds = new Set<number>();

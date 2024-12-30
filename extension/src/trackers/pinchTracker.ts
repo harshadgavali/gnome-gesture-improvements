@@ -1,13 +1,12 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject2';
-import Meta from '@gi-types/meta';
-import Shell from '@gi-types/shell';
-import { CustomEventType, global, imports } from 'gnome-shell';
-import { registerClass } from '../../common/utils/gobject';
-import { TouchpadConstants } from '../../constants';
-import * as DBusUtils from '../utils/dbus';
-
-const Main = imports.ui.main;
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import { CustomEventType } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
+import { registerClass } from '../../common/utils/gobject.js';
+import { TouchpadConstants } from '../../constants.js';
+import * as DBusUtils from '../utils/dbus.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 const MIN_ANIMATION_DURATION = 100;
 const MAX_ANIMATION_DURATION = 400;
@@ -106,7 +105,7 @@ export const TouchpadPinchGesture = registerClass({
 		this._allowedModes = params.allowedModes;
 		this._checkAllowedGesture = params.checkAllowedGesture;
 		if (Meta.is_wayland_compositor()) {
-			this._stageCaptureEvent = global.stage.connect('captured-event::touchpad', this._handleEvent.bind(this));
+			this._stageCaptureEvent = (global as Shell.Global).stage.connect('captured-event::touchpad', this._handleEvent.bind(this));
 		} else {
 			DBusUtils.subscribe(this._handleEvent.bind(this));
 		}
@@ -316,7 +315,7 @@ export const TouchpadPinchGesture = registerClass({
 
 	destroy() {
 		if (this._stageCaptureEvent) {
-			global.stage.disconnect(this._stageCaptureEvent);
+			(global as Shell.Global).stage.disconnect(this._stageCaptureEvent);
 			this._stageCaptureEvent = 0;
 		}
 	}

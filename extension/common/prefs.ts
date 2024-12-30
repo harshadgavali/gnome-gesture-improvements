@@ -1,12 +1,12 @@
-import Gio from '@gi-types/gio2';
-import GObject from '@gi-types/gobject2';
-import Gtk from '@gi-types/gtk4';
-import Gdk from '@gi-types/gdk4';
-import Adw from '@gi-types/adw1';
-import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Gdk from 'gi://Gdk';
+import Adw from 'gi://Adw';
+import { AllUIObjectKeys, BooleanSettingsKeys, DoubleSettingsKeys, EnumSettingsKeys, GioSettings, IntegerSettingsKeys } from './settings.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { getAppKeybindingGesturePrefsPage } from './appGestures';
+import { getAppKeybindingGesturePrefsPage } from './appGestures.js';
 
 type GtkBuilder = Omit<Gtk.Builder, 'get_object'> & {
 	get_object<T = GObject.Object>(name: AllUIObjectKeys): T;

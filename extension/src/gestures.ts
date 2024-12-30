@@ -1,19 +1,20 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject2';
-import Shell from '@gi-types/shell';
-import { CustomEventType, global, imports, __shell_private_types } from 'gnome-shell';
-import { ExtSettings, OverviewControlsState } from '../constants';
-import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
-
-const Main = imports.ui.main;
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Shell from 'gi://Shell';
+import { ExtSettings, OverviewControlsState } from '../constants.js';
+import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker.js';
+import { SwipeTracker, CustomEventType, TouchpadGesture } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { WorkspaceAnimationController } from 'resource:///org/gnome/shell/ui/workspaceAnimation.js';
+import { OverviewAdjustment } from 'resource:///org/gnome/shell/ui/overviewControls.js';
 
 declare interface ShallowSwipeTrackerT {
 	orientation: Clutter.Orientation,
 	confirmSwipe(distance: number, snapPoints: number[], currentProgress: number, cancelProgress: number): void;
 }
 
-declare type SwipeTrackerT = imports.ui.swipeTracker.SwipeTracker;
-declare type TouchPadSwipeTrackerT = Required<imports.ui.swipeTracker.SwipeTracker>['_touchpadGesture'];
+declare type SwipeTrackerT = SwipeTracker;
+declare type TouchPadSwipeTrackerT = Required<SwipeTracker>['_touchpadGesture'];
 declare interface ShellSwipeTracker {
 	swipeTracker: SwipeTrackerT,
 	nfingers: number[],
@@ -26,7 +27,7 @@ declare interface ShellSwipeTracker {
 
 function connectTouchpadEventToTracker(tracker: TouchPadSwipeTrackerT) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(global.stage as any).connectObject(
+	((global as Shell.Global).stage as any).connectObject(
 		'captured-event::touchpad',
 		tracker._handleEvent.bind(tracker),
 		tracker,
@@ -35,7 +36,7 @@ function connectTouchpadEventToTracker(tracker: TouchPadSwipeTrackerT) {
 
 function disconnectTouchpadEventFromTracker(tracker: TouchPadSwipeTrackerT) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(global.stage as any).disconnectObject(tracker);
+	((global as Shell.Global).stage as any).disconnectObject(tracker);
 }
 
 abstract class SwipeTrackerEndPointsModifer {
@@ -76,14 +77,14 @@ abstract class SwipeTrackerEndPointsModifer {
 }
 
 class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
-	private _workspaceAnimation: imports.ui.workspaceAnimation.WorkspaceAnimationController;
+	private _workspaceAnimation: WorkspaceAnimationController;
 	protected _swipeTracker: SwipeTrackerT;
 
-	constructor(wm: typeof imports.ui.main.wm) {
+	constructor(wm: typeof Main.wm) {
 		super();
 		this._workspaceAnimation = wm._workspaceAnimation;
 		this._swipeTracker = createSwipeTracker(
-			global.stage,
+			(global as Shell.Global).stage,
 			(ExtSettings.DEFAULT_SESSION_WORKSPACE_GESTURE ? [3] : [4]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.HORIZONTAL,
@@ -134,7 +135,7 @@ class WorkspaceAnimationModifier extends SwipeTrackerEndPointsModifer {
 }
 
 export class GestureExtension implements ISubExtension {
-	private _stateAdjustment: imports.ui.overviewControls.OverviewAdjustment;
+	private _stateAdjustment: OverviewAdjustment;
 	private _swipeTrackers: ShellSwipeTracker[];
 	private _workspaceAnimationModifier: WorkspaceAnimationModifier;
 
@@ -219,7 +220,7 @@ export class GestureExtension implements ISubExtension {
 
 	_attachGestureToTracker(
 		swipeTracker: SwipeTrackerT,
-		touchpadSwipeGesture: typeof TouchpadSwipeGesture.prototype | __shell_private_types.TouchpadGesture,
+		touchpadSwipeGesture: typeof TouchpadSwipeGesture.prototype | TouchpadGesture,
 		disablePrevious: boolean,
 	): void {
 		if (swipeTracker._touchpadGesture && disablePrevious) {
@@ -227,7 +228,7 @@ export class GestureExtension implements ISubExtension {
 			swipeTracker.__oldTouchpadGesture = swipeTracker._touchpadGesture;
 		}
 
-		swipeTracker._touchpadGesture = touchpadSwipeGesture as __shell_private_types.TouchpadGesture;
+		swipeTracker._touchpadGesture = touchpadSwipeGesture as TouchpadGesture;
 		swipeTracker._touchpadGesture.connect('begin', swipeTracker._beginGesture.bind(swipeTracker));
 		swipeTracker._touchpadGesture.connect('update', swipeTracker._updateGesture.bind(swipeTracker));
 		swipeTracker._touchpadGesture.connect('end', swipeTracker._endTouchpadGesture.bind(swipeTracker));

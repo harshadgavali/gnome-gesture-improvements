@@ -1,14 +1,14 @@
-import Gtk from '@gi-types/gtk4';
-import Gio from '@gi-types/gio2';
-import GLib from '@gi-types/glib2';
-import GObject from '@gi-types/gobject2';
-import Adw from '@gi-types/adw1';
-import { ForwardBackKeyBinds, GioSettings } from './settings';
-import { registerClass } from './utils/gobject';
-import { printStack } from './utils/logging';
+import Gtk from 'gi://Gtk';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Adw from 'gi://Adw';
+import { ForwardBackKeyBinds, GioSettings } from './settings.js';
+import { registerClass } from './utils/gobject.js';
+import { printStack } from './utils/logging.js';
 
 /** return icon image for give app */
-function getAppIconImage(app: Gio.AppInfoPrototype) {
+function getAppIconImage(app: Gio.AppInfo) {
 	const iconName =  app.get_icon()?.to_string() ?? 'icon-missing';
 	return new Gtk.Image({
 		gicon: Gio.icon_new_for_string(iconName),
@@ -45,7 +45,7 @@ const AppChooserDialog = registerClass(
 		 * @param apps list of apps to display in dialog
 		 * @param parent parent window, dialog will be transient for parent
 		 */
-		constructor(apps: Gio.AppInfoPrototype[], parent: Adw.Window) {
+		constructor(apps: Gio.AppInfo[], parent: Adw.Window) {
 			super({
 				modal: true,
 				transientFor: parent,
@@ -67,7 +67,7 @@ const AppChooserDialog = registerClass(
 		}
 
 		/** for given app add row to selectable list */
-		private _addAppRow(app: Gio.AppInfoPrototype) {
+		private _addAppRow(app: Gio.AppInfo) {
 			const row = new Adw.ActionRow({
 				title: markup_escape_text(app.get_display_name()),
 				subtitle: markup_escape_text(app.get_description()),
@@ -108,7 +108,7 @@ const AppGestureSettingsRow = registerClass(
 		 * @param appGestureSettings value of current settings for app
 		 * @param model list of choices of keybings for setting
 		 */
-		constructor(app: Gio.AppInfoPrototype, appGestureSettings: AppGestureSettings, model: Gio.ListModel) {
+		constructor(app: Gio.AppInfo, appGestureSettings: AppGestureSettings, model: Gio.ListModel) {
 			super({ title: markup_escape_text(app.get_display_name())});
 			this.add_prefix(getAppIconImage(app));
 
@@ -225,7 +225,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 				.sort((a, b) => a.get_id()!.localeCompare(b.get_id()!));
 
 			const appChooserDialog = new AppChooserDialog(selectableApps, this._prefsWindow);
-			appChooserDialog.connect('app-selected', (_source, appId) => this._addAppGestureRow(appId));
+			appChooserDialog.connect('app-selected', (_source, appId: string) => this._addAppGestureRow(appId));
 			appChooserDialog.present();
 		}
 
@@ -263,7 +263,7 @@ const AppKeybindingGesturePrefsGroup = registerClass(
 
 			// callbacks for setting updates and remove request
 			appRow.connect('remove-request', () => this._requestRemoveAppGestureRow(appId));
-			appRow.connect('value-updated', (_source, keyBind, reverse) => {
+			appRow.connect('value-updated', (_source, keyBind: ForwardBackKeyBinds, reverse: boolean) => {
 				this._setAppGestureSetting(appId, [keyBind, reverse]);
 			});
 
