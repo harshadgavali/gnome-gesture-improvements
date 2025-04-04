@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 declare const ARGV: string[];
-imports.gi.versions['Gtk'] = '4.0';
 
-import Gio from '@gi-types/gio2';
-import GLib from '@gi-types/glib2';
-import { registerClass } from '@gi-types/gobject2';
-// import Gtk from '@gi-types/gtk4';
-import Adw from '@gi-types/adw1';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Adw from 'gi://Adw';
+import { ExtensionMetadata } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { buildPrefsWidget } from '../extension/common/prefs.js';
 
 /** Add parent directory of file in searchPath to be able to import files */
 function InsertIntoImportsPath() {
@@ -19,12 +19,11 @@ function InsertIntoImportsPath() {
 }
 InsertIntoImportsPath();
 
-import { buildPrefsWidget } from './common/prefs';
-
 /** Read metadata of extension file */
-function GetExtensionObj(): ExtensionMeta {
+function GetExtensionObj(): ExtensionMetadata {
 	const [_, buffer] = Gio.file_new_for_path('./metadata.json').load_contents(null);
-	const metadata = imports.byteArray.toString(buffer);
+	const textDecoder = new TextDecoder()
+	const metadata = textDecoder.decode(buffer);
 	return JSON.parse(metadata);
 }
 
@@ -73,7 +72,7 @@ function getSettings() {
 	return new Gio.Settings({ settings_schema: schemaObj });
 }
 
-const ExampleApp = registerClass(
+const ExampleApp = GObject.registerClass(
 	class ExampleApp extends Adw.Application {
 		prefsWindow!: Adw.PreferencesWindow;
 		settings!: Gio.Settings;

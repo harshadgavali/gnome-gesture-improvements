@@ -1,5 +1,5 @@
-import Gio from '@gi-types/gio2';
-import GLib from '@gi-types/glib2';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 // define enum
 export enum PinchGestureType {

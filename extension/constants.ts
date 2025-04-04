@@ -14,7 +14,6 @@ export const TouchpadConstants = {
 };
 
 export const AltTabConstants = {
-	DEFAULT_DELAY_DURATION: 100,
 	DELAY_DURATION: 100,
 	POPUP_SCROLL_TIME: 100,
 	DUMMY_WIN_COUNT: 1, // so swiping to the end of touchpad is not needed for last window

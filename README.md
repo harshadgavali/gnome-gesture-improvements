@@ -22,9 +22,6 @@ npm run update
 gnome-extensions enable gestureImprovements@gestures
 ```
 
-### Additional app X11
-On X11, you also need to install [gnome-x11-gesture-daemon](https://github.com/harshadgavali/gnome-x11-gesture-daemon)
-
 ## Gestures (including built-in ones)
 | Swipe Gesture                           | Modes    | Fingers | Direction       |
 | :-------------------------------------- | :------- | :------ | :-------------- |
@@ -74,6 +71,4 @@ gsettings set org.gnome.shell.window-switcher current-workspace-only false
 # Contributors
 [@jacksongoode](https://github.com/jacksongoode)
 [@kyteinsky](https://github.com/kyteinsky)
-
-# Thanks
-[@ewlsh](https://gitlab.gnome.org/ewlsh) for [Typescript definitions](https://www.npmjs.com/package/@gi-types/glib) for GLib, GObject, ...
+[@HieuTNg](https://github.com/HieuTNg)

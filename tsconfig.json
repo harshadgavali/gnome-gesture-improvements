@@ -1,36 +1,20 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "typeRoots": [
-            "./node_modules/@types",
-            "./node_modules/@gi-types"
-        ],
-        "types": [
-            "gjs-environment",
-            "base-types",
-            "gtk4-types",
-            "node"
-        ],
-        "lib": [
-            "ES2019"
-        ],
-        "allowSyntheticDefaultImports": true,
-        "rootDir": "./",
-        "outDir": "./build",
-        "target": "ES6",
-        "moduleResolution": "Node",
-        "skipLibCheck": true,
-        "paths": {
-          "gnome-shell": [
-            "./gnome-shell"
-          ]
-        },
-    },
-    "include": [
-      "extension/**/*.ts",
-      "extension/**/*.js",
-      "scripts/**/*.ts",
-      "gnome-shell/*.d.ts",
-      "tests/**/*.ts"
-    ]
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "sourceMap": false,
+    "removeComments": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./build",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+  },
+  "include": [
+    "extension",
+    "scripts",
+    "tests",
+    "ambient.d.ts"
+  ]
 }

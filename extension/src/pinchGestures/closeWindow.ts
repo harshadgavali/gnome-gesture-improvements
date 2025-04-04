@@ -1,18 +1,14 @@
-import Clutter from '@gi-types/clutter';
-import Meta from '@gi-types/meta';
-import Shell from '@gi-types/shell';
-import St from '@gi-types/st';
-
-import { global, imports } from 'gnome-shell';
-
-import { PinchGestureType } from '../../common/settings';
-import { WIGET_SHOWING_DURATION } from '../../constants';
-import { TouchpadPinchGesture } from '../trackers/pinchTracker';
-import { easeActor } from '../utils/environment';
-import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard';
-
-const Main = imports.ui.main;
-const Util = imports.misc.util;
+import Clutter from 'gi://Clutter';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import St from 'gi://St';
+import { PinchGestureType } from '../../common/settings.js';
+import { WIGET_SHOWING_DURATION } from '../../constants.js';
+import { TouchpadPinchGesture } from '../trackers/pinchTracker.js';
+import { easeActor } from '../utils/environment.js';
+import { getVirtualKeyboard, IVirtualKeyboard } from '../utils/keyboard.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Util from 'resource:///org/gnome/shell/misc/util.js';
 
 const END_OPACITY = 0;
 const END_SCALE = 0.5;

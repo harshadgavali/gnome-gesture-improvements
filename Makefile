@@ -21,9 +21,5 @@ pack:
 update:
 	${UPDATE_CMD}
 
-build-tests: build/tests/prefs.js
-	node ${BUILDIR}/scripts/transpile.js --dir ${BUILDIR}/tests --type app
-	@npx eslint build/tests --fix
-
 test-ui: build-tests
 	gjs -m build/tests/prefs.js

@@ -19,7 +19,7 @@
 .gie-arrow-icon {
     color: #396bd7;
     margin: 10px 10px;  /* (50+2 - 32)/2 */
-    icon-size: 32px,
+    -gtk-icon-size: 32px,
 }
 
 .gie-outer-circle {

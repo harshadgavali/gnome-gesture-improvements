@@ -1,11 +1,11 @@
-import Clutter from '@gi-types/clutter';
-import Gio from '@gi-types/gio2';
-import GObject from '@gi-types/gobject2';
-import { CustomEventType, global, imports } from 'gnome-shell';
-import { registerClass } from '../../common/utils/gobject';
-import { printStack } from '../../common/utils/logging';
-
-const Util = imports.misc.util;
+import Clutter from 'gi://Clutter';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import { CustomEventType } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
+import { registerClass } from '../../common/utils/gobject.js';
+import { printStack } from '../../common/utils/logging.js';
+import * as Util from 'resource:///org/gnome/shell/misc/util.js';
+import Shell from 'gi://Shell';
 
 const X11GestureDaemonXml = `<node>
 	<interface name="org.gestureImprovements.gestures">
@@ -65,7 +65,7 @@ const DBusWrapperGIExtension = registerClass({
 		super();
 
 		const ProxyClass = Gio.DBusProxy.makeProxyWrapper(X11GestureDaemonXml);
-		this._proxy = new ProxyClass(
+		this._proxy = ProxyClass(
 			Gio.DBus.session,
 			'org.gestureImprovements.gestures',
 			'/org/gestureImprovements/gestures',
@@ -128,7 +128,7 @@ function GenerateEvent(typ: Clutter.EventType, sphase: string, fingers: number, 
 			}
 		},
 		get_touchpad_gesture_finger_count: () => fingers,
-		get_coords: () => global.get_pointer().slice(0, 2) as [number, number],
+		get_coords: () => (global as Shell.Global).get_pointer().slice(0, 2) as [number, number],
 		get_gesture_motion_delta_unaccelerated: () => [params.dx ?? 0, params.dy ?? 0],
 		get_time: () => time,
 		get_gesture_pinch_scale: () => params.pinch_scale ?? 1.0,

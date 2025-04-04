@@ -1,14 +1,12 @@
-import Clutter from '@gi-types/clutter';
-import GObject from '@gi-types/gobject2';
-import Meta from '@gi-types/meta';
-import Shell from '@gi-types/shell';
-import { global, imports, __shell_private_types } from 'gnome-shell';
-import { TouchpadPinchGesture } from '../trackers/pinchTracker';
-import { easeActor } from '../utils/environment';
-
-const Main = imports.ui.main;
-const Layout = imports.ui.layout;
-const { lerp } = imports.misc.util;
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import { TouchpadPinchGesture } from '../trackers/pinchTracker.js';
+import { easeActor } from '../utils/environment.js';
+import { MonitorConstraint, Monitor } from 'resource:///org/gnome/shell/ui/layout.js'
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { lerp } from 'resource:///org/gnome/shell/misc/util.js';
 
 // declare enum 
 enum WorkspaceManagerState {
@@ -48,17 +46,17 @@ declare type WindowActorClone = {
 };
 
 class MonitorGroup {
-	public monitor: __shell_private_types.IMonitorState;
+	public monitor: Monitor;
 	private _container: Clutter.Actor;
 	private _windowActorClones: WindowActorClone[] = [];
 	private _corners: Corner[];
 	private _bottomMidCorner: Corner;
 
-	constructor(monitor: __shell_private_types.IMonitorState) {
+	constructor(monitor: Monitor) {
 		this.monitor = monitor;
 
 		this._container = new Clutter.Actor({ visible: false });
-		const constraint = new Layout.MonitorConstraint({ index: monitor.index });
+		const constraint = new MonitorConstraint({ index: monitor.index });
 		this._container.add_constraint(constraint);
 
 		this._bottomMidCorner = { x: this.monitor.width / 2, y: this.monitor.height, position: 'bottom-mid' };
@@ -72,7 +70,7 @@ class MonitorGroup {
 		];
 
 		this._container.set_clip_to_allocation(true);
-		Main.layoutManager.uiGroup.insert_child_above(this._container, global.window_group);
+		Main.layoutManager.uiGroup.insert_child_above(this._container, (global as Shell.Global).window_group);
 	}
 
 	_addWindowActor(windowActor: Meta.WindowActor) {
@@ -262,9 +260,9 @@ export class ShowDesktopExtension implements ISubExtension {
 		for (const monitor of Main.layoutManager.monitors)
 			this._monitorGroups.push(new MonitorGroup(monitor));
 
-		this._workspaceChangedId = global.workspace_manager.connect('active-workspace-changed', this._workspaceChanged.bind(this));
+		this._workspaceChangedId = (global as Shell.Global).workspace_manager.connect('active-workspace-changed', this._workspaceChanged.bind(this));
 		this._workspaceChanged();
-		this._windowUnMinimizedId = global.window_manager.connect('unminimize', this._windowUnMinimized.bind(this));
+		this._windowUnMinimizedId = (global as Shell.Global).window_manager.connect('unminimize', this._windowUnMinimized.bind(this));
 
 		this._monitorChangedId = Main.layoutManager.connect('monitors-changed', () => {
 			this._monitorGroups.forEach(m => m.destroy());
@@ -287,10 +285,10 @@ export class ShowDesktopExtension implements ISubExtension {
 			this._workspace?.disconnect(this._windowRemovedId);
 
 		if (this._workspaceChangedId)
-			global.workspace_manager.disconnect(this._workspaceChangedId);
+			(global as Shell.Global).workspace_manager.disconnect(this._workspaceChangedId);
 
 		if (this._windowUnMinimizedId)
-			global.window_manager.disconnect(this._windowUnMinimizedId);
+			(global as Shell.Global).window_manager.disconnect(this._windowUnMinimizedId);
 
 		this._resetState();
 
@@ -301,7 +299,7 @@ export class ShowDesktopExtension implements ISubExtension {
 
 	private _getMinimizableWindows() {
 		if (this._workspaceManagerState === WorkspaceManagerState.DEFAULT) {
-			this._minimizingWindows = global
+			this._minimizingWindows = (global as Shell.Global)
 				.get_window_actors()
 				.filter(a => a.visible)
 				// top actors should be at the beginning
@@ -320,7 +318,7 @@ export class ShowDesktopExtension implements ISubExtension {
 	gestureBegin(tracker: Type_TouchpadPinchGesture) {
 		this._extensionState = ExtensionState.ANIMATING;
 
-		Meta.disable_unredirect_for_display(global.display);
+		Meta.disable_unredirect_for_display((global as Shell.Global).display);
 
 		this._minimizingWindows = this._getMinimizableWindows();
 		// this._setDesktopWindowsBelow();
@@ -360,7 +358,7 @@ export class ShowDesktopExtension implements ISubExtension {
 		this._extensionState = ExtensionState.DEFAULT;
 		this._workspaceManagerState = endProgress;
 
-		Meta.enable_unredirect_for_display(global.display);
+		Meta.enable_unredirect_for_display((global as Shell.Global).display);
 	}
 
 	private _resetState(animate = false) {
@@ -400,7 +398,7 @@ export class ShowDesktopExtension implements ISubExtension {
 
 		this._resetState(false);
 		this._windows.clear();
-		this._workspace = global.workspace_manager.get_active_workspace();
+		this._workspace = (global as Shell.Global).workspace_manager.get_active_workspace();
 
 		this._windowAddedId = this._workspace.connect('window-added', this._windowAdded.bind(this));
 		this._windowRemovedId = this._workspace.connect('window-removed', this._windowRemoved.bind(this));

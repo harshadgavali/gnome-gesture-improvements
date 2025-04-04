@@ -1,12 +1,11 @@
-import Clutter from '@gi-types/clutter';
-import Shell from '@gi-types/shell';
-import { global, imports } from 'gnome-shell';
-import { OverviewNavigationState } from '../common/settings';
-import { ExtSettings, OverviewControlsState } from '../constants';
-import { createSwipeTracker } from './swipeTracker';
-
-const Main = imports.ui.main;
-const { SwipeTracker } = imports.ui.swipeTracker;
+import Clutter from 'gi://Clutter';
+import Shell from 'gi://Shell';
+import { OverviewNavigationState } from '../common/settings.js';
+import { ExtSettings, OverviewControlsState } from '../constants.js';
+import { createSwipeTracker } from './swipeTracker.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { SwipeTracker } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
+import { ControlsManager, OverviewAdjustment } from 'resource:///org/gnome/shell/ui/overviewControls.js';
 
 // declare enum
 enum ExtensionState {
@@ -16,9 +15,9 @@ enum ExtensionState {
 }
 
 export class OverviewRoundTripGestureExtension implements ISubExtension {
-	private _overviewControls: imports.ui.overviewControls.OverviewControlsManager;
-	private _stateAdjustment: imports.ui.overviewControls.OverviewAdjustment;
-	private _oldGetStateTransitionParams: typeof imports.ui.overviewControls.OverviewAdjustment.prototype.getStateTransitionParams;
+	private _overviewControls: ControlsManager;
+	private _stateAdjustment: OverviewAdjustment;
+	private _oldGetStateTransitionParams: typeof OverviewAdjustment.prototype.getStateTransitionParams;
 	private _swipeTracker?: typeof SwipeTracker.prototype;
 	private _progress = 0;
 	private _extensionState = ExtensionState.DEFAULT;
@@ -36,7 +35,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 		this._connectors = [];
 	}
 
-	_getStateTransitionParams(): typeof imports.ui.overviewControls.OverviewAdjustment.prototype.getStateTransitionParams.prototype {
+	_getStateTransitionParams(): typeof OverviewAdjustment.prototype.getStateTransitionParams.prototype {
 		if (this._extensionState <= ExtensionState.DEFAULT) {
 			return this._oldGetStateTransitionParams.call(this._stateAdjustment);
 		}
@@ -62,7 +61,7 @@ export class OverviewRoundTripGestureExtension implements ISubExtension {
 		Main.overview._swipeTracker.enabled = false;
 
 		this._swipeTracker = createSwipeTracker(
-			global.stage,
+			(global as Shell.Global).stage,
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [3] : [4]),
 			Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
 			Clutter.Orientation.VERTICAL,

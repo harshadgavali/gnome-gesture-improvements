@@ -1,19 +1,16 @@
-import Clutter from '@gi-types/clutter';
-import Meta from '@gi-types/meta';
-import Shell from '@gi-types/shell';
-import St from '@gi-types/st';
-import { global, imports } from 'gnome-shell';
-import { registerClass } from '../common/utils/gobject';
-import { ExtSettings } from '../constants';
-import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker';
-import { easeActor, easeAdjustment } from './utils/environment';
-import { getVirtualKeyboard, IVirtualKeyboard } from './utils/keyboard';
-
-
-const Main = imports.ui.main;
-const Utils = imports.misc.util;
-
-const { SwipeTracker } = imports.ui.swipeTracker;
+import Clutter from 'gi://Clutter';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import Mtk from 'gi://Mtk';
+import St from 'gi://St';
+import { registerClass } from '../common/utils/gobject.js';
+import { ExtSettings } from '../constants.js';
+import { createSwipeTracker, TouchpadSwipeGesture } from './swipeTracker.js';
+import { easeActor, easeAdjustment } from './utils/environment.js';
+import { getVirtualKeyboard, IVirtualKeyboard } from './utils/keyboard.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Utils from 'resource:///org/gnome/shell/misc/util.js';
+import { SwipeTracker } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
 
 const WINDOW_ANIMATION_TIME = 250;
 const UPDATED_WINDOW_ANIMATION_TIME = 150;
@@ -40,13 +37,13 @@ const TilePreview = registerClass(
 
 		private _window?: Meta.Window;
 		private _direction = Clutter.Orientation.VERTICAL;
-		private _normalBox?: Meta.Rectangle;
-		private _maximizeBox?: Meta.Rectangle;
-		private _minimizeBox?: Meta.Rectangle;
-		private _leftSnapBox?: Meta.Rectangle;
-		private _rightSnapBox?: Meta.Rectangle;
+		private _normalBox?: Mtk.Rectangle;
+		private _maximizeBox?: Mtk.Rectangle;
+		private _minimizeBox?: Mtk.Rectangle;
+		private _leftSnapBox?: Mtk.Rectangle;
+		private _rightSnapBox?: Mtk.Rectangle;
 		private _virtualDevice: IVirtualKeyboard;
-		private _fullscreenBox?: Meta.Rectangle;
+		private _fullscreenBox?: Mtk.Rectangle;
 
 		constructor() {
 			super({
@@ -74,8 +71,8 @@ const TilePreview = registerClass(
 			}
 
 			this._window = window;
-			this._fullscreenBox = global.display.get_monitor_geometry(window.get_monitor());
-			this._maximizeBox = this.getMaximizedBox(window);
+			this._fullscreenBox = (global as Shell.Global).display.get_monitor_geometry(window.get_monitor());
+			this._maximizeBox = this.getMaximizedBox(window) as Mtk.Rectangle;
 			this._normalBox = this.getNormalBox(window);
 			this._leftSnapBox = this._maximizeBox.copy();
 			this._rightSnapBox = this._maximizeBox.copy();
@@ -231,7 +228,7 @@ const TilePreview = registerClass(
 			return this._adjustment;
 		}
 
-		private getMinimizedBox(window: Meta.Window, monitorWorkArea: Meta.Rectangle) {
+		private getMinimizedBox(window: Meta.Window, monitorWorkArea: Mtk.Rectangle) {
 			const [has_icon, icon_geometry] = window.get_icon_geometry();
 			if (has_icon)
 				return icon_geometry;
@@ -283,7 +280,7 @@ export class SnapWindowExtension implements ISubExtension {
 
 	constructor() {
 		this._swipeTracker = createSwipeTracker(
-			global.stage,
+			(global as Shell.Global).stage,
 			(ExtSettings.DEFAULT_OVERVIEW_GESTURE ? [4] : [3]),
 			Shell.ActionMode.NORMAL,
 			Clutter.Orientation.VERTICAL,
@@ -296,7 +293,7 @@ export class SnapWindowExtension implements ISubExtension {
 		this._touchpadSwipeGesture = this._swipeTracker._touchpadGesture as typeof TouchpadSwipeGesture.prototype;
 		this._tilePreview = new TilePreview();
 		Main.layoutManager.uiGroup.add_child(this._tilePreview);
-		this._uiGroupAddedActorId = Main.layoutManager.uiGroup.connect('actor-added', () => {
+		this._uiGroupAddedActorId = Main.layoutManager.uiGroup.connect('child-added', () => {
 			Main.layoutManager.uiGroup.set_child_above_sibling(this._tilePreview, null);
 		});
 		Main.layoutManager.uiGroup.set_child_above_sibling(this._tilePreview, null);
@@ -322,7 +319,7 @@ export class SnapWindowExtension implements ISubExtension {
 	}
 
 	_gestureBegin(tracker: typeof SwipeTracker.prototype, monitor: number): void {
-		const window = global.display.get_focus_window() as Meta.Window | null;
+		const window = (global as Shell.Global).display.get_focus_window() as Meta.Window | null;
 
 		// fullscreen window's can't be maximized :O
 		// if window can't be maximized and window is not fullscreen, return
@@ -335,7 +332,7 @@ export class SnapWindowExtension implements ISubExtension {
 		}
 
 		const currentMonitor = window.get_monitor();
-		const monitorArea = global.display.get_monitor_geometry(currentMonitor);
+		const monitorArea = (global as Shell.Global).display.get_monitor_geometry(currentMonitor);
 
 		const progress = window.is_fullscreen() ? GestureMaxUnMaxState.FULLSCREEN
 			: window.get_maximized() === Meta.MaximizeFlags.BOTH ? GestureMaxUnMaxState.MAXIMIZE : GestureMaxUnMaxState.UNMAXIMIZE;

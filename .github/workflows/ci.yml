@@ -10,13 +10,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -32,7 +32,6 @@ jobs:
       - name: Build
         run: |
           tsc
-          node build/scripts/transpile.js
 
       - name: Lint package
         run: |
@@ -46,7 +45,7 @@ jobs:
         run: echo "zipFileName=gestureImprovements.$(date --iso-8601).$(git rev-parse --short HEAD)@gestures.shell-extension.zip" >> $GITHUB_ENV
 
       - name: Upload archive artifact
-        uses: "actions/upload-artifact@v3"
+        uses: "actions/upload-artifact@v4"
         with:
           name: ${{ env.zipFileName }}
           path: ${{ github.workspace }}/build/gestureImprovements@gestures.shell-extension.zip
